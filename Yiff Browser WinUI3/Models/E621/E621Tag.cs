@@ -52,7 +52,6 @@ namespace Yiff_Browser_WinUI3.Models.E621 {
 				_ => (isDarkTheme ? "#FFFFFF" : "#000000").ToColor(),
 			};
 		}
-
 	}
 
 	public enum E621TagCategory {
@@ -63,7 +62,7 @@ namespace Yiff_Browser_WinUI3.Models.E621 {
 		Copyrights = 4,
 		Species = 5,
 		Invalid = 6,
-		Meta=7,
+		Meta = 7,
 		Lore = 8,
 		UnKnown = 9,
 	}

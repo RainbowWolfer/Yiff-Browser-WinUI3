@@ -65,6 +65,7 @@ namespace Yiff_Browser_WinUI3.Services.Networks {
 		private static void AddDefaultRequestHeaders(HttpClient client, string username, string api) {
 			client.DefaultRequestHeaders.Add("User-Agent", USERAGENT);
 			//AddAuthorizationHeader(client, username, api);
+			AddAuthorizationHeader(client, "RainbowWolfer", "WUwPNbGDrfXnQoHfvU1nR3TD");
 		}
 
 		private static void AddAuthorizationHeader(HttpClient client, string username, string api) {

@@ -8,6 +8,20 @@
 	xmlns:numberformatting="using:Windows.Globalization.NumberFormatting"
 	mc:Ignorable="d">
 
+	<UserControl.Resources>
+		<Style x:Key="BorderSeparator" TargetType="Border">
+			<Setter Property="CornerRadius" Value="2"/>
+			<Setter Property="Margin" Value="10,0,10,0"/>
+			<Setter Property="Height" Value="20"/>
+			<Setter Property="Width" Value="4"/>
+			<Setter Property="Background">
+				<Setter.Value>
+					<SolidColorBrush Color="Gray" Opacity="0.5"/>
+				</Setter.Value>
+			</Setter>
+		</Style>
+	</UserControl.Resources>
+
 	<Grid>
 		<Grid.DataContext>
 			<local:PostsViewerViewModel x:Name="ViewModel"/>
@@ -20,37 +34,94 @@
 
 		<Grid Grid.Row="0">
 			<Border Background="{StaticResource SystemColorBackgroundBrush}" CornerRadius="10" Margin="5" Padding="5">
-				<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-					<Button Height="30">
-						<FontIcon Glyph="&#xE0E2;"/>
-					</Button>
-					<Button Margin="10,0,10,0" Padding="7,0,7,0" Height="30" MinWidth="50">
-						<TextBlock Text="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-						<Button.Flyout>
-							<Flyout x:Name="PageFlyout">
-								<StackPanel Orientation="Horizontal">
-									<NumberBox Value="{Binding PageValue,Mode=TwoWay}" SpinButtonPlacementMode="Hidden" SmallChange="1" LargeChange="5" Minimum="1" MinWidth="100" ValidationMode="InvalidInputOverwritten">
-										<NumberBox.NumberFormatter>
-											<numberformatting:DecimalFormatter IntegerDigits="1" FractionDigits="0"/>
-										</NumberBox.NumberFormatter>
-									</NumberBox>
-									<Button x:Name="PageForwardButton" Margin="10,0,0,0" Click="PageForwardButton_Click">
-										<SymbolIcon Symbol="Forward"/>
-									</Button>
-								</StackPanel>
-							</Flyout>
-						</Button.Flyout>
-					</Button>
-					<Button Height="30">
-						<FontIcon Glyph="&#xE0E3;"/>
-					</Button>
-				</StackPanel>
+				<Grid>
+
+					<StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+						<Button Height="36" Background="Transparent" BorderBrush="Transparent">
+							<StackPanel Orientation="Horizontal">
+								<FontIcon Glyph="&#xE946;"/>
+								<TextBlock Text="Tags Info" Margin="10,0,0,0"/>
+							</StackPanel>
+						</Button>
+					</StackPanel>
+
+					<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+						<Button Height="36" Background="Transparent" BorderBrush="Transparent">
+							<StackPanel Orientation="Horizontal">
+								<FontIcon Glyph="&#xE1EC;"/>
+								<TextBlock Text="Posts Info" Margin="10,0,0,0"/>
+							</StackPanel>
+						</Button>
+					</StackPanel>
+
+					<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+
+						<Button Height="36">
+							<StackPanel Orientation="Horizontal">
+								<FontIcon Glyph="&#xE149;"/>
+								<TextBlock Text="Refresh" Margin="10,0,0,0"/>
+							</StackPanel>
+						</Button>
+
+						<Border Style="{StaticResource BorderSeparator}"/>
+
+						<Button Height="36">
+							<FontIcon Glyph="&#xE0E2;"/>
+						</Button>
+
+						<Button Margin="10,0,10,0" Padding="7,0,7,0" Height="36" MinWidth="50">
+							<TextBlock Text="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+							<Button.Flyout>
+								<Flyout x:Name="PageFlyout">
+									<StackPanel Orientation="Horizontal">
+										<NumberBox Value="{Binding PageValue,Mode=TwoWay}" SpinButtonPlacementMode="Hidden" SmallChange="1" LargeChange="5" Minimum="1" MinWidth="100" ValidationMode="InvalidInputOverwritten">
+											<NumberBox.NumberFormatter>
+												<numberformatting:DecimalFormatter IntegerDigits="1" FractionDigits="0"/>
+											</NumberBox.NumberFormatter>
+										</NumberBox>
+										<Button x:Name="PageForwardButton" Margin="10,0,0,0" Click="PageForwardButton_Click">
+											<SymbolIcon Symbol="Forward"/>
+										</Button>
+									</StackPanel>
+								</Flyout>
+							</Button.Flyout>
+						</Button>
+
+						<Button Height="36">
+							<FontIcon Glyph="&#xE0E3;"/>
+						</Button>
+
+						<Border Style="{StaticResource BorderSeparator}"/>
+
+						<Button Height="36">
+							<StackPanel Orientation="Horizontal">
+								<FontIcon Glyph="&#xE118;"/>
+								<TextBlock Text="Download" Margin="10,0,0,0"/>
+							</StackPanel>
+						</Button>
+
+						<Button Height="36" Margin="10,0,0,0">
+							<StackPanel Orientation="Horizontal">
+								<FontIcon Glyph="&#xE152;"/>
+								<TextBlock Text="Select" Margin="10,0,0,0"/>
+							</StackPanel>
+						</Button>
+
+					</StackPanel>
+				</Grid>
 			</Border>
 		</Grid>
 
 		<ScrollViewer VerticalScrollMode="Auto" Grid.Row="1">
 			<VariableSizedWrapGrid x:Name="MainGrid" Orientation="Horizontal" ItemHeight="{x:Bind ItemHeight}" ItemWidth="{x:Bind ItemWidth}"/>
 		</ScrollViewer>
+
+		<!-- Loading -->
+		<Grid Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+			<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+				<ProgressRing IsActive="True" Height="100" Width="100"/>
+			</StackPanel>
+		</Grid>
 
 		<!-- Detail Page -->
 		<Grid Grid.Row="1">

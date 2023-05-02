@@ -17,12 +17,32 @@ using Yiff_Browser_WinUI3.Models.E621;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using Prism.Mvvm;
+using Yiff_Browser_WinUI3.Services.Networks;
 
 namespace Yiff_Browser_WinUI3.Views.Controls {
 	public sealed partial class PostsViewer : UserControl {
 		public int ItemWidth { get; } = 380;
 		public int ItemHeight { get; } = 50;
 
+
+		public E621PostParameters Parameters {
+			get => (E621PostParameters)GetValue(MyPropertyProperty);
+			set => SetValue(MyPropertyProperty, value);
+		}
+
+		public static readonly DependencyProperty MyPropertyProperty = DependencyProperty.Register(
+			nameof(Parameters),
+			typeof(E621PostParameters),
+			typeof(PostsViewer),
+			new PropertyMetadata(null, OnParametersChanged)
+		);
+
+		private static void OnParametersChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+			if (d is not PostsViewer view) {
+				return;
+			}
+
+		}
 
 		public ObservableCollection<E621Post> Posts {
 			get => (ObservableCollection<E621Post>)GetValue(PostsProperty);
@@ -107,14 +127,20 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 	public class PostsViewerViewModel : BindableBase {
 		private int pageValue;
+		private bool isLoading;
 
 		public int PageValue {
 			get => pageValue;
 			set => SetProperty(ref pageValue, value);
 		}
 
+		public bool IsLoading {
+			get => isLoading;
+			set => SetProperty(ref isLoading, value);
+		}
+
 		public void Forward() {
-			
+
 		}
 	}
 }

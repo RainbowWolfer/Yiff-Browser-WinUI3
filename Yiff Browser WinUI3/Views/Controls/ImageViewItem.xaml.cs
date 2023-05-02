@@ -62,6 +62,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 		private string previewImageURL;
 		private string sampleImageURL;
+		private string errorLoadingHint;
 
 		public string PreviewImageURL {
 			get => previewImageURL;
@@ -88,12 +89,17 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			set => SetProperty(ref showBetterImage, value);
 		}
 
+		public string ErrorLoadingHint {
+			get => errorLoadingHint;
+			set => SetProperty(ref errorLoadingHint, value);
+		}
+
 		private void OnPostChanged() {
 			if (new string[] { "gif", "webm", "swf" }.Contains(Post.file.ext.ToLower())) {
 				TypeHint = Post.file.ext.ToUpper();
 			}
 			if (post.HasNoValidURLs()) {
-
+				ErrorLoadingHint = "Try login to show this post";
 			} else {
 				PreviewImageURL = post.preview.url;
 			}

@@ -69,9 +69,7 @@ namespace Yiff_Browser_WinUI3.Views.Pages.E621 {
 
 			string[] searchTags = searchView.GetSearchTags();
 
-			HomeTabViewItem item = new(searchTags) {
-				Title = DateTime.Now.ToString(),
-			};
+			HomeTabViewItem item = new(searchTags);
 
 			Items.Add(item);
 
@@ -85,6 +83,8 @@ namespace Yiff_Browser_WinUI3.Views.Pages.E621 {
 		private string[] previewURLs;
 		private ObservableCollection<E621Post> posts;
 		private bool isSelected;
+		private string[] tags;
+		private bool isLoading;
 
 		public string Title {
 			get => title;
@@ -106,17 +106,26 @@ namespace Yiff_Browser_WinUI3.Views.Pages.E621 {
 			set => SetProperty(ref isSelected, value);
 		}
 
-		private readonly string[] tags;
+		private string[] Tags {
+			get => tags;
+			set => SetProperty(ref tags, value);
+		}
+
+		public bool IsLoading {
+			get => isLoading;
+			set => SetProperty(ref isLoading, value);
+		}
 
 		public HomeTabViewItem(params string[] tags) {
-			this.tags = tags ?? Array.Empty<string>();
+			Tags = tags ?? Array.Empty<string>();
+			Title = Tags.ToFullString();
 			Load();
 		}
 
 		private async void Load() {
 			E621Post[] posts = await E621API.GetE621PostsByTagsAsync(new E621PostParameters() {
-				Page = Random.Shared.Next(0, 10),
-				Tags = tags,
+				Page = 1,
+				Tags = Tags,
 			});
 			if (posts != null) {
 				Posts = new ObservableCollection<E621Post>(posts);

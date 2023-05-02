@@ -35,6 +35,14 @@
 
 				<Image Source="{Binding SampleImageURL}" Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
+				<Grid Visibility="{Binding ErrorLoadingHint,Converter={StaticResource ArrayNotEmptyToVisibility}}">
+					<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+						<FontIcon Glyph="&#xE946;" FontSize="24"/>
+						<TextBlock Text="{Binding ErrorLoadingHint}" FontSize="16" TextWrapping="Wrap" TextAlignment="Center"/>
+					</StackPanel>
+				</Grid>
+
+
 				<Border x:Name="TypeHintBorder" HorizontalAlignment="Right" VerticalAlignment="Top" CornerRadius="4" Margin="5" Padding="6,3,6,3" Visibility="{Binding TypeHint,Converter={StaticResource ArrayNotEmptyToVisibility}}">
 					<Border.Background>
 						<SolidColorBrush Color="Gray" Opacity="0.5"/>

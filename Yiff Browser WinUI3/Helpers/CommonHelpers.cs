@@ -73,5 +73,9 @@ namespace Yiff_Browser_WinUI3.Helpers {
 			}
 			return true;
 		}
+
+		public static string ToFullString(this IEnumerable<string> tags) {
+			return string.Join(" ", tags);
+		}
 	}
 }
