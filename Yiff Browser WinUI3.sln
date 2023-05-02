@@ -1,0 +1,57 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33530.505
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "Yiff Browser WinUI3 (Package)", "Yiff Browser WinUI3 (Package)\Yiff Browser WinUI3 (Package).wapproj", "{623870D7-1D3A-4EFE-84FB-C1BDC2E56648}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yiff Browser WinUI3", "Yiff Browser WinUI3\Yiff Browser WinUI3.csproj", "{EF5DA85F-4CE4-421A-907D-B60E2AC4B057}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|ARM64 = Debug|ARM64
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|ARM64 = Release|ARM64
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{623870D7-1D3A-4EFE-84FB-C1BDC2E56648}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{623870D7-1D3A-4EFE-84FB-C1BDC2E56648}.Debug|ARM64.Build.0 = Debug|ARM64
+		{623870D7-1D3A-4EFE-84FB-C1BDC2E56648}.Debug|ARM64.Deploy.0 = Debug|ARM64
+		{623870D7-1D3A-4EFE-84FB-C1BDC2E56648}.Debug|x64.ActiveCfg = Debug|x64
+		{623870D7-1D3A-4EFE-84FB-C1BDC2E56648}.Debug|x64.Build.0 = Debug|x64
+		{623870D7-1D3A-4EFE-84FB-C1BDC2E56648}.Debug|x64.Deploy.0 = Debug|x64
+		{623870D7-1D3A-4EFE-84FB-C1BDC2E56648}.Debug|x86.ActiveCfg = Debug|x86
+		{623870D7-1D3A-4EFE-84FB-C1BDC2E56648}.Debug|x86.Build.0 = Debug|x86
+		{623870D7-1D3A-4EFE-84FB-C1BDC2E56648}.Debug|x86.Deploy.0 = Debug|x86
+		{623870D7-1D3A-4EFE-84FB-C1BDC2E56648}.Release|ARM64.ActiveCfg = Release|ARM64
+		{623870D7-1D3A-4EFE-84FB-C1BDC2E56648}.Release|ARM64.Build.0 = Release|ARM64
+		{623870D7-1D3A-4EFE-84FB-C1BDC2E56648}.Release|ARM64.Deploy.0 = Release|ARM64
+		{623870D7-1D3A-4EFE-84FB-C1BDC2E56648}.Release|x64.ActiveCfg = Release|x64
+		{623870D7-1D3A-4EFE-84FB-C1BDC2E56648}.Release|x64.Build.0 = Release|x64
+		{623870D7-1D3A-4EFE-84FB-C1BDC2E56648}.Release|x64.Deploy.0 = Release|x64
+		{623870D7-1D3A-4EFE-84FB-C1BDC2E56648}.Release|x86.ActiveCfg = Release|x86
+		{623870D7-1D3A-4EFE-84FB-C1BDC2E56648}.Release|x86.Build.0 = Release|x86
+		{623870D7-1D3A-4EFE-84FB-C1BDC2E56648}.Release|x86.Deploy.0 = Release|x86
+		{EF5DA85F-4CE4-421A-907D-B60E2AC4B057}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{EF5DA85F-4CE4-421A-907D-B60E2AC4B057}.Debug|ARM64.Build.0 = Debug|ARM64
+		{EF5DA85F-4CE4-421A-907D-B60E2AC4B057}.Debug|x64.ActiveCfg = Debug|x64
+		{EF5DA85F-4CE4-421A-907D-B60E2AC4B057}.Debug|x64.Build.0 = Debug|x64
+		{EF5DA85F-4CE4-421A-907D-B60E2AC4B057}.Debug|x86.ActiveCfg = Debug|x86
+		{EF5DA85F-4CE4-421A-907D-B60E2AC4B057}.Debug|x86.Build.0 = Debug|x86
+		{EF5DA85F-4CE4-421A-907D-B60E2AC4B057}.Release|ARM64.ActiveCfg = Release|ARM64
+		{EF5DA85F-4CE4-421A-907D-B60E2AC4B057}.Release|ARM64.Build.0 = Release|ARM64
+		{EF5DA85F-4CE4-421A-907D-B60E2AC4B057}.Release|x64.ActiveCfg = Release|x64
+		{EF5DA85F-4CE4-421A-907D-B60E2AC4B057}.Release|x64.Build.0 = Release|x64
+		{EF5DA85F-4CE4-421A-907D-B60E2AC4B057}.Release|x86.ActiveCfg = Release|x86
+		{EF5DA85F-4CE4-421A-907D-B60E2AC4B057}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CBC6205A-B8FB-473F-A306-18C5154259C7}
+	EndGlobalSection
+EndGlobal

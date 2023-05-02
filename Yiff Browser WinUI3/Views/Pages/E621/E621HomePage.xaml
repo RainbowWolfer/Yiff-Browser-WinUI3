@@ -1,0 +1,73 @@
+<Page
+    x:Class="Yiff_Browser_WinUI3.Views.Pages.E621.E621HomePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Yiff_Browser_WinUI3.Views.Pages.E621"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+	xmlns:controls="using:Yiff_Browser_WinUI3.Views.Controls" 
+	xmlns:converters="using:Yiff_Browser_WinUI3.Converters"
+	mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+	Loaded="Page_Loaded">
+
+	<Page.DataContext>
+		<local:E621HomePageViewModel x:Name="ViewModel"/>
+	</Page.DataContext>
+
+	<Page.Resources>
+		<converters:BoolToStringConverter x:Key="BoolToValue" TrueValue="&#xE132;" FalseValue="&#xE130;"/>
+	</Page.Resources>
+
+	<Grid>
+		<!-- SelectedItem="{Binding SelectedItem,Mode=TwoWay}"-->
+		<TabView TabItemsSource="{Binding Items}" SelectedIndex="{Binding SelectedIndex,Mode=TwoWay}"
+			IsAddTabButtonVisible="False" 
+			TabWidthMode="SizeToContent" 
+			CloseButtonOverlayMode="OnPointerOver" 
+			TabCloseRequested="TabView_TabCloseRequested">
+			<TabView.TabStripHeader>
+				<StackPanel Orientation="Horizontal" Margin="5">
+					<Button Style="{StaticResource AccentButtonStyle}" Command="{Binding SearchCommand}" ToolTipService.ToolTip="Open Search Popup">
+						<SymbolIcon Symbol="Find"/>
+					</Button>
+				</StackPanel>
+			</TabView.TabStripHeader>
+
+			<TabView.TabItemTemplate>
+				<DataTemplate x:DataType="local:HomeTabViewItem">
+					<TabViewItem Header="{Binding Title}" IsSelected="{Binding IsSelected,Mode=TwoWay}">
+						<TabViewItem.IconSource>
+							<FontIconSource Glyph="{Binding IsSelected,Converter={StaticResource BoolToValue}}"/>
+						</TabViewItem.IconSource>
+
+						<ToolTipService.ToolTip>
+							<Grid>
+								<Grid Visibility="{Binding PreviewURLs,Converter={StaticResource ArrayNotEmptyToVisibility}}">
+									<controls:ImagesSlideShowView ImageURLs="{Binding PreviewURLs}" Height="300" Width="300"/>
+								</Grid>
+								<Grid Visibility="{Binding PreviewURLs,Converter={StaticResource ArrayEmptyToVisibility}}">
+									<TextBlock Text="No Previews"/>
+								</Grid>
+							</Grid>
+						</ToolTipService.ToolTip>
+
+						<TabViewItem.ContextFlyout>
+							<MenuFlyout>
+								<MenuFlyoutItem/>
+								<MenuFlyoutSeparator/>
+								<MenuFlyoutItem/>
+							</MenuFlyout>
+						</TabViewItem.ContextFlyout>
+
+						<TabViewItem.Content>
+							<Grid>
+								<controls:PostsViewer Posts="{Binding Posts}"/>
+							</Grid>
+						</TabViewItem.Content>
+					</TabViewItem>
+				</DataTemplate>
+			</TabView.TabItemTemplate>
+		</TabView>
+	</Grid>
+</Page>
