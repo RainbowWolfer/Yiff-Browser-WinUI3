@@ -1,6 +1,7 @@
 ﻿using Microsoft.UI.Xaml;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Yiff_Browser_WinUI3.Services.Locals;
 
 namespace Yiff_Browser_WinUI3 {
 	/// <summary>
@@ -15,6 +16,7 @@ namespace Yiff_Browser_WinUI3 {
 		/// </summary>
 		public App() {
 			this.InitializeComponent();
+			Local.Settings = new LocalSettings();
 		}
 
 		/// <summary>

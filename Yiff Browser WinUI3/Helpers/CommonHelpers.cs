@@ -64,5 +64,14 @@ namespace Yiff_Browser_WinUI3.Helpers {
 				return $"{number}";
 			}
 		}
+
+		public static bool OnlyContainDigits(this string text) {
+			foreach (char item in text) {
+				if (!char.IsDigit(item)) {
+					return false;
+				}
+			}
+			return true;
+		}
 	}
 }

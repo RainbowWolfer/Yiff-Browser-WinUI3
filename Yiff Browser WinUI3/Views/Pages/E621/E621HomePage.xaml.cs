@@ -67,10 +67,9 @@ namespace Yiff_Browser_WinUI3.Views.Pages.E621 {
 				return;
 			}
 
+			string[] searchTags = searchView.GetSearchTags();
 
-
-
-			HomeTabViewItem item = new() {
+			HomeTabViewItem item = new(searchTags) {
 				Title = DateTime.Now.ToString(),
 			};
 
@@ -107,22 +106,22 @@ namespace Yiff_Browser_WinUI3.Views.Pages.E621 {
 			set => SetProperty(ref isSelected, value);
 		}
 
-		public HomeTabViewItem() {
+		private readonly string[] tags;
+
+		public HomeTabViewItem(params string[] tags) {
+			this.tags = tags ?? Array.Empty<string>();
 			Load();
 		}
 
 		private async void Load() {
-			string url = @$"https://e621.net/posts.json?tags=order:rank&page={Random.Shared.Next(0, 10)}";
-			Debug.WriteLine(url);
-			HttpResult<string> result = await API.ReadURLAsync(url);
-
-			if (result.Result == HttpResultType.Success) {
-				E621PostsRoot posts = JsonConvert.DeserializeObject<E621PostsRoot>(result.Content);
-				Posts = new ObservableCollection<E621Post>(posts.posts);
-
+			E621Post[] posts = await E621API.GetE621PostsByTagsAsync(new E621PostParameters() {
+				Page = Random.Shared.Next(0, 10),
+				Tags = tags,
+			});
+			if (posts != null) {
+				Posts = new ObservableCollection<E621Post>(posts);
 				PreviewURLs = Posts.Select(x => x.sample.url).Where(x => x.IsNotBlank()).Take(5).ToArray();
 			}
-
 		}
 	}
 }
