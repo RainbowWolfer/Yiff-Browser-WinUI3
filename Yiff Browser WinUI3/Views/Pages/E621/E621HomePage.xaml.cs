@@ -22,6 +22,7 @@ using Windows.Foundation.Collections;
 using Yiff_Browser_WinUI3.Helpers;
 using Yiff_Browser_WinUI3.Models.E621;
 using Yiff_Browser_WinUI3.Services.Networks;
+using Yiff_Browser_WinUI3.Views.Controls;
 using Yiff_Browser_WinUI3.Views.Controls.SearchViews;
 
 namespace Yiff_Browser_WinUI3.Views.Pages.E621 {
@@ -37,6 +38,7 @@ namespace Yiff_Browser_WinUI3.Views.Pages.E621 {
 		private void Page_Loaded(object sender, RoutedEventArgs e) {
 			ViewModel.XamlRoot = XamlRoot;
 		}
+
 	}
 
 	public class E621HomePageViewModel : BindableBase {
@@ -81,10 +83,10 @@ namespace Yiff_Browser_WinUI3.Views.Pages.E621 {
 	public class HomeTabViewItem : BindableBase {
 		private string title;
 		private string[] previewURLs;
-		private ObservableCollection<E621Post> posts;
 		private bool isSelected;
 		private string[] tags;
 		private bool isLoading;
+		private E621PostParameters parameters;
 
 		public string Title {
 			get => title;
@@ -94,11 +96,6 @@ namespace Yiff_Browser_WinUI3.Views.Pages.E621 {
 		public string[] PreviewURLs {
 			get => previewURLs;
 			set => SetProperty(ref previewURLs, value);
-		}
-
-		public ObservableCollection<E621Post> Posts {
-			get => posts;
-			set => SetProperty(ref posts, value);
 		}
 
 		public bool IsSelected {
@@ -116,21 +113,25 @@ namespace Yiff_Browser_WinUI3.Views.Pages.E621 {
 			set => SetProperty(ref isLoading, value);
 		}
 
+		public E621PostParameters Parameters {
+			get => parameters;
+			set => SetProperty(ref parameters, value);
+		}
+
+		public ICommand OnPreviewsUpdateCommand => new DelegateCommand<OnPreviewsUpdateEventArgs>(OnPreviewsUpdate);
+
+		private void OnPreviewsUpdate(OnPreviewsUpdateEventArgs args) {
+			PreviewURLs = args.PreviewURLs;
+		}
+
 		public HomeTabViewItem(params string[] tags) {
 			Tags = tags ?? Array.Empty<string>();
 			Title = Tags.ToFullString();
-			Load();
-		}
-
-		private async void Load() {
-			E621Post[] posts = await E621API.GetE621PostsByTagsAsync(new E621PostParameters() {
+			Parameters = new E621PostParameters() {
 				Page = 1,
 				Tags = Tags,
-			});
-			if (posts != null) {
-				Posts = new ObservableCollection<E621Post>(posts);
-				PreviewURLs = Posts.Select(x => x.sample.url).Where(x => x.IsNotBlank()).Take(5).ToArray();
-			}
+			};
+
 		}
 	}
 }

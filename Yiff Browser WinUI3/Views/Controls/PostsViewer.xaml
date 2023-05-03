@@ -6,7 +6,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 	xmlns:numberformatting="using:Windows.Globalization.NumberFormatting"
-	mc:Ignorable="d">
+	mc:Ignorable="d"
+	Loaded="UserControl_Loaded">
 
 	<UserControl.Resources>
 		<Style x:Key="BorderSeparator" TargetType="Border">
@@ -27,107 +28,126 @@
 			<local:PostsViewerViewModel x:Name="ViewModel"/>
 		</Grid.DataContext>
 
-		<Grid.RowDefinitions>
-			<RowDefinition Height="auto"/>
-			<RowDefinition Height="*"/>
-		</Grid.RowDefinitions>
+		<SplitView IsPaneOpen="{Binding IsPostsInfoPaneOpen,Mode=TwoWay}" DisplayMode="Overlay" PanePlacement="Right">
 
-		<Grid Grid.Row="0">
-			<Border Background="{StaticResource SystemColorBackgroundBrush}" CornerRadius="10" Margin="5" Padding="5">
+			<SplitView.Pane>
+				<Grid>
+					<local:PostsInfoListView/>
+				</Grid>
+			</SplitView.Pane>
+
+			<SplitView.Content>
+
 				<Grid>
 
-					<StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-						<Button Height="36" Background="Transparent" BorderBrush="Transparent">
-							<StackPanel Orientation="Horizontal">
-								<FontIcon Glyph="&#xE946;"/>
-								<TextBlock Text="Tags Info" Margin="10,0,0,0"/>
-							</StackPanel>
-						</Button>
-					</StackPanel>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="auto"/>
+						<RowDefinition Height="*"/>
+					</Grid.RowDefinitions>
 
-					<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-						<Button Height="36" Background="Transparent" BorderBrush="Transparent">
-							<StackPanel Orientation="Horizontal">
-								<FontIcon Glyph="&#xE1EC;"/>
-								<TextBlock Text="Posts Info" Margin="10,0,0,0"/>
-							</StackPanel>
-						</Button>
-					</StackPanel>
+					<Grid Grid.Row="0">
+						<Border Background="{StaticResource SystemColorBackgroundBrush}" CornerRadius="10" Margin="5" Padding="5">
+							<Grid>
 
-					<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+								<StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+									<Button Height="36" Background="Transparent" BorderBrush="Transparent" ToolTipService.ToolTip="Tags Info" Command="{Binding TagsInfoButtonCommand}">
+										<StackPanel Orientation="Horizontal">
+											<FontIcon Glyph="&#xE946;"/>
+											<TextBlock Text="{Binding Tags,Converter={StaticResource JoinStringWithSpace}}" Margin="10,0,0,0"/>
+										</StackPanel>
+									</Button>
+								</StackPanel>
 
-						<Button Height="36">
-							<StackPanel Orientation="Horizontal">
-								<FontIcon Glyph="&#xE149;"/>
-								<TextBlock Text="Refresh" Margin="10,0,0,0"/>
-							</StackPanel>
-						</Button>
+								<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+									<Button Height="36" Background="Transparent" BorderBrush="Transparent" Command="{Binding PostsInfoButtonCommand}" IsEnabled="{Binding IsLoading,Converter={StaticResource BoolToBoolRe}}">
+										<StackPanel Orientation="Horizontal">
+											<FontIcon Glyph="&#xE1EC;"/>
+											<TextBlock Text="Posts Info" Margin="10,0,0,0"/>
+										</StackPanel>
+									</Button>
+								</StackPanel>
 
-						<Border Style="{StaticResource BorderSeparator}"/>
+								<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
 
-						<Button Height="36">
-							<FontIcon Glyph="&#xE0E2;"/>
-						</Button>
+									<Button Height="36" Command="{Binding RefreshCommand}">
+										<StackPanel Orientation="Horizontal">
+											<FontIcon Glyph="&#xE149;"/>
+											<TextBlock Text="Refresh" Margin="10,0,0,0"/>
+										</StackPanel>
+									</Button>
 
-						<Button Margin="10,0,10,0" Padding="7,0,7,0" Height="36" MinWidth="50">
-							<TextBlock Text="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-							<Button.Flyout>
-								<Flyout x:Name="PageFlyout">
-									<StackPanel Orientation="Horizontal">
-										<NumberBox Value="{Binding PageValue,Mode=TwoWay}" SpinButtonPlacementMode="Hidden" SmallChange="1" LargeChange="5" Minimum="1" MinWidth="100" ValidationMode="InvalidInputOverwritten">
-											<NumberBox.NumberFormatter>
-												<numberformatting:DecimalFormatter IntegerDigits="1" FractionDigits="0"/>
-											</NumberBox.NumberFormatter>
-										</NumberBox>
-										<Button x:Name="PageForwardButton" Margin="10,0,0,0" Click="PageForwardButton_Click">
-											<SymbolIcon Symbol="Forward"/>
-										</Button>
-									</StackPanel>
-								</Flyout>
-							</Button.Flyout>
-						</Button>
+									<Border Style="{StaticResource BorderSeparator}"/>
 
-						<Button Height="36">
-							<FontIcon Glyph="&#xE0E3;"/>
-						</Button>
+									<Button Height="36" Command="{Binding PreviousPageCommand}" IsEnabled="{Binding EnablePreviousPageButton}">
+										<FontIcon Glyph="&#xE0E2;"/>
+									</Button>
 
-						<Border Style="{StaticResource BorderSeparator}"/>
+									<Button Margin="10,0,10,0" Padding="7,0,7,0" Height="36" MinWidth="50">
+										<TextBlock Text="{Binding Page}" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+										<Button.Flyout>
+											<Flyout x:Name="PageFlyout">
+												<StackPanel Orientation="Horizontal">
+													<NumberBox Value="{Binding PageValue,Mode=TwoWay}" SpinButtonPlacementMode="Hidden" SmallChange="1" LargeChange="5" Minimum="1" MinWidth="100" ValidationMode="InvalidInputOverwritten">
+														<NumberBox.NumberFormatter>
+															<numberformatting:DecimalFormatter IntegerDigits="1" FractionDigits="0"/>
+														</NumberBox.NumberFormatter>
+													</NumberBox>
+													<Button x:Name="PageForwardButton" Margin="10,0,0,0" Click="PageForwardButton_Click" Command="{Binding ForwardPageCommand}">
+														<SymbolIcon Symbol="Forward"/>
+													</Button>
+												</StackPanel>
+											</Flyout>
+										</Button.Flyout>
+									</Button>
 
-						<Button Height="36">
-							<StackPanel Orientation="Horizontal">
-								<FontIcon Glyph="&#xE118;"/>
-								<TextBlock Text="Download" Margin="10,0,0,0"/>
-							</StackPanel>
-						</Button>
+									<Button Height="36" Command="{Binding NextPageCommand}">
+										<FontIcon Glyph="&#xE0E3;"/>
+									</Button>
 
-						<Button Height="36" Margin="10,0,0,0">
-							<StackPanel Orientation="Horizontal">
-								<FontIcon Glyph="&#xE152;"/>
-								<TextBlock Text="Select" Margin="10,0,0,0"/>
-							</StackPanel>
-						</Button>
+									<Border Style="{StaticResource BorderSeparator}"/>
 
-					</StackPanel>
+									<Button Height="36" Command="{Binding DownloadCommand}" IsEnabled="{Binding IsLoading,Converter={StaticResource BoolToBoolRe}}">
+										<StackPanel Orientation="Horizontal">
+											<FontIcon Glyph="&#xE118;"/>
+											<TextBlock Text="Download" Margin="10,0,0,0"/>
+										</StackPanel>
+									</Button>
+
+									<ToggleButton Height="36" Margin="10,0,0,0" IsChecked="{Binding IsInSelectionMode,Mode=TwoWay}" IsEnabled="{Binding IsLoading,Converter={StaticResource BoolToBoolRe}}">
+										<StackPanel Orientation="Horizontal">
+											<FontIcon Glyph="&#xE152;"/>
+											<TextBlock Text="Select" Margin="10,0,0,0"/>
+										</StackPanel>
+									</ToggleButton>
+
+								</StackPanel>
+							</Grid>
+						</Border>
+					</Grid>
+
+					<ScrollViewer VerticalScrollMode="Auto" Grid.Row="1">
+						<VariableSizedWrapGrid x:Name="MainGrid" Orientation="Horizontal" ItemHeight="{x:Bind ItemHeight}" ItemWidth="{x:Bind ItemWidth}"/>
+					</ScrollViewer>
+
+					<!-- Loading -->
+					<Grid Grid.Row="1">
+						<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="30" Visibility="{Binding IsLoading,Converter={StaticResource BoolToVisibility}}">
+							<ProgressRing IsActive="True" Height="100" Width="100"/>
+						</StackPanel>
+					</Grid>
+
+					<!-- Detail Page -->
+					<Grid Grid.Row="1">
+						<Image />
+					</Grid>
+
+
 				</Grid>
-			</Border>
-		</Grid>
 
-		<ScrollViewer VerticalScrollMode="Auto" Grid.Row="1">
-			<VariableSizedWrapGrid x:Name="MainGrid" Orientation="Horizontal" ItemHeight="{x:Bind ItemHeight}" ItemWidth="{x:Bind ItemWidth}"/>
-		</ScrollViewer>
 
-		<!-- Loading -->
-		<Grid Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-			<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-				<ProgressRing IsActive="True" Height="100" Width="100"/>
-			</StackPanel>
-		</Grid>
+			</SplitView.Content>
 
-		<!-- Detail Page -->
-		<Grid Grid.Row="1">
-			<Image />
-		</Grid>
-
+		</SplitView>
 
 	</Grid>
 </UserControl>

@@ -7,6 +7,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 	xmlns:controls="using:Yiff_Browser_WinUI3.Views.Controls" 
 	xmlns:converters="using:Yiff_Browser_WinUI3.Converters"
+	xmlns:i="using:Microsoft.Xaml.Interactivity"
+	xmlns:core="using:Microsoft.Xaml.Interactions.Core"
 	mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
 	Loaded="Page_Loaded">
@@ -23,7 +25,7 @@
 		<!-- SelectedItem="{Binding SelectedItem,Mode=TwoWay}"-->
 		<TabView TabItemsSource="{Binding Items}" SelectedIndex="{Binding SelectedIndex,Mode=TwoWay}"
 			IsAddTabButtonVisible="False" 
-			TabWidthMode="SizeToContent" 
+			TabWidthMode="SizeToContent"
 			CloseButtonOverlayMode="OnPointerOver" 
 			TabCloseRequested="TabView_TabCloseRequested">
 			<TabView.TabStripHeader>
@@ -37,6 +39,7 @@
 			<TabView.TabItemTemplate>
 				<DataTemplate x:DataType="local:HomeTabViewItem">
 					<TabViewItem Header="{Binding Title}" IsSelected="{Binding IsSelected,Mode=TwoWay}">
+
 						<TabViewItem.IconSource>
 							<FontIconSource Glyph="{Binding IsSelected,Converter={StaticResource BoolToValue}}"/>
 						</TabViewItem.IconSource>
@@ -62,7 +65,13 @@
 
 						<TabViewItem.Content>
 							<Grid>
-								<controls:PostsViewer Posts="{Binding Posts}"/>
+								<controls:PostsViewer Parameters="{Binding Parameters}">
+									<i:Interaction.Behaviors>
+										<core:EventTriggerBehavior EventName="OnPreviewsUpdated">
+											<core:InvokeCommandAction Command="{Binding OnPreviewsUpdateCommand}"/>
+										</core:EventTriggerBehavior>
+									</i:Interaction.Behaviors>
+								</controls:PostsViewer>
 							</Grid>
 						</TabViewItem.Content>
 					</TabViewItem>

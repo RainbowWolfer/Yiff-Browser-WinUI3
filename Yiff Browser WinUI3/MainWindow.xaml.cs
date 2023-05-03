@@ -40,7 +40,8 @@ namespace Yiff_Browser_WinUI3 {
 				if (tag == TAG_HOME) {
 					targetType = typeof(E621HomePage);
 				} else {
-					throw new NotSupportedException($"{tag}");
+					targetType = typeof(TestPage);
+					//throw new NotSupportedException($"{tag}");
 				}
 			}
 			MainFrame.Navigate(targetType, null, args.RecommendedNavigationTransitionInfo);

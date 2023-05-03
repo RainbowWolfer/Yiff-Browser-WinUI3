@@ -1,4 +1,5 @@
 ﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Yiff_Browser_WinUI3.Services.Locals;
@@ -8,7 +9,12 @@ namespace Yiff_Browser_WinUI3 {
 	/// Provides application-specific behavior to supplement the default Application class.
 	/// </summary>
 	public partial class App : Application {
+		#region Style
+
 		public static Style DialogStyle => Current.Resources["DefaultContentDialogStyle"] as Style;
+		public static Brush TextBoxDefaultBorderBrush => (Brush)Current.Resources["TextControlBorderBrush"];
+
+		#endregion
 
 		/// <summary>
 		/// Initializes the singleton application object.  This is the first line of authored code
@@ -17,6 +23,7 @@ namespace Yiff_Browser_WinUI3 {
 		public App() {
 			this.InitializeComponent();
 			Local.Settings = new LocalSettings();
+			Local.Listing = new Listing();
 		}
 
 		/// <summary>

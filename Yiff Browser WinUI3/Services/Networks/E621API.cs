@@ -51,6 +51,8 @@ namespace Yiff_Browser_WinUI3.Services.Networks {
 	}
 
 	public class E621PostParameters {
+		public event Action<string[]> OnPreviewsUpdated;
+
 		public int Page { get; set; } = 1;
 		public string[] Tags { get; set; } = { "" };
 		public bool UsePageLimit { get; set; } = true;

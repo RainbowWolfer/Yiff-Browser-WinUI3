@@ -16,6 +16,7 @@
 					<converters:BoolToBoolReConverter x:Key="BoolToBoolRe"/>
 					<converters:BoolToVisibilityConverter x:Key="BoolToVisibility"/>
 					<converters:BoolToVisibilityReConverter x:Key="BoolToVisibilityRe"/>
+					<converters:JoinStringConverter x:Key="JoinStringWithSpace"/>
 				</ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
             <!-- Other app resources here -->

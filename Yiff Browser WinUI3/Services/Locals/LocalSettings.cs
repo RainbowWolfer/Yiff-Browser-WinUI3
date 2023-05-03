@@ -10,5 +10,8 @@ namespace Yiff_Browser_WinUI3.Services.Locals {
 		public int E621PageLimitCount { get; set; } = 75;
 
 
+		public string Username { get; set; } = "";
+		public string UserAPI { get; set; } = "";
+
 	}
 }

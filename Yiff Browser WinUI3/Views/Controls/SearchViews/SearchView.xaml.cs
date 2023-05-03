@@ -31,10 +31,6 @@ namespace Yiff_Browser_WinUI3.Views.Controls.SearchViews {
 			ViewModel.RequestSearchBoxFocus += () => SearchTextBox.Focus(FocusState.Programmatic);
 		}
 
-		private void ListView_ItemClick(object sender, ItemClickEventArgs e) {
-			//e.ClickedItem
-		}
-
 		public bool IsConfirmDialog() => ViewModel.ConfirmDialog;
 
 		public string GetSearchText() => ViewModel.SearchText.Trim().ToLower();

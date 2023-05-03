@@ -18,9 +18,25 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using Prism.Mvvm;
 using Yiff_Browser_WinUI3.Services.Networks;
+using System.Windows.Input;
+using Prism.Commands;
+using Yiff_Browser_WinUI3.Helpers;
 
 namespace Yiff_Browser_WinUI3.Views.Controls {
+	public delegate void OnPreviewsUpdateEventHandler(object sender, OnPreviewsUpdateEventArgs e);
+
+	public class OnPreviewsUpdateEventArgs : RoutedEventArgs {
+		public string[] PreviewURLs { get; set; }
+
+		public OnPreviewsUpdateEventArgs(string[] previewURLs) : base() {
+			PreviewURLs = previewURLs;
+		}
+
+	}
+
 	public sealed partial class PostsViewer : UserControl {
+		public event OnPreviewsUpdateEventHandler OnPreviewsUpdated;
+
 		public int ItemWidth { get; } = 380;
 		public int ItemHeight { get; } = 50;
 
@@ -41,40 +57,16 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			if (d is not PostsViewer view) {
 				return;
 			}
-
-		}
-
-		public ObservableCollection<E621Post> Posts {
-			get => (ObservableCollection<E621Post>)GetValue(PostsProperty);
-			set => SetValue(PostsProperty, value);
-		}
-
-		public static readonly DependencyProperty PostsProperty = DependencyProperty.Register(
-			nameof(Posts),
-			typeof(ObservableCollection<E621Post>),
-			typeof(PostsViewer),
-			new PropertyMetadata(new ObservableCollection<E621Post>(), OnChanged)
-		);
-
-		private static void OnChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-			if (d is not PostsViewer view) {
-				return;
-			}
-			if (e.OldValue is ObservableCollection<E621Post> oldList) {
-				oldList.CollectionChanged -= view.Posts_CollectionChanged;
-			}
-			if (e.NewValue is ObservableCollection<E621Post> newList) {
-				newList.CollectionChanged += view.Posts_CollectionChanged;
-				foreach (E621Post item in newList) {
-					view.AddPost(item);
-				}
-			}
+			E621PostParameters value = (E621PostParameters)e.NewValue;
+			view.ViewModel.Tags = value.Tags;
+			view.ViewModel.Page = value.Page;
 		}
 
 		public PostsViewer() {
 			this.InitializeComponent();
+			ViewModel.PostsCollectionChanged += Posts_CollectionChanged;
+			ViewModel.OnPreviewsUpdated += (s, e) => OnPreviewsUpdated?.Invoke(s, e);
 		}
-
 
 		private void Posts_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
 			if (e.Action == NotifyCollectionChangedAction.Reset) {
@@ -106,7 +98,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 				Post = post,
 			};
 			view.OnPostDeleted += () => {
-				Posts.Remove(post);
+				ViewModel.Posts.Remove(post);
 			};
 
 			double ratio = post.file.width / (double)post.file.height;
@@ -121,13 +113,27 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 		private void PageForwardButton_Click(object sender, RoutedEventArgs e) {
 			PageFlyout.Hide();
-			ViewModel.Forward();
+		}
+
+		private void UserControl_Loaded(object sender, RoutedEventArgs e) {
+			ViewModel.XamlRoot = XamlRoot;
 		}
 	}
 
 	public class PostsViewerViewModel : BindableBase {
+		public XamlRoot XamlRoot { get; set; }
+
+		public event NotifyCollectionChangedEventHandler PostsCollectionChanged;
+		public event OnPreviewsUpdateEventHandler OnPreviewsUpdated;
+
 		private int pageValue;
 		private bool isLoading;
+		private bool enablePreviousPageButton;
+		private int page = -1;
+		private string[] tags = { "" };
+
+		private bool isPostsInfoPaneOpen;
+		private bool isInSelectionMode;
 
 		public int PageValue {
 			get => pageValue;
@@ -139,8 +145,121 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			set => SetProperty(ref isLoading, value);
 		}
 
-		public void Forward() {
+		public bool EnablePreviousPageButton {
+			get => enablePreviousPageButton;
+			set => SetProperty(ref enablePreviousPageButton, value);
+		}
 
+		public string[] Tags {
+			get => tags;
+			set => SetProperty(ref tags, value);
+		}
+
+		public int Page {
+			get => page;
+			set => SetProperty(ref page, value, OnPageChanged);
+		}
+
+		public bool IsInSelectionMode {
+			get => isInSelectionMode;
+			set => SetProperty(ref isInSelectionMode, value);
+		}
+
+		public ObservableCollection<E621Post> Posts { get; } = new ObservableCollection<E621Post>();
+
+		#region Posts Info
+
+		public bool IsPostsInfoPaneOpen {
+			get => isPostsInfoPaneOpen;
+			set => SetProperty(ref isPostsInfoPaneOpen, value);
+		}
+
+		public ICommand PostsInfoButtonCommand => new DelegateCommand(PostsInfoButton);
+		public ICommand TagsInfoButtonCommand => new DelegateCommand(TagsInfoButton);
+
+		private void PostsInfoButton() {
+			IsPostsInfoPaneOpen = true;
+		}
+
+		private async void TagsInfoButton() {
+			await new ContentDialog() {
+				XamlRoot = XamlRoot,
+				Style = App.DialogStyle,
+				Title = Tags.ToFullString(),
+				CloseButtonText = "Back",
+
+			}.ShowAsync();
+		}
+
+		#endregion
+
+
+		public PostsViewerViewModel() {
+			Posts.CollectionChanged += (s, e) => PostsCollectionChanged?.Invoke(s, e);
+		}
+
+		private void OnPageChanged() {
+			Refresh();
+			EnablePreviousPageButton = Page > 1;
+		}
+
+		public ICommand RefreshCommand => new DelegateCommand(Refresh);
+
+		public ICommand PreviousPageCommand => new DelegateCommand(PreviousPage);
+		public ICommand NextPageCommand => new DelegateCommand(NextPage);
+
+		public ICommand ForwardPageCommand => new DelegateCommand(ForwardPage);
+
+		public ICommand DownloadCommand => new DelegateCommand(Download);
+
+		private void Download() {
+
+		}
+
+
+		private async void Refresh() {
+			if (IsLoading) {
+				return;
+			}
+
+			IsLoading = true;
+
+			Posts.Clear();
+
+			E621Post[] posts = await E621API.GetE621PostsByTagsAsync(new E621PostParameters() {
+				Page = Page,
+				Tags = Tags,
+			});
+			if (posts != null) {
+				foreach (E621Post post in posts) {
+					Posts.Add(post);
+				}
+				string[] previews = Posts.Select(x => x.sample.url).Where(x => x.IsNotBlank()).Take(5).ToArray();
+				OnPreviewsUpdated?.Invoke(this, new OnPreviewsUpdateEventArgs(previews));
+			}
+
+			IsLoading = false;
+		}
+
+		private void PreviousPage() {
+			if (IsLoading) {
+				return;
+			}
+			Page = Math.Clamp(Page - 1, 1, 999);
+		}
+
+		private void NextPage() {
+			if (IsLoading) {
+				return;
+			}
+			Page = Math.Clamp(Page + 1, 1, 999);
+		}
+
+		public void ForwardPage() {
+			if (IsLoading) {
+				return;
+			}
+			Page = Math.Clamp(PageValue, 1, 999);
 		}
 	}
 }

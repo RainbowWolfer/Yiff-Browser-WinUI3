@@ -7,5 +7,7 @@ using System.Threading.Tasks;
 namespace Yiff_Browser_WinUI3.Services.Locals {
 	public static class Local {
 		public static LocalSettings Settings { get; set; }
+		public static Listing Listing { get; set; }
+
 	}
 }

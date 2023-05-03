@@ -114,7 +114,7 @@
 			<TextBlock Text="{Binding AlternativeHintText}" Visibility="{Binding AlternativeHintText,Converter={StaticResource ArrayNotEmptyToVisibility}}" TextAlignment="Center" FontSize="16" VerticalAlignment="Top"/>
 			<ProgressBar IsIndeterminate="True" VerticalAlignment="Top" Visibility="{Binding IsLoading,Converter={StaticResource BoolToVisibility}}"/>
 
-			<ListView ItemsSource="{Binding AutoCompletes}" SelectionMode="None" IsItemClickEnabled="True" MaxHeight="500" ItemClick="ListView_ItemClick">
+			<ListView ItemsSource="{Binding AutoCompletes}" SelectionMode="None" IsItemClickEnabled="True" MaxHeight="500">
 				<i:Interaction.Behaviors>
 					<core:EventTriggerBehavior EventName="ItemClick">
 						<core:InvokeCommandAction Command="{Binding ItemClickCommand}"/>
