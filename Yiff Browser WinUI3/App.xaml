@@ -12,6 +12,8 @@
 				<ResourceDictionary>
 					<converters:ArrayEmptyToVisiblityConverter x:Key="ArrayEmptyToVisibility"/>
 					<converters:ArrayNotEmptyToVisiblityConverter x:Key="ArrayNotEmptyToVisibility"/>
+					<converters:ArrayEmptyToBoolConverter x:Key="ArrayEmptyToBool"/>
+					<converters:ArrayEmptyToBoolConverter x:Key="ArrayNotEmptyToBool"/>
 					<converters:ColorToBrushConverter x:Key="ColorToBrush"/>
 					<converters:BoolToBoolReConverter x:Key="BoolToBoolRe"/>
 					<converters:BoolToVisibilityConverter x:Key="BoolToVisibility"/>

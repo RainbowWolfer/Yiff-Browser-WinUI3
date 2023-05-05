@@ -18,7 +18,7 @@
 		</Grid.DataContext>
 
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="2*"/>
+			<ColumnDefinition Width="2.5*"/>
 			<ColumnDefinition Width="3*"/>
 		</Grid.ColumnDefinitions>
 		<Grid>
@@ -40,18 +40,21 @@
 
 							<Grid.ContextFlyout>
 								<MenuFlyout>
-									<MenuFlyoutItem Icon="Rename" Text="Rename" Command="{Binding RenameCommand}"/>
-									<MenuFlyoutItem Icon="Delete" Text="Delete" Command="{Binding DeleteCommand}"/>
+									<MenuFlyoutItem Icon="Rename" Text="Rename" Command="{Binding RenameCommand}" IsEnabled="{Binding Item.IsCloud,Converter={StaticResource BoolToBoolRe}}"/>
+									<MenuFlyoutItem Icon="Delete" Text="Delete" Command="{Binding DeleteCommand}" IsEnabled="{Binding Item.IsCloud,Converter={StaticResource BoolToBoolRe}}"/>
 								</MenuFlyout>
 							</Grid.ContextFlyout>
 
-							<FontIcon Glyph="&#xEA41;" FontSize="20" VerticalAlignment="Center"/>
+							<FontIcon Glyph="&#xEA41;" FontSize="20" VerticalAlignment="Center" Visibility="{Binding Item.IsCloud,Converter={StaticResource BoolToVisibilityRe}}"/>
+							<FontIcon Glyph="&#xEBC3;" FontSize="20" VerticalAlignment="Center" Visibility="{Binding Item.IsCloud,Converter={StaticResource BoolToVisibility}}"/>
 
 							<StackPanel Grid.Column="1" Margin="10,0,20,0" VerticalAlignment="Center" Orientation="Horizontal">
 								<TextBlock FontSize="16" VerticalAlignment="Center">
 									<Run Text="{Binding Item.Name}" FontSize="18"/>
-									<Run Text="-"/>
+									<Run Text=" "/>
+									<Run Text="("/>
 									<Run Text="{Binding Item.Tags.Count}"/>
+									<Run Text=")"/>
 								</TextBlock>
 							</StackPanel>
 
@@ -74,7 +77,7 @@
 
 			<StackPanel Grid.Row="2">
 
-				<Button HorizontalAlignment="Stretch" Margin="5" ToolTipService.Placement="Bottom" Command="{Binding PasteAsNewListCommand}">
+				<Button HorizontalAlignment="Stretch" Margin="5" ToolTipService.Placement="Bottom" Command="{Binding PasteAsNewListCommand}" IsEnabled="{Binding EnablePasting}">
 					<StackPanel Orientation="Horizontal">
 						<TextBlock Text="Paste as a new list" VerticalAlignment="Center" FontSize="16" Margin="0,0,10,0"/>
 						<FontIcon Glyph="&#xE16D;" FontSize="20" VerticalAlignment="Center" Margin="0,5,0,0"/>
@@ -163,7 +166,7 @@
 					<ColumnDefinition Width="auto"/>
 				</Grid.ColumnDefinitions>
 
-				<local:AddButtonInput PlaceholderText="Your Tag" Margin="5" Exists="{Binding ExistTagNames}" SubmitCommand="{Binding OnNewTagSumbitCommand}"/>
+				<local:AddButtonInput PlaceholderText="Your Tag" Margin="5" Exists="{Binding ExistTagNames}" SubmitCommand="{Binding OnNewTagSumbitCommand}" IsEnabled="True"/>
 
 				<DropDownButton Grid.Column="1" Margin="5">
 					<DropDownButton.Content>
@@ -179,7 +182,7 @@
 									<FontIcon Glyph="&#xE72D;"/>
 								</MenuFlyoutItem.Icon>
 							</MenuFlyoutItem>
-							<MenuFlyoutItem x:Name="ImportClipboardItem" Text="Import from Clipboard (Override)">
+							<MenuFlyoutItem x:Name="ImportClipboardItem" Text="Import from Clipboard (Override)" IsEnabled="{Binding EnablePasting}">
 								<MenuFlyoutItem.Icon>
 									<FontIcon Glyph="&#xF0E3;"/>
 								</MenuFlyoutItem.Icon>
@@ -242,6 +245,16 @@
 					Text="{Binding RenameListingText,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
 					SubmitCommand="{Binding ConfirmRenameListingCommand}" Margin="0,15,0,0"/>
 			</TeachingTip.Content>
+		</TeachingTip>
+
+
+		<TeachingTip x:Name="CenteredTeachingTip" Title="{Binding CenterTipTitle}" Subtitle="{Binding CenterTipSubtitle}"
+			IsLightDismissEnabled="True" PreferredPlacement="Center" 
+			CloseButtonContent="OK" 
+			IsOpen="{Binding IsCenterTipOpen,Mode=TwoWay}">
+			<TeachingTip.IconSource>
+				<FontIconSource Glyph="&#xE7BA;"/>
+			</TeachingTip.IconSource>
 		</TeachingTip>
 
 

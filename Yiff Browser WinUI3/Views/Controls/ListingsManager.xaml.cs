@@ -9,6 +9,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Windows.Input;
+using Windows.ApplicationModel.DataTransfer;
 using Yiff_Browser_WinUI3.Helpers;
 using Yiff_Browser_WinUI3.Models.E621;
 using Yiff_Browser_WinUI3.Services.Locals;
@@ -70,8 +71,12 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 		public event Action RequestUpdateListingView;
 
+		private bool isCenterTipOpen;
 		private bool isDelelteListTipOpen;
 		private bool isRenameListTipOpen;
+
+		private string centerTipTitle = "Warning";
+		private string centerTipSubtitle = "";
 
 		private bool followsOrBlocks;
 
@@ -85,10 +90,18 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 		private string[] existListNames;
 		private string[] existTagNames;
+		private ObservableCollection<TagViewItem> itemTags;
+
+		private bool enablePasting;
+
+		public string[] PasteTagsContent { get; private set; }
 
 		public ObservableCollection<ListingViewItem> ListingItems { get; } = new();
 
-		public ObservableCollection<TagViewItem> ItemTags { get; } = new();
+		public ObservableCollection<TagViewItem> ItemTags {
+			get => itemTags;
+			set => SetProperty(ref itemTags, value);
+		}
 
 		public ListingViewItem CheckedItem {
 			get => checkedItem;
@@ -107,7 +120,11 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		}
 
 		private void OnSelectedIndexChanged() {
-			ItemTags.Clear();
+			ItemTags = new ObservableCollection<TagViewItem>();
+
+			if (SelectedIndex == -1) {
+				return;
+			}
 
 			ListingViewItem item = ListingItems[SelectedIndex];
 
@@ -115,6 +132,10 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 				ItemTags.Add(CreateTagViewItem(tag));
 			}
 
+			TagItemsSelectedIndex = 0;
+			ExistTagNames = ItemTags.Select(x => x.Tag).ToArray();
+
+			ItemTags.CollectionChanged += ItemTags_CollectionChanged;
 		}
 
 		public int TagItemsSelectedIndex {
@@ -143,35 +164,55 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 				items = Local.Listing.Blocks;
 			}
 			foreach (ListingItem item in items) {
-				ListingItems.Add(new ListingViewItem(item));
+				ListingItems.Add(CreateNewListItem(item));
 			}
+		}
+
+		public bool EnablePasting {
+			get => enablePasting;
+			set => SetProperty(ref enablePasting, value);
 		}
 
 		public ListingsManagerViewModel() {
 			ListingItems.CollectionChanged += ListingItems_CollectionChanged;
-			ItemTags.CollectionChanged += ItemTags_CollectionChanged;
 
-			ListingItems.Add(CreateNewListItem(new ListingItem("Default") {
+			ListingViewItem item = CreateNewListItem(new ListingItem("Default") {
 				Tags = { "feet", "cum", "cum_on_soles", "toe", "feet", "cum", "cum_on_soles", "toe", "feet", "cum", "cum_on_soles", "toe", "feet", "cum", "cum_on_soles", "toe", },
-			}));
+			});
+			item.IsSelected = true;
+			ListingItems.Add(item);
+
+			SelectedIndex = 0;
+
+			Clipboard.ContentChanged += (s, e) => UpdatePastImportEnable();
+			UpdatePastImportEnable();
+		}
+
+		private async void UpdatePastImportEnable() {
+			DataPackageView dataPackageView = Clipboard.GetContent();
+			string text = null;
+			if (dataPackageView.Contains(StandardDataFormats.Text)) {
+				text = await dataPackageView.GetTextAsync();
+			}
+			EnablePasting = text.IsNotBlank();
+			PasteTagsContent = text.Trim().Split('\n', '\r', '\t', ' ').ToArray();
 		}
 
 		private void ItemTags_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
 			if (ItemTags.IsEmpty()) {
 				TagItemsSelectedIndex = -1;
 			}
-			if (e.OldItems.IsEmpty() && e.NewItems.IsNotEmpty()) {
-				TagItemsSelectedIndex = 0;
-			}
+
 			ExistTagNames = ItemTags.Select(x => x.Tag).ToArray();
+
+			ListingViewItem listintItem = ListingItems[SelectedIndex];
+			listintItem.Item.Tags = ExistTagNames.ToList();
+			listintItem.UpdateItem();
 		}
 
 		private void ListingItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
 			if (ListingItems.IsEmpty()) {
 				SelectedIndex = -1;
-			}
-			if (e.OldItems.IsEmpty() && e.NewItems.IsNotEmpty()) {
-				SelectedIndex = 0;
 			}
 
 			ExistListNames = ListingItems.Select(x => x.Item.Name).ToArray();
@@ -185,6 +226,19 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		public bool IsRenameListTipOpen {
 			get => isRenameListTipOpen;
 			set => SetProperty(ref isRenameListTipOpen, value);
+		}
+
+		public bool IsCenterTipOpen {
+			get => isCenterTipOpen;
+			set => SetProperty(ref isCenterTipOpen, value);
+		}
+		public string CenterTipTitle {
+			get => centerTipTitle;
+			set => SetProperty(ref centerTipTitle, value);
+		}
+		public string CenterTipSubtitle {
+			get => centerTipSubtitle;
+			set => SetProperty(ref centerTipSubtitle, value);
 		}
 
 		public string RenameListingText {
@@ -239,7 +293,25 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		}
 
 		private void PasteAsNewList() {
+			if (PasteTagsContent.IsEmpty()) {
+				IsCenterTipOpen = true;
+				CenterTipSubtitle = "Paste Format Error";
+				return;
+			} else {
+				IsCenterTipOpen = false;
+			}
 
+			int count = ListingItems.Count;
+			string newListName;
+			do {
+				newListName = $"Paste List - {count++}";
+			} while (ListingItems.Any(i => i.Item.Name == newListName));
+
+			ListingItems.Add(CreateNewListItem(new ListingItem(newListName) {
+				Tags = PasteTagsContent.ToList(),
+			}));
+
+			SelectedIndex = ListingItems.Count - 1;
 		}
 
 
@@ -249,11 +321,12 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			}
 
 			bool reindex = toBeManipulatedListItem == ListingItems[SelectedIndex];
+			int index = SelectedIndex;
 
 			ListingItems.Remove(toBeManipulatedListItem);
 
 			if (reindex) {
-				SelectedIndex = Math.Clamp(SelectedIndex - 1, 0, ListingItems.Count);
+				SelectedIndex = Math.Clamp(index - 1, 0, ListingItems.Count);
 			}
 
 			toBeManipulatedListItem = null;
@@ -335,7 +408,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		}
 
 		private void Copy() {
-
+			Tag.CopyToClipboard();
 		}
 
 	}
@@ -358,7 +431,6 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			get => isSelected;
 			set => SetProperty(ref isSelected, value);
 		}
-
 
 		public bool IsLoading {
 			get => isLoading;

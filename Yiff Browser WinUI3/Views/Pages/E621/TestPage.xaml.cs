@@ -30,7 +30,9 @@ namespace Yiff_Browser_WinUI3.Views.Pages.E621 {
 				Content = new ListingsManager(),
 			};
 			dialog.Resources["ContentDialogMaxWidth"] = 1050;
-			await dialog.ShowAsync();
+			try {
+				await dialog.ShowAsync();
+			} catch { }
 		}
 	}
 

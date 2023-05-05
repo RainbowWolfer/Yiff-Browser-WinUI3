@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Windows.ApplicationModel.DataTransfer;
 
 namespace Yiff_Browser_WinUI3.Helpers {
 	public static class CommonHelpers {
@@ -86,6 +87,12 @@ namespace Yiff_Browser_WinUI3.Helpers {
 
 		public static string ToFullString(this IEnumerable<string> tags) {
 			return string.Join(" ", tags);
+		}
+
+		public static void CopyToClipboard(this string text){
+			DataPackage package = new();
+			package.SetText(text);
+			Clipboard.SetContent(package);
 		}
 	}
 }
