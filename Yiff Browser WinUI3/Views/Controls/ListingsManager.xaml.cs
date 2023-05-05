@@ -18,7 +18,6 @@ using Yiff_Browser_WinUI3.Services.Networks;
 namespace Yiff_Browser_WinUI3.Views.Controls {
 	public sealed partial class ListingsManager : UserControl {
 
-
 		public bool FollowsOrBlocks {
 			get => (bool)GetValue(FollowsOrBlocksProperty);
 			set => SetValue(FollowsOrBlocksProperty, value);
@@ -165,6 +164,11 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			}
 			foreach (ListingItem item in items) {
 				ListingItems.Add(CreateNewListItem(item));
+			}
+
+			ListingViewItem first = ListingItems.FirstOrDefault();
+			if (first != null) {
+				first.IsSelected = true;
 			}
 		}
 

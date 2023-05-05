@@ -15,6 +15,7 @@
     <None Remove="Views\Controls\ImagesSlideShowView.xaml" />
     <None Remove="Views\Controls\ImageViewItem.xaml" />
     <None Remove="Views\Controls\ListingsManager.xaml" />
+    <None Remove="Views\Controls\LoadingViews\LoadingRingWithTextBelow.xaml" />
     <None Remove="Views\Controls\PostsInfoListView.xaml" />
     <None Remove="Views\Controls\PostsViewer.xaml" />
     <None Remove="Views\Controls\SearchView.xaml" />
@@ -138,6 +139,12 @@
 
   <ItemGroup>
     <Page Update="Views\Controls\AddButtonInput.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\Controls\LoadingViews\LoadingRingWithTextBelow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

@@ -12,8 +12,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Yiff_Browser_WinUI3.Helpers;
+using Yiff_Browser_WinUI3.Services.Locals;
+using Yiff_Browser_WinUI3.Views.Controls.LoadingViews;
 using Yiff_Browser_WinUI3.Views.Pages;
 using Yiff_Browser_WinUI3.Views.Pages.E621;
 
@@ -26,8 +30,26 @@ namespace Yiff_Browser_WinUI3 {
 
 		public MainWindow() {
 			this.InitializeComponent();
+		}
+
+		private void Root_Loaded(object sender, RoutedEventArgs e) {
+			Initialize();
+		}
+
+		private async void Initialize() {
+			LoadingRingWithTextBelow loader = new() {
+				Text = "Loading local stuff",
+			};
+
+			LoadingDialogControl control = new(Root.XamlRoot, loader);
+
+			static async Task Init() => await Local.Initialize();
+
+			await control.Start(Init);
+
 			NavigateHome();
 		}
+
 
 		private void MainNavigationView_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args) {
 			NavigationViewItem item = args.InvokedItemContainer as NavigationViewItem;
@@ -52,6 +74,7 @@ namespace Yiff_Browser_WinUI3 {
 			MainNavigationView.SelectedItem = ItemHome;
 			MainFrame.Navigate(typeof(E621HomePage), null, new EntranceNavigationTransitionInfo());
 		}
+
 	}
 
 	public class MainWindowViewModel : BindableBase {

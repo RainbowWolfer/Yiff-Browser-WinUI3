@@ -14,6 +14,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Prism.Mvvm;
 using Yiff_Browser_WinUI3.Views.Controls;
+using Yiff_Browser_WinUI3.Helpers;
 
 namespace Yiff_Browser_WinUI3.Views.Pages.E621 {
 	public sealed partial class TestPage : Page {
@@ -22,17 +23,16 @@ namespace Yiff_Browser_WinUI3.Views.Pages.E621 {
 		}
 
 		private async void Button_Click(object sender, RoutedEventArgs e) {
-			ContentDialog dialog = new() {
-				XamlRoot = XamlRoot,
-				Style = App.DialogStyle,
-				Title = "Follows",
-				CloseButtonText = "Back",
-				Content = new ListingsManager(),
+			ListingsManager view = new() {
+				FollowsOrBlocks = false,
 			};
-			dialog.Resources["ContentDialogMaxWidth"] = 1050;
-			try {
-				await dialog.ShowAsync();
-			} catch { }
+			await view.CreateContentDialog(XamlRoot, new ContentDialogParameters() {
+				Title = "Follows",
+				CloseText = "Back",
+			}).ShowDialogAsync();
+
+			//save to local
+
 		}
 	}
 
