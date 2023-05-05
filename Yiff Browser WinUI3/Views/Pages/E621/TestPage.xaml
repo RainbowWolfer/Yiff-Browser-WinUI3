@@ -14,6 +14,11 @@
 	</Page.DataContext>
 
 	<Grid>
-		<Button Content="!!!" Click="Button_Click"/>
+		<StackPanel>
+			<Button Content="!!!" Click="Button_Click"/>
+			<TextBox Text="{Binding URL,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+			<TextBlock Text="{Binding URL}"/>
+			<Button Content="???????" Command="{Binding TestURLCommand}"/>
+		</StackPanel>
 	</Grid>
 </Page>

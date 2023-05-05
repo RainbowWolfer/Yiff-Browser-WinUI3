@@ -309,7 +309,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls.SearchViews {
 			});
 			if (posts.IsNotEmpty()) {
 				E621Post post = posts.First();
-				List<string> all = post.tags.GetAllTags();
+				List<string> all = post.Tags.GetAllTags();
 				string tag = all[new Random().Next(all.Count)];
 				SearchText = (SearchText + " " + tag).Trim();
 			}

@@ -24,6 +24,7 @@ using System.Numerics;
 
 namespace Yiff_Browser_WinUI3.Views.Controls {
 	public sealed partial class ImageViewItem : UserControl {
+		public event Action<ImageViewItem> ImageClick;
 
 		public event Action OnPostDeleted;
 
@@ -53,6 +54,11 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			TypeHintBorder.Translation += new Vector3(0, 0, 32);
 		}
 
+		private void Button_Click(object sender, RoutedEventArgs e) {
+			ImageClick?.Invoke(this);
+		}
+
+		public Image GetSampleImage() => SampleImage;
 	}
 
 	public class ImageViewItemViewModel : BindableBase {
@@ -95,13 +101,13 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		}
 
 		private void OnPostChanged() {
-			if (new string[] { "gif", "webm", "swf" }.Contains(Post.file.ext.ToLower())) {
-				TypeHint = Post.file.ext.ToUpper();
+			if (new string[] { "gif", "webm", "swf" }.Contains(Post.File.Ext.ToLower())) {
+				TypeHint = Post.File.Ext.ToUpper();
 			}
-			if (post.HasNoValidURLs()) {
+			if (Post.HasNoValidURLs()) {
 				ErrorLoadingHint = "Try login to show this post";
 			} else {
-				PreviewImageURL = post.preview.url;
+				PreviewImageURL = Post.Preview.URL;
 			}
 		}
 
@@ -111,11 +117,11 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 		private void OnPreviewLoaded() {
 			ShowBetterImage = true;
-			SampleImageURL = post.sample.url;
+			SampleImageURL = Post.Sample.URL;
 		}
 
 		private async void OpenInBrowser() {
-			bool result = await Launcher.LaunchUriAsync(new Uri(@$"https://e621.net/posts/{Post.id}"));
+			bool result = await Launcher.LaunchUriAsync(new Uri(@$"https://e621.net/posts/{Post.ID}"));
 			if (!result) {
 				//show error
 			}

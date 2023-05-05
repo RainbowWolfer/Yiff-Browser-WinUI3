@@ -138,7 +138,8 @@
 
 					<!-- Detail Page -->
 					<Grid Grid.Row="1">
-						<Image />
+						<!--<Image x:Name="DetailImage" Source="/Resources/F1.png" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>-->
+						<local:PostDetailView x:Name="PostDetailView" Visibility="Collapsed" RequestBack="PostDetailView_RequestBack"/>
 					</Grid>
 
 

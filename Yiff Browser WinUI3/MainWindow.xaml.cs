@@ -37,9 +37,7 @@ namespace Yiff_Browser_WinUI3 {
 		}
 
 		private async void Initialize() {
-			LoadingRingWithTextBelow loader = new() {
-				Text = "Loading local stuff",
-			};
+			LoadingRingWithTextBelow loader = new("Loading local stuff");
 
 			LoadingDialogControl control = new(Root.XamlRoot, loader);
 

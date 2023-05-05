@@ -78,6 +78,11 @@ namespace Yiff_Browser_WinUI3.Views.Pages.E621 {
 			SelectedIndex = Items.Count - 1;
 		}
 
+		public E621HomePageViewModel() {
+			Items.Add(new HomeTabViewItem(""));
+			SelectedIndex = 0;
+		}
+
 	}
 
 	public class HomeTabViewItem : BindableBase {
@@ -126,7 +131,7 @@ namespace Yiff_Browser_WinUI3.Views.Pages.E621 {
 
 		public HomeTabViewItem(params string[] tags) {
 			Tags = tags ?? Array.Empty<string>();
-			Title = Tags.ToFullString();
+			Title = Tags.ToFullString().NotBlankCheck() ?? "Default";
 			Parameters = new E621PostParameters() {
 				Page = 1,
 				Tags = Tags,

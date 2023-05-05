@@ -16,6 +16,7 @@
     <None Remove="Views\Controls\ImageViewItem.xaml" />
     <None Remove="Views\Controls\ListingsManager.xaml" />
     <None Remove="Views\Controls\LoadingViews\LoadingRingWithTextBelow.xaml" />
+    <None Remove="Views\Controls\PostDetailView.xaml" />
     <None Remove="Views\Controls\PostsInfoListView.xaml" />
     <None Remove="Views\Controls\PostsViewer.xaml" />
     <None Remove="Views\Controls\SearchView.xaml" />
@@ -117,6 +118,12 @@
 
   <ItemGroup>
     <Resource Remove="Views\Pages\E621\TestPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\Controls\PostDetailView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>

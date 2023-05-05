@@ -8,96 +8,188 @@ using Yiff_Browser_WinUI3.Helpers;
 namespace Yiff_Browser_WinUI3.Models.E621 {
 	public class E621Post {
 
-		public string id;
-		public DateTime? created_at;
-		public DateTime? updated_at;
-		public ArticleFile file;
-		public Preview preview;
-		public Sample sample;
-		public Score score;
-		public Tags tags;
-		public List<string> locked_tags;
-		public int change_seq;
-		public Flags flags;
-		public E621Rating rating;
-		public int fav_count;
-		public List<string> sources;
-		public List<string> pools;
-		public Relationships relationships;
-		public int? approver_id;
-		public int uploader_id;
-		public string description;
-		public int comment_count;
-		public bool is_favorited;
-		public bool has_notes;
-		public string duration;
+		[JsonProperty("id")]
+		public int ID { get; set; }
+
+		[JsonProperty("created_at")]
+		public DateTime CreatedAt { get; set; }
+
+		[JsonProperty("updated_at")]
+		public DateTime UpdatedAt { get; set; }
+
+		[JsonProperty("file")]
+		public File File { get; set; }
+
+		[JsonProperty("preview")]
+		public Preview Preview { get; set; }
+
+		[JsonProperty("sample")]
+		public Sample Sample { get; set; }
+
+		[JsonProperty("score")]
+		public Score Score { get; set; }
+
+		[JsonProperty("tags")]
+		public Tags Tags { get; set; }
+
+		[JsonProperty("locked_tags")]
+		public List<object> LockedTags { get; set; }
+
+		[JsonProperty("change_seq")]
+		public int ChangeSeq { get; set; }
+
+		[JsonProperty("flags")]
+		public Flags Flags { get; set; }
+
+		[JsonProperty("rating")]
+		public string Rating { get; set; }
+
+		[JsonProperty("fav_count")]
+		public int FavCount { get; set; }
+
+		[JsonProperty("sources")]
+		public List<string> Sources { get; set; }
+
+		[JsonProperty("pools")]
+		public List<object> Pools { get; set; }
+
+		[JsonProperty("relationships")]
+		public Relationships Relationships { get; set; }
+
+		[JsonProperty("approver_id")]
+		public object ApproverId { get; set; }
+
+		[JsonProperty("uploader_id")]
+		public int UploaderId { get; set; }
+
+		[JsonProperty("description")]
+		public string Description { get; set; }
+
+		[JsonProperty("comment_count")]
+		public int CommentCount { get; set; }
+
+		[JsonProperty("is_favorited")]
+		public bool IsFavorited { get; set; }
+
+		[JsonProperty("has_notes")]
+		public bool HasNotes { get; set; }
+
+		[JsonProperty("duration")]
+		public object Duration { get; set; }
 
 
-		public bool HasNoValidURLs() => preview.url.IsBlank() || sample.url.IsBlank() || file.url.IsBlank();
+		public bool HasNoValidURLs() => Preview.URL.IsBlank() || Sample.URL.IsBlank() || File.URL.IsBlank();
 
 
 		public override string ToString() {
-			return $"E621Post ({id}.{file.ext})";
+			return $"E621Post ({ID}.{File.Ext})";
 		}
 
 	}
 
 	public class E621PostsRoot {
-		public List<E621Post> posts;
+		[JsonProperty("posts")]
+		public List<E621Post> Posts { get; set; }
 	}
 
-	public class ArticleFile {
-		public int width;
-		public int height;
-		public string ext;
-		public int size;
-		public string md5;
-		public string url;
+	public class File {
+		[JsonProperty("width")]
+		public int Width { get; set; }
+
+		[JsonProperty("height")]
+		public int Height { get; set; }
+
+		[JsonProperty("ext")]
+		public string Ext { get; set; }
+
+		[JsonProperty("size")]
+		public int Size { get; set; }
+
+		[JsonProperty("md5")]
+		public string Md5 { get; set; }
+
+		[JsonProperty("url")]
+		public string URL { get; set; }
 	}
 
 	public class Preview {
-		public int width;
-		public int height;
-		public string url;
+		[JsonProperty("width")]
+		public int Width { get; set; }
+
+		[JsonProperty("height")]
+		public int Height { get; set; }
+
+		[JsonProperty("url")]
+		public string URL { get; set; }
 	}
 
 	public class Alternates {
 	}
 
 	public class Sample {
-		public bool has;
-		public int height;
-		public int width;
-		public string url;
-		public Alternates alternates;
+		[JsonProperty("has")]
+		public bool Has { get; set; }
+
+		[JsonProperty("height")]
+		public int Height { get; set; }
+
+		[JsonProperty("width")]
+		public int Width { get; set; }
+
+		[JsonProperty("url")]
+		public string URL { get; set; }
+
+		[JsonProperty("alternates")]
+		public Alternates Alternates { get; set; }
 	}
 
+
 	public class Score {
-		public int up;
-		public int down;
-		public int total;
+		[JsonProperty("up")]
+		public int Up { get; set; }
+
+		[JsonProperty("down")]
+		public int Down { get; set; }
+
+		[JsonProperty("total")]
+		public int Total { get; set; }
 	}
 
 	public class Tags {
-		public List<string> general;
-		public List<string> species;
-		public List<string> character;
-		public List<string> copyright;
-		public List<string> artist;
-		public List<string> invalid;
-		public List<string> lore;
-		public List<string> meta;
+		[JsonProperty("general")]
+		public List<string> General { get; set; }
+
+		[JsonProperty("species")]
+		public List<string> Species { get; set; }
+
+		[JsonProperty("character")]
+		public List<string> Character { get; set; }
+
+		[JsonProperty("copyright")]
+		public List<string> Copyright { get; set; }
+
+		[JsonProperty("artist")]
+		public List<string> Artist { get; set; }
+
+		[JsonProperty("invalid")]
+		public List<string> Invalid { get; set; }
+
+		[JsonProperty("lore")]
+		public List<string> Lore { get; set; }
+
+		[JsonProperty("meta")]
+		public List<string> Meta { get; set; }
 
 		public List<string> GetAllTags() {
 			List<string> result = new();
-			general.ForEach(s => result.Add(s));
-			species.ForEach(s => result.Add(s));
-			character.ForEach(s => result.Add(s));
-			copyright.ForEach(s => result.Add(s));
-			artist.ForEach(s => result.Add(s));
-			invalid.ForEach(s => result.Add(s));
-			lore.ForEach(s => result.Add(s));
-			meta.ForEach(s => result.Add(s));
+			General.ForEach(s => result.Add(s));
+			Species.ForEach(s => result.Add(s));
+			Character.ForEach(s => result.Add(s));
+			Copyright.ForEach(s => result.Add(s));
+			Artist.ForEach(s => result.Add(s));
+			Invalid.ForEach(s => result.Add(s));
+			Lore.ForEach(s => result.Add(s));
+			Meta.ForEach(s => result.Add(s));
 			return result;
 		}
 
@@ -113,10 +205,17 @@ namespace Yiff_Browser_WinUI3.Models.E621 {
 	}
 
 	public class Relationships {
-		public string parent_id;
-		public bool has_children;
-		public bool has_active_children;
-		public List<string> children;
+		[JsonProperty("parent_id")]
+		public object ParentId { get; set; }
+
+		[JsonProperty("has_children")]
+		public bool HasChildren { get; set; }
+
+		[JsonProperty("has_active_children")]
+		public bool HasActiveChildren { get; set; }
+
+		[JsonProperty("children")]
+		public List<object> Children { get; set; }
 	}
 
 	public enum E621Rating {

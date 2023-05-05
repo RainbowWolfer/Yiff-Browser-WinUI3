@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Yiff_Browser_WinUI3.Helpers;
 using Yiff_Browser_WinUI3.Models.E621;
 using Yiff_Browser_WinUI3.Services.Locals;
 
@@ -22,12 +23,18 @@ namespace Yiff_Browser_WinUI3.Services.Networks {
 			if (parameters.Page <= 0) {
 				parameters.Page = 1;
 			}
-			string url = $"https://{GetHost()}/posts.json?page={parameters.Page}{(parameters.UsePageLimit ? $"&limit={GetPostsPerPageCount()}" : "")}&tags=";
-			parameters.Tags.ToList().ForEach((t) => url += t + "+");
+			string url = $"https://{GetHost()}/posts.json?page={parameters.Page}{(parameters.UsePageLimit ? $"&limit={GetPostsPerPageCount()}" : "")}";
+
+			IEnumerable<string> tags = parameters.Tags.Where(x => x.IsNotBlank());
+			if (tags.IsNotEmpty()) {
+				url += "&tags=";
+				url += string.Join("+", tags);
+			}
+
 			HttpResult<string> result = await NetCode.ReadURLAsync(url);
 
 			if (result.Result == HttpResultType.Success) {
-				return JsonConvert.DeserializeObject<E621PostsRoot>(result.Content)?.posts.ToArray() ?? Array.Empty<E621Post>();
+				return JsonConvert.DeserializeObject<E621PostsRoot>(result.Content)?.Posts.ToArray() ?? Array.Empty<E621Post>();
 			} else {
 				return null;
 			}

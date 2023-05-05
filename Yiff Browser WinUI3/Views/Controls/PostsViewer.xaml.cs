@@ -21,6 +21,7 @@ using Yiff_Browser_WinUI3.Services.Networks;
 using System.Windows.Input;
 using Prism.Commands;
 using Yiff_Browser_WinUI3.Helpers;
+using Microsoft.UI.Xaml.Media.Animation;
 
 namespace Yiff_Browser_WinUI3.Views.Controls {
 	public delegate void OnPreviewsUpdateEventHandler(object sender, OnPreviewsUpdateEventArgs e);
@@ -100,8 +101,9 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			view.OnPostDeleted += () => {
 				ViewModel.Posts.Remove(post);
 			};
+			view.ImageClick += View_ImageClick;
 
-			double ratio = post.file.width / (double)post.file.height;
+			double ratio = post.File.Width / (double)post.File.Height;
 			double h = (ItemWidth / ratio) / ItemHeight;
 			int h2 = (int)Math.Ceiling(h);
 
@@ -109,6 +111,22 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			VariableSizedWrapGrid.SetColumnSpan(view, 1);
 
 			MainGrid.Children.Add(view);
+		}
+
+		private void View_ImageClick(ImageViewItem item) {
+			ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("image", item.GetSampleImage());
+
+			ConnectedAnimation imageAnimation = ConnectedAnimationService.GetForCurrentView().GetAnimation("image");
+			imageAnimation?.TryStart(PostDetailView.GetPreviewImage());
+
+			PostDetailView.Visibility = Visibility.Visible;
+
+			PostDetailView.E621Post = item.Post;
+
+		}
+
+		private void PostDetailView_RequestBack() {
+			PostDetailView.Visibility = Visibility.Collapsed;
 		}
 
 		private void PageForwardButton_Click(object sender, RoutedEventArgs e) {
@@ -225,16 +243,20 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			IsLoading = true;
 
 			Posts.Clear();
-
-			E621Post[] posts = await E621API.GetE621PostsByTagsAsync(new E621PostParameters() {
-				Page = Page,
-				Tags = Tags,
-			});
+			E621Post[] posts;
+			try {
+				posts = await E621API.GetE621PostsByTagsAsync(new E621PostParameters() {
+					Page = Page,
+					Tags = Tags,
+				});
+			} catch {
+				posts = Array.Empty<E621Post>();
+			}
 			if (posts != null) {
 				foreach (E621Post post in posts) {
 					Posts.Add(post);
 				}
-				string[] previews = Posts.Select(x => x.sample.url).Where(x => x.IsNotBlank()).Take(5).ToArray();
+				string[] previews = Posts.Select(x => x.Sample.URL).Where(x => x.IsNotBlank()).Take(5).ToArray();
 				OnPreviewsUpdated?.Invoke(this, new OnPreviewsUpdateEventArgs(previews));
 			}
 

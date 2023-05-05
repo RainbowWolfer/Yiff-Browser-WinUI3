@@ -67,5 +67,9 @@ namespace Yiff_Browser_WinUI3.Views.Controls.LoadingViews {
 		public LoadingRingWithTextBelow() {
 			this.InitializeComponent();
 		}
+
+		public LoadingRingWithTextBelow(string text) : this() {
+			Text = text;
+		}
 	}
 }
