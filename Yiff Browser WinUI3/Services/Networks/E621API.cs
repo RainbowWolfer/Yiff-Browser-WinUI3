@@ -46,6 +46,24 @@ namespace Yiff_Browser_WinUI3.Services.Networks {
 			}
 		}
 
+		public static async Task<E621Tag> GetE621TagAsync(string tag, CancellationToken? token = null) {
+			if (E621Tag.Pool.TryGetValue(tag, out E621Tag e621Tag)) {
+				return e621Tag;
+			}
+
+			tag = tag.ToLower().Trim();
+			string url = $"https://{GetHost()}/tags.json?search[name_matches]={tag}";
+			HttpResult<string> result = await NetCode.ReadURLAsync(url, token);
+			if (result.Result == HttpResultType.Success && result.Content != "{\"tags\":[]}") {
+				E621Tag t = JsonConvert.DeserializeObject<E621Tag[]>(result.Content)?.FirstOrDefault();
+				if (t != null) {
+					E621Tag.Pool.TryAdd(tag, t);
+				}
+				return t;
+			} else {
+				return null;
+			}
+		}
 
 		#endregion
 	}

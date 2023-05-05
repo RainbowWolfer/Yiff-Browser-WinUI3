@@ -6,14 +6,15 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:i="using:Microsoft.Xaml.Interactivity"
-	xmlns:core="using:Microsoft.Xaml.Interactions.Core"
-    mc:Ignorable="d"
+	xmlns:core="using:Microsoft.Xaml.Interactions.Core" 
+	xmlns:tagsinfoviews="using:Yiff_Browser_WinUI3.Views.Controls.TagsInfoViews"
+	mc:Ignorable="d"
 	MinWidth="650"
 	MaxHeight="400">
 
 	<Grid>
 		<Grid.DataContext>
-			<local:ListingsManagerViewModel x:Name="ViewModel"/>
+			<local:ListingsManagerViewModel x:Name="ViewModel" FollowsOrBlocks="{x:Bind FollowsOrBlocks}"/>
 		</Grid.DataContext>
 
 		<Grid.ColumnDefinitions>
@@ -22,13 +23,14 @@
 		</Grid.ColumnDefinitions>
 		<Grid>
 			<Grid.RowDefinitions>
+				<RowDefinition Height="auto"/>
 				<RowDefinition Height="*"/>
 				<RowDefinition Height="auto"/>
 			</Grid.RowDefinitions>
 
-			<ListView SelectionMode="Single" Margin="5" ItemsSource="{Binding Strings}">
+			<ListView x:Name="ListingsListView" SelectionMode="Single" Margin="5" ItemsSource="{Binding ListingItems}" SelectedIndex="{Binding SelectedIndex,Mode=TwoWay}" Height="250" Padding="0,0,5,0" Grid.Row="1">
 				<ListView.ItemTemplate>
-					<DataTemplate>
+					<DataTemplate x:DataType="local:ListingViewItem">
 						<Grid>
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="auto"/>
@@ -38,19 +40,31 @@
 
 							<Grid.ContextFlyout>
 								<MenuFlyout>
-									<MenuFlyoutItem Icon="Rename" Text="Rename"/>
-									<MenuFlyoutItem Icon="Delete" Text="Delete"/>
+									<MenuFlyoutItem Icon="Rename" Text="Rename" Command="{Binding RenameCommand}"/>
+									<MenuFlyoutItem Icon="Delete" Text="Delete" Command="{Binding DeleteCommand}"/>
 								</MenuFlyout>
 							</Grid.ContextFlyout>
 
 							<FontIcon Glyph="&#xEA41;" FontSize="20" VerticalAlignment="Center"/>
 
-							<TextBlock Text="HELLO WORLD" Grid.Column="1" Margin="10,0,20,0" FontSize="18" VerticalAlignment="Center"/>
+							<StackPanel Grid.Column="1" Margin="10,0,20,0" VerticalAlignment="Center" Orientation="Horizontal">
+								<TextBlock FontSize="16" VerticalAlignment="Center">
+									<Run Text="{Binding Item.Name}" FontSize="18"/>
+									<Run Text="-"/>
+									<Run Text="{Binding Item.Tags.Count}"/>
+								</TextBlock>
+							</StackPanel>
 
-							<CheckBox Grid.Column="2" MinWidth="0" Width="20"/>
+							<CheckBox Grid.Column="2" MinWidth="0" MinHeight="0" Width="25" Height="20" IsChecked="{Binding IsSelected,Mode=TwoWay}" IsHitTestVisible="{Binding IsSelected,Converter={StaticResource BoolToBoolRe}}" ToolTipService.ToolTip="Set active">
+								<i:Interaction.Behaviors>
+									<core:EventTriggerBehavior EventName="Checked">
+										<core:InvokeCommandAction Command="{Binding CheckedCommand}"/>
+									</core:EventTriggerBehavior>
+								</i:Interaction.Behaviors>
+							</CheckBox>
 
-							<Grid Grid.ColumnSpan="3" VerticalAlignment="Bottom">
-								<ProgressBar IsIndeterminate="True"/>
+							<Grid Grid.ColumnSpan="3" VerticalAlignment="Bottom" Visibility="{Binding Item.IsCloud,Converter={StaticResource BoolToVisibility}}">
+								<ProgressBar IsIndeterminate="True" Visibility="{Binding IsLoading,Converter={StaticResource BoolToVisibility}}"/>
 							</Grid>
 
 						</Grid>
@@ -58,14 +72,19 @@
 				</ListView.ItemTemplate>
 			</ListView>
 
-			<StackPanel Grid.Row="2" Margin="5">
-				<Button HorizontalAlignment="Stretch" Margin="5" ToolTipService.Placement="Bottom" Command="{Binding DeleteListCommand}">
+			<StackPanel Grid.Row="2">
+
+				<Button HorizontalAlignment="Stretch" Margin="5" ToolTipService.Placement="Bottom" Command="{Binding PasteAsNewListCommand}">
 					<StackPanel Orientation="Horizontal">
 						<TextBlock Text="Paste as a new list" VerticalAlignment="Center" FontSize="16" Margin="0,0,10,0"/>
 						<FontIcon Glyph="&#xE16D;" FontSize="20" VerticalAlignment="Center" Margin="0,5,0,0"/>
 					</StackPanel>
 				</Button>
-				<local:AddButtonInput PlaceholderText="New List Name" Margin="5"/>
+
+			</StackPanel>
+
+			<StackPanel Grid.Row="0" Margin="5">
+				<local:AddButtonInput PlaceholderText="New List Name" Margin="5" Exists="{Binding ExistListNames,Mode=OneWay}" SubmitCommand="{Binding OnNewListSumbitCommand}"/>
 			</StackPanel>
 
 		</Grid>
@@ -77,23 +96,80 @@
 				<RowDefinition Height="auto"/>
 			</Grid.RowDefinitions>
 
-			<StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Margin="5">
-				<Button Height="33" Padding="6">
-					<Button.Flyout>
-						<Flyout Placement="Bottom">
-							<StackPanel Width="250">
-								<TextBlock Text="E621" FontWeight="Bold" TextAlignment="Center" FontSize="18" Margin="5"/>
-								<TextBlock Text="This is synced with the account settings. Be careful not to override your original black list tags" TextAlignment="Center" Margin="5" TextWrapping="Wrap" FontSize="15"/>
-							</StackPanel>
-						</Flyout>
-					</Button.Flyout>
-					<FontIcon Glyph="&#xEDB1;"/>
-				</Button>
-				<DropDownButton x:Name="ActionsButton" HorizontalAlignment="Right" Margin="10,5,15,5" Grid.Column="2">
+			<Grid Grid.Row="1" Visibility="{Binding ItemTags.Count,Converter={StaticResource ArrayEmptyToVisibility}}">
+				<StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+					<FontIcon Glyph="&#xF165;" FontSize="50" Margin="5"/>
+					<TextBlock Text="No Tags" TextAlignment="Center" Margin="5"/>
+				</StackPanel>
+				<!--<Button HorizontalAlignment="Center" Visibility="Collapsed">
+					<StackPanel Margin="5">
+						<FontIcon Glyph="&#xE117;" FontSize="56" Margin="5"/>
+						<TextBlock Text="Sync" TextAlignment="Center" FontSize="16" Margin="5,5,5,0"/>
+					</StackPanel>
+				</Button>-->
+			</Grid>
+
+			<ListView Grid.Row="1" ItemsSource="{Binding ItemTags}" SelectedIndex="{Binding TagItemsSelectedIndex,Mode=TwoWay}" Visibility="{Binding ItemTags.Count,Converter={StaticResource ArrayNotEmptyToVisibility}}" Padding="0,0,10,0" Height="300">
+				<ListView.ItemTemplate>
+					<DataTemplate x:DataType="local:TagViewItem">
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="auto"/>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="auto"/>
+							</Grid.ColumnDefinitions>
+
+							<Button Background="Transparent" BorderBrush="Transparent" Padding="3" Margin="5,0,10,0">
+								<FontIcon Glyph="&#xE946;"/>
+								<Button.Flyout>
+									<Flyout>
+										<Grid>
+											<i:Interaction.Behaviors>
+												<core:EventTriggerBehavior EventName="Loaded">
+													<core:InvokeCommandAction Command="{Binding LoadedCommand}" CommandParameter="{Binding Tag}"/>
+												</core:EventTriggerBehavior>
+											</i:Interaction.Behaviors>
+											<ProgressBar IsIndeterminate="True" Visibility="{Binding IsLoading,Converter={StaticResource BoolToVisibility}}"/>
+											<Grid Visibility="{Binding IsLoading,Converter={StaticResource BoolToVisibilityRe}}">
+												<tagsinfoviews:BriefTagView E621Tag="{Binding E621Tag,Mode=OneWay}"/>
+											</Grid>
+										</Grid>
+									</Flyout>
+								</Button.Flyout>
+							</Button>
+
+							<TextBlock Text="{Binding Tag}" Grid.Column="1" VerticalAlignment="Center"/>
+
+							<Button Grid.Column="2" BorderBrush="Transparent" Background="Transparent" Padding="3">
+								<FontIcon Glyph="&#xE712;" FontSize="14"/>
+
+								<Button.Flyout>
+									<MenuFlyout Placement="Bottom">
+										<MenuFlyoutItem Icon="Delete" Text="Delete" Command="{Binding DeleteCommand}"/>
+										<MenuFlyoutItem Icon="Copy" Text="Copy" Command="{Binding CopyCommand}"/>
+									</MenuFlyout>
+								</Button.Flyout>
+							</Button>
+
+						</Grid>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+			</ListView>
+
+			<Grid Grid.Row="0" Margin="5">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="auto"/>
+					<ColumnDefinition Width="auto"/>
+				</Grid.ColumnDefinitions>
+
+				<local:AddButtonInput PlaceholderText="Your Tag" Margin="5" Exists="{Binding ExistTagNames}" SubmitCommand="{Binding OnNewTagSumbitCommand}"/>
+
+				<DropDownButton Grid.Column="1" Margin="5">
 					<DropDownButton.Content>
 						<StackPanel Orientation="Horizontal">
 							<FontIcon Glyph="&#xE81E;" VerticalAlignment="Center"/>
-							<TextBlock Text="Actions" Margin="10,0,0,0" VerticalAlignment="Center"/>
+							<!--<TextBlock Text="Actions" Margin="10,0,0,0" VerticalAlignment="Center"/>-->
 						</StackPanel>
 					</DropDownButton.Content>
 					<DropDownButton.Flyout>
@@ -126,27 +202,48 @@
 						</MenuFlyout>
 					</DropDownButton.Flyout>
 				</DropDownButton>
-			</StackPanel>
 
-			<ListView Grid.Row="1">
-
-			</ListView>
-
-			<Grid Grid.Row="2" Margin="5">
-				<local:AddButtonInput PlaceholderText="Your Tag" Margin="5"/>
+				<Button Height="33" Padding="6" Grid.Column="2" Margin="5">
+					<Button.Flyout>
+						<Flyout Placement="Bottom">
+							<StackPanel Width="250">
+								<TextBlock Text="E621" FontWeight="Bold" TextAlignment="Center" FontSize="18" Margin="5"/>
+								<TextBlock Text="This is synced with the account settings. Be careful not to override your original black list tags" TextAlignment="Center" Margin="5" TextWrapping="Wrap" FontSize="15"/>
+							</StackPanel>
+						</Flyout>
+					</Button.Flyout>
+					<FontIcon Glyph="&#xEDB1;"/>
+				</Button>
 			</Grid>
 		</Grid>
 
-		<TeachingTip x:Name="DeleteConfirmTeachingTip" Title="Confirm" Subtitle="Are you sure to delete this list?" IsLightDismissEnabled="True" PreferredPlacement="Bottom" ActionButtonClick="DeleteConfirmTeachingTip_ActionButtonClick" ActionButtonContent="Delete" CloseButtonContent="Cancel" IsOpen="{Binding IsDelelteListTipOpen,Mode=TwoWay}">
+		<TeachingTip x:Name="DeleteConfirmTeachingTip" Title="Confirm" Subtitle="Are you sure to delete this list?" 
+			IsLightDismissEnabled="True" PreferredPlacement="Bottom" 
+			ActionButtonContent="Delete" CloseButtonContent="Cancel" 
+			IsOpen="{Binding IsDelelteListTipOpen,Mode=TwoWay}" 
+			ActionButtonCommand="{Binding ConfirmDeleteListingCommand}" 
+			CloseButtonCommand="{Binding CancelDeleteListingCommand}">
 			<TeachingTip.IconSource>
 				<FontIconSource Glyph="&#xE897;"/>
 			</TeachingTip.IconSource>
-			<i:Interaction.Behaviors>
-				<core:EventTriggerBehavior EventName="ActionButtonClick">
-					<core:InvokeCommandAction Command="{Binding TestCommand}"/>
-				</core:EventTriggerBehavior>
-			</i:Interaction.Behaviors>
 		</TeachingTip>
+
+		<TeachingTip x:Name="RenameTeachingTip" Title="Rename" 
+			IsLightDismissEnabled="True" PreferredPlacement="Bottom" 
+			ActionButtonContent="Confirm" CloseButtonContent="Cancel" 
+			IsOpen="{Binding IsRenameListTipOpen,Mode=TwoWay}" 
+			ActionButtonCommand="{Binding ConfirmRenameListingCommand}" 
+			CloseButtonCommand="{Binding CancelRenameListingCommand}">
+			<TeachingTip.IconSource>
+				<FontIconSource Glyph="&#xE8AC;"/>
+			</TeachingTip.IconSource>
+			<TeachingTip.Content>
+				<local:TextSubmitInput Exists="{Binding ExistListNames,Mode=OneWay}" 
+					Text="{Binding RenameListingText,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+					SubmitCommand="{Binding ConfirmRenameListingCommand}" Margin="0,15,0,0"/>
+			</TeachingTip.Content>
+		</TeachingTip>
+
 
 	</Grid>
 </UserControl>

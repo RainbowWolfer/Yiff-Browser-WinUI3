@@ -14,7 +14,18 @@ using Windows.System;
 using Yiff_Browser_WinUI3.Helpers;
 
 namespace Yiff_Browser_WinUI3.Views.Controls {
+	public delegate void OnSumbitEventHandler(object sender, OnSumbitEventArgs e);
+
+	public class OnSumbitEventArgs : RoutedEventArgs {
+		public string SubmitText { get; set; }
+		public OnSumbitEventArgs(string submitText) : base() {
+			SubmitText = submitText.Trim();
+		}
+	}
+
 	public sealed partial class AddButtonInput : UserControl {
+		public event OnSumbitEventHandler OnSubmit;
+
 		public string PlaceholderText {
 			get => (string)GetValue(PlaceholderTextProperty);
 			set => SetValue(PlaceholderTextProperty, value);
@@ -51,13 +62,35 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			}
 		}
 
+
+
+		public ICommand SubmitCommand {
+			get => (ICommand)GetValue(SubmitCommandProperty);
+			set => SetValue(SubmitCommandProperty, value);
+		}
+
+		public static readonly DependencyProperty SubmitCommandProperty = DependencyProperty.Register(
+			nameof(SubmitCommand),
+			typeof(ICommand),
+			typeof(AddButtonInput),
+			new PropertyMetadata(null)
+		);
+
+
+
 		public AddButtonInput() {
 			this.InitializeComponent();
+			ViewModel.OnSubmit += (s, e) => {
+				OnSubmit?.Invoke(s, e);
+				SubmitCommand?.Execute(e.SubmitText);
+			};
 		}
 	}
 
 
 	public class AddButtonInputViewModel : BindableBase {
+		public event OnSumbitEventHandler OnSubmit;
+
 		private string placeholderText = string.Empty;
 		private string text = string.Empty;
 		private Brush textBoxBrush = App.TextBoxDefaultBorderBrush;
@@ -81,11 +114,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 		public bool IsErrorTipOpen {
 			get => isErrorTipOpen;
-			set => SetProperty(ref isErrorTipOpen, value, O);
-		}
-
-		private void O() {
-			Debug.WriteLine(IsErrorTipOpen);
+			set => SetProperty(ref isErrorTipOpen, value);
 		}
 
 		public string ErrorTip {
@@ -126,6 +155,8 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 				ErrorTip = "";
 				IsErrorTipOpen = false;
 			}
+
+			OnSubmit?.Invoke(this, new OnSumbitEventArgs(Text));
 
 			Text = string.Empty;
 			TextBoxBrush = App.TextBoxDefaultBorderBrush;

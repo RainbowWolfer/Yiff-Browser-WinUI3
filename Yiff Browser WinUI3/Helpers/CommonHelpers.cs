@@ -10,6 +10,11 @@ namespace Yiff_Browser_WinUI3.Helpers {
 			if (ie == null) {
 				return 0;
 			}
+
+			if (ie is IList list) {
+				return list.Count;
+			}
+
 			int count = 0;
 			IEnumerator enumerator = ie.GetEnumerator();
 			enumerator.Reset();
@@ -24,6 +29,11 @@ namespace Yiff_Browser_WinUI3.Helpers {
 			if (ie == null) {
 				return true;
 			}
+
+			if (ie is IList list) {
+				return list.Count == 0;
+			}
+
 			IEnumerator enumerator = ie.GetEnumerator();
 			enumerator.Reset();
 			return !enumerator.MoveNext();

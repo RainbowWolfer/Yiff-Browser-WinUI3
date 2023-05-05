@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.UI.Xaml.Media;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,6 +18,8 @@ namespace Yiff_Browser_WinUI3.Models.E621 {
 		public bool is_locked;
 		public DateTime created_at;
 		public DateTime updated_at;
+
+		public static Dictionary<string, E621Tag> Pool { get; } = new();
 
 		public override string ToString() {
 			return $"E621Tags:({id})({name})({related_tags})({post_count})({category})";
@@ -51,6 +54,10 @@ namespace Yiff_Browser_WinUI3.Models.E621 {
 				E621TagCategory.UnKnown => (isDarkTheme ? "#CCCBF9" : "#050507").ToColor(),
 				_ => (isDarkTheme ? "#FFFFFF" : "#000000").ToColor(),
 			};
+		}
+
+		public static Color GetCatrgoryColor(int category, bool isDarkTheme = true) {
+			return GetCatrgoryColor((E621TagCategory)category, isDarkTheme);
 		}
 	}
 

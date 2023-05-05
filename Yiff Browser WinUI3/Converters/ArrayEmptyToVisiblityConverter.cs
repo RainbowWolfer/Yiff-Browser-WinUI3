@@ -12,6 +12,8 @@ namespace Yiff_Browser_WinUI3.Converters {
 			}
 			if (value is IEnumerable ie) {
 				return ie.IsEmpty().ToVisibility();
+			} else if (value is int count) {
+				return (count == 0).ToVisibility();
 			}
 			return value;
 		}
