@@ -158,10 +158,10 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 		private void ItemTags_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
 			if (ItemTags.IsEmpty()) {
-				SelectedIndex = -1;
+				TagItemsSelectedIndex = -1;
 			}
 			if (e.OldItems.IsEmpty() && e.NewItems.IsNotEmpty()) {
-				SelectedIndex = 0;
+				TagItemsSelectedIndex = 0;
 			}
 			ExistTagNames = ItemTags.Select(x => x.Tag).ToArray();
 		}
