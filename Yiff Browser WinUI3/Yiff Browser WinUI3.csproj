@@ -29,7 +29,9 @@
     <None Remove="Views\Controls\TagsInfoViews\BriefTagView.xaml" />
     <None Remove="Views\Controls\TagsInfoViews\TagsInfoView.xaml" />
     <None Remove="Views\Controls\TextSubmitInput.xaml" />
+    <None Remove="Views\Controls\UserHelperViews\LoginHelpSection.xaml" />
     <None Remove="Views\Pages\E621\E621HomePage.xaml" />
+    <None Remove="Views\Pages\E621\E621LoginPage.xaml" />
     <None Remove="Views\Pages\E621\TestPage.xaml" />
     <None Remove="Views\Pages\SettingsPage.xaml" />
   </ItemGroup>
@@ -125,6 +127,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="Views\Pages\E621\E621LoginPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
     <Page Update="Views\Controls\MediaDisplayView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -174,6 +182,12 @@
 
   <ItemGroup>
     <Page Update="Views\Controls\LoadingViews\LoadingRingWithTextBelow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\Controls\UserHelperViews\LoginHelpSection.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

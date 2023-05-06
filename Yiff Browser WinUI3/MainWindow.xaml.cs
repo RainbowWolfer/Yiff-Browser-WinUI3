@@ -23,10 +23,13 @@ using Yiff_Browser_WinUI3.Views.Pages.E621;
 
 namespace Yiff_Browser_WinUI3 {
 	public sealed partial class MainWindow : Window {
+		public static LoadingDialogControl LoaderControl { get; private set; }
+
 		public string TAG_HOME { get; } = "TAG_HOME";
 		public string TAG_FAVORITES { get; } = "TAG_FAVORITES";
 		public string TAG_FOLLOWS { get; } = "TAG_FOLLOWS";
 		public string TAG_DOWNLOADS { get; } = "TAG_DOWNLOADS";
+		public string TAG_USER { get; } = "TAG_USER";
 
 		public MainWindow() {
 			this.InitializeComponent();
@@ -39,11 +42,11 @@ namespace Yiff_Browser_WinUI3 {
 		private async void Initialize() {
 			LoadingRingWithTextBelow loader = new("Loading local stuff");
 
-			LoadingDialogControl control = new(Root.XamlRoot, loader);
+			LoaderControl = new(Root.XamlRoot, loader);
 
 			static async Task Init() => await Local.Initialize();
 
-			await control.Start(Init);
+			await LoaderControl.Start(Init);
 
 			NavigateHome();
 		}
@@ -59,6 +62,8 @@ namespace Yiff_Browser_WinUI3 {
 			} else {
 				if (tag == TAG_HOME) {
 					targetType = typeof(E621HomePage);
+				} else if (tag == TAG_USER) {
+					targetType = typeof(E621LoginPage);
 				} else {
 					targetType = typeof(TestPage);
 					//throw new NotSupportedException($"{tag}");

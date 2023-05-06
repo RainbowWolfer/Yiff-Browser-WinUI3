@@ -15,13 +15,13 @@
 			<NavigationView.MenuItems>
 				<NavigationViewItem x:Name="ItemHome" Icon="Home" Content="Home" Tag="{x:Bind TAG_HOME}"/>
 				<!--<NavigationViewItem Icon="Home" Content="Furaffinity"/>-->
-				<NavigationViewItem x:Name="FavoriteHome" Icon="Favorite" Content="Favorites" Tag="{x:Bind TAG_FAVORITES}"/>
-				<NavigationViewItem x:Name="FlagHome" Icon="Flag" Content="Follows" Tag="{x:Bind TAG_FOLLOWS}"/>
-				<NavigationViewItem x:Name="DownloadHome" Icon="Download" Content="Downloads" Tag="{x:Bind TAG_DOWNLOADS}"/>
+				<NavigationViewItem x:Name="ItemFavorite" Icon="Favorite" Content="Favorites" Tag="{x:Bind TAG_FAVORITES}"/>
+				<NavigationViewItem x:Name="ItemFlag" Icon="Flag" Content="Follows" Tag="{x:Bind TAG_FOLLOWS}"/>
+				<NavigationViewItem x:Name="ItemDownload" Icon="Download" Content="Downloads" Tag="{x:Bind TAG_DOWNLOADS}"/>
 			</NavigationView.MenuItems>
 
 			<NavigationView.FooterMenuItems>
-				<NavigationViewItem Icon="Contact" Content="Account"/>
+				<NavigationViewItem x:Name="UserPage" Icon="Contact" Content="Account" Tag="{x:Bind TAG_USER}"/>
 			</NavigationView.FooterMenuItems>
 
 			<NavigationView.Content>
