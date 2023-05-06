@@ -19,6 +19,9 @@ using Yiff_Browser_WinUI3.Views.Controls;
 using Yiff_Browser_WinUI3.Helpers;
 using Yiff_Browser_WinUI3.Services.Networks;
 using System.Diagnostics;
+using Microsoft.UI.Input;
+using Windows.UI.Core;
+using Yiff_Browser_WinUI3.Services.Locals;
 
 namespace Yiff_Browser_WinUI3.Views.Pages.E621 {
 	public sealed partial class TestPage : Page {
@@ -27,17 +30,20 @@ namespace Yiff_Browser_WinUI3.Views.Pages.E621 {
 		}
 
 		private async void Button_Click(object sender, RoutedEventArgs e) {
-			ListingsManager view = new() {
-				FollowsOrBlocks = false,
-			};
+			bool followsOrBlocks = true;
+			ListingsManager view = new(followsOrBlocks);
 			await view.CreateContentDialog(XamlRoot, new ContentDialogParameters() {
-				Title = "Follows",
+				Title = followsOrBlocks ? "Follows" : "Blocks",
 				CloseText = "Back",
 			}).ShowDialogAsync();
 
-			//save to local
+			Local.Listing.Follows = view.GetResult();
 
+			//save to local
+			Listing.Write();
 		}
+
+
 	}
 
 	public class TestPageViewModel : BindableBase {

@@ -14,7 +14,7 @@
 
 	<Grid>
 		<Grid.DataContext>
-			<local:ListingsManagerViewModel x:Name="ViewModel" FollowsOrBlocks="{x:Bind FollowsOrBlocks}"/>
+			<local:ListingsManagerViewModel x:Name="ViewModel"/>
 		</Grid.DataContext>
 
 		<Grid.ColumnDefinitions>

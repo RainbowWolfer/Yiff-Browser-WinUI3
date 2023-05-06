@@ -13,12 +13,7 @@
 		<local:TestPageViewModel x:Name="ViewModel"/>
 	</Page.DataContext>
 
-	<Grid>
-		<StackPanel>
-			<Button Content="!!!" Click="Button_Click"/>
-			<TextBox Text="{Binding URL,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-			<TextBlock Text="{Binding URL}"/>
-			<Button Content="???????" Command="{Binding TestURLCommand}"/>
-		</StackPanel>
+	<Grid x:Name="Root">
+		<Button Click="Button_Click"/>
 	</Grid>
 </Page>

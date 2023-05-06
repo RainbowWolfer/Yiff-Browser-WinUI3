@@ -23,7 +23,6 @@ namespace Yiff_Browser_WinUI3 {
 		public App() {
 			this.InitializeComponent();
 			Local.Settings = new LocalSettings();
-			Local.Listing = new Listing();
 		}
 
 		/// <summary>

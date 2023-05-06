@@ -44,6 +44,7 @@
 					<MenuFlyoutItem Text="Favorite" Command="{Binding OrderDropDownCommand}" CommandParameter="order:favcount"/>
 					<MenuFlyoutItem Text="Rank" Command="{Binding OrderDropDownCommand}" CommandParameter="order:rank"/>
 					<MenuFlyoutItem Text="Random" Command="{Binding OrderDropDownCommand}" CommandParameter="order:random"/>
+					<MenuFlyoutItem Text="Filesize" Command="{Binding OrderDropDownCommand}" CommandParameter="order:filesize"/>
 				</MenuFlyout>
 			</DropDownButton.Flyout>
 		</DropDownButton>

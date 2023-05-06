@@ -113,20 +113,41 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			MainGrid.Children.Add(view);
 		}
 
-		private void View_ImageClick(ImageViewItem item) {
-			ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("image", item.GetSampleImage());
+		private ImageViewItem openedImageItem;
+		private void View_ImageClick(ImageViewItem view, ImageViewItemViewModel viewModel) {
+			if (openedImageItem != null) {
+				return;
+			}
 
-			ConnectedAnimation imageAnimation = ConnectedAnimationService.GetForCurrentView().GetAnimation("image");
-			imageAnimation?.TryStart(PostDetailView.GetPreviewImage());
+			openedImageItem = view;
+			ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("image", view.GetCurrentImage());
 
 			PostDetailView.Visibility = Visibility.Visible;
 
-			PostDetailView.E621Post = item.Post;
+			PostDetailView.E621Post = view.Post;
+			PostDetailView.InitialImageURL = viewModel.ImageLoadStage switch {
+				LoadStage.None or LoadStage.Preview => view.Post.Preview.URL,
+				LoadStage.Sample => view.Post.Sample.URL,
+				_ => throw new NotSupportedException(),
+			};
+
+			ConnectedAnimation imageAnimation = ConnectedAnimationService.GetForCurrentView().GetAnimation("image");
+			imageAnimation?.TryStart(PostDetailView.GetCurrentImage());
 
 		}
 
 		private void PostDetailView_RequestBack() {
+			if (openedImageItem == null) {
+				return;
+			}
+
+			ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("image", PostDetailView.GetCurrentImage());
 			PostDetailView.Visibility = Visibility.Collapsed;
+
+			ConnectedAnimation imageAnimation = ConnectedAnimationService.GetForCurrentView().GetAnimation("image");
+			imageAnimation?.TryStart(openedImageItem.GetCurrentImage());
+
+			openedImageItem = null;
 		}
 
 		private void PageForwardButton_Click(object sender, RoutedEventArgs e) {

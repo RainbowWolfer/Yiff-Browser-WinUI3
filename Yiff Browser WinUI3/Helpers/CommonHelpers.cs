@@ -1,8 +1,11 @@
-﻿using Microsoft.UI.Xaml;
+﻿using ABI.System;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Shapes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Windows.ApplicationModel.DataTransfer;
 
 namespace Yiff_Browser_WinUI3.Helpers {
@@ -89,10 +92,34 @@ namespace Yiff_Browser_WinUI3.Helpers {
 			return string.Join(" ", tags);
 		}
 
-		public static void CopyToClipboard(this string text){
+		public static void CopyToClipboard(this string text) {
 			DataPackage package = new();
 			package.SetText(text);
 			Clipboard.SetContent(package);
+		}
+
+		public static bool IsNumber(this object value) {
+			return value is byte || value is sbyte ||
+				value is short || value is ushort ||
+				value is int || value is uint ||
+				value is long || value is ulong ||
+				value is float || value is double ||
+				value is decimal;
+		}
+
+		public static double Abs(object value) {
+			if (IsNumber(value)) {
+				return Math.Abs(Convert.ToDouble(value));
+			} else {
+				throw new ArgumentException("Value must be a number");
+			}
+		}
+
+
+		public static string FileSizeToKB(this int size) {
+			string kb = $"{size / 1000}";
+			string output = Regex.Replace(kb, ".{3}(?!.)", ",$&");
+			return $"{output}KB";
 		}
 	}
 }

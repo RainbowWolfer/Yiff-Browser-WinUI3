@@ -17,29 +17,12 @@ using Yiff_Browser_WinUI3.Services.Networks;
 
 namespace Yiff_Browser_WinUI3.Views.Controls {
 	public sealed partial class ListingsManager : UserControl {
-
-		public bool FollowsOrBlocks {
-			get => (bool)GetValue(FollowsOrBlocksProperty);
-			set => SetValue(FollowsOrBlocksProperty, value);
-		}
-
-		public static readonly DependencyProperty FollowsOrBlocksProperty = DependencyProperty.Register(
-			nameof(FollowsOrBlocks),
-			typeof(bool),
-			typeof(ListingsManager),
-			new PropertyMetadata(false)
-		);
-
-		public ListingsManager() {
+		public ListingsManager(bool followsOrBlocks) {
 			this.InitializeComponent();
 			ViewModel.RequestDeleteListing += ViewModel_RequestDeleteListing;
 			ViewModel.RequestRenameListing += ViewModel_RequestRenameListing;
 
-			ViewModel.RequestUpdateListingView += ViewModel_RequestUpdateListingView;
-		}
-
-		private void ViewModel_RequestUpdateListingView() {
-
+			ViewModel.FollowsOrBlocks = followsOrBlocks;
 		}
 
 		private void ViewModel_RequestRenameListing(ListingViewItem item) {
@@ -62,13 +45,13 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			}
 			DeleteConfirmTeachingTip.Subtitle = $"Are you sure to delete ({item.Item.Name}) with {item.Item.Tags.Count} tags";
 		}
+
+		public List<ListingItem> GetResult() => ViewModel.ListingItems.Select(x => x.Item).ToList();
 	}
 
 	public class ListingsManagerViewModel : BindableBase {
 		public event Action<ListingViewItem> RequestDeleteListing;
 		public event Action<ListingViewItem> RequestRenameListing;
-
-		public event Action RequestUpdateListingView;
 
 		private bool isCenterTipOpen;
 		private bool isDelelteListTipOpen;
@@ -110,6 +93,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		private void OnCheckedItemChanged() {
 			foreach (ListingViewItem item in ListingItems) {
 				item.IsSelected = item == CheckedItem;
+				item.Item.IsActive = item.IsSelected;
 			}
 		}
 
@@ -152,10 +136,13 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 		public bool FollowsOrBlocks {
 			get => followsOrBlocks;
-			set => SetProperty(ref followsOrBlocks, value, OnFollowsOrBlocksChanged);
+			set {
+				SetProperty(ref followsOrBlocks, value);
+				Initialize();
+			}
 		}
 
-		private void OnFollowsOrBlocksChanged() {
+		private void Initialize() {
 			List<ListingItem> items;
 			if (FollowsOrBlocks) {
 				items = Local.Listing.Follows;
@@ -170,6 +157,8 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			if (first != null) {
 				first.IsSelected = true;
 			}
+
+			SelectedIndex = 0;
 		}
 
 		public bool EnablePasting {
@@ -180,13 +169,13 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		public ListingsManagerViewModel() {
 			ListingItems.CollectionChanged += ListingItems_CollectionChanged;
 
-			ListingViewItem item = CreateNewListItem(new ListingItem("Default") {
-				Tags = { "feet", "cum", "cum_on_soles", "toe", "feet", "cum", "cum_on_soles", "toe", "feet", "cum", "cum_on_soles", "toe", "feet", "cum", "cum_on_soles", "toe", },
-			});
-			item.IsSelected = true;
-			ListingItems.Add(item);
+			//ListingViewItem item = CreateNewListItem(new ListingItem("Default") {
+			//	Tags = { "feet", "cum", "cum_on_soles", "toe", "feet", "cum", "cum_on_soles", "toe", "feet", "cum", "cum_on_soles", "toe", "feet", "cum", "cum_on_soles", "toe", },
+			//});
+			//item.IsSelected = true;
+			//ListingItems.Add(item);
 
-			SelectedIndex = 0;
+			//SelectedIndex = 0;
 
 			Clipboard.ContentChanged += (s, e) => UpdatePastImportEnable();
 			UpdatePastImportEnable();

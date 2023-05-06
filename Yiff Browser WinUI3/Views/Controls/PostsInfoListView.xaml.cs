@@ -7,12 +7,13 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-
+using Windows.UI;
 
 namespace Yiff_Browser_WinUI3.Views.Controls {
 	public sealed partial class PostsInfoListView : UserControl {
@@ -20,4 +21,5 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			this.InitializeComponent();
 		}
 	}
+
 }

@@ -16,9 +16,11 @@
     <None Remove="Views\Controls\ImageViewItem.xaml" />
     <None Remove="Views\Controls\ListingsManager.xaml" />
     <None Remove="Views\Controls\LoadingViews\LoadingRingWithTextBelow.xaml" />
+    <None Remove="Views\Controls\PictureDisplayView.xaml" />
     <None Remove="Views\Controls\PostDetailView.xaml" />
     <None Remove="Views\Controls\PostsInfoListView.xaml" />
     <None Remove="Views\Controls\PostsViewer.xaml" />
+    <None Remove="Views\Controls\PostTagsListView.xaml" />
     <None Remove="Views\Controls\SearchView.xaml" />
     <None Remove="Views\Controls\SearchViews\PostsInfoListView.xaml" />
     <None Remove="Views\Controls\SearchViews\SearchTagItemView.xaml" />
@@ -32,6 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="CommunityToolkit.WinUI.UI.Controls" Version="7.1.2" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.3.230331000" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.756" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.WinUI.Managed" Version="2.0.9" />
@@ -118,6 +121,18 @@
 
   <ItemGroup>
     <Resource Remove="Views\Pages\E621\TestPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\Controls\PictureDisplayView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\Controls\PostTagsListView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>

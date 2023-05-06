@@ -7,15 +7,4 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-	<UserControl.Resources>
-		<!--<CollectionViewSource x:Name="ContactsCVS2" Source="{x:Bind poststInfolists}" IsSourceGrouped="True"/>-->
-	</UserControl.Resources>
-
-	<Grid>
-		<ListView>
-			<ListViewItem Content="1"/>
-			<ListViewItem Content="2"/>
-			<ListViewItem Content="3"/>
-		</ListView>
-    </Grid>
 </UserControl>

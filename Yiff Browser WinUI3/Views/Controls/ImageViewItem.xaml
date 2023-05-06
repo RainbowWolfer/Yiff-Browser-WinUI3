@@ -25,7 +25,7 @@
 
 			<Grid>
 
-				<Image x:Name="PreviewImage" Source="{Binding PreviewImageURL}" Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center">
+				<Image x:Name="PreviewImage" Source="{Binding PreviewImageURL}" Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding HidePreviewImage,Converter={StaticResource BoolToVisibilityRe}}">
 					<i:Interaction.Behaviors>
 						<core:EventTriggerBehavior EventName="ImageOpened">
 							<core:InvokeCommandAction Command="{Binding OnPreviewLoadedCommand}"/>
@@ -33,7 +33,13 @@
 					</i:Interaction.Behaviors>
 				</Image>
 
-				<Image x:Name="SampleImage" Source="{Binding SampleImageURL}" Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+				<Image x:Name="SampleImage" Source="{Binding SampleImageURL}" Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center">
+					<i:Interaction.Behaviors>
+						<core:EventTriggerBehavior EventName="ImageOpened">
+							<core:InvokeCommandAction Command="{Binding OnSampleLoadedCommand}"/>
+						</core:EventTriggerBehavior>
+					</i:Interaction.Behaviors>
+				</Image>
 
 				<Grid Visibility="{Binding ErrorLoadingHint,Converter={StaticResource ArrayNotEmptyToVisibility}}">
 					<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -63,6 +69,8 @@
 			<Button.ContextFlyout>
 				<MenuFlyout>
 					<MenuFlyoutItem Text="Select this" Icon="ViewAll"/>
+					<MenuFlyoutSeparator/>
+					<MenuFlyoutItem Text="Download" Icon="Download"/>
 					<MenuFlyoutItem Text="Open in browser" Icon="World" Command="{Binding OpenInBrowserCommand}"/>
 				</MenuFlyout>
 			</Button.ContextFlyout>

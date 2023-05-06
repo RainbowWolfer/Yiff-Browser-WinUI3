@@ -24,7 +24,7 @@ using System.Numerics;
 
 namespace Yiff_Browser_WinUI3.Views.Controls {
 	public sealed partial class ImageViewItem : UserControl {
-		public event Action<ImageViewItem> ImageClick;
+		public event Action<ImageViewItem, ImageViewItemViewModel> ImageClick;
 
 		public event Action OnPostDeleted;
 
@@ -55,20 +55,31 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		}
 
 		private void Button_Click(object sender, RoutedEventArgs e) {
-			ImageClick?.Invoke(this);
+			ImageClick?.Invoke(this, ViewModel);
 		}
 
 		public Image GetSampleImage() => SampleImage;
+		public Image GetPreviewImage() => PreviewImage;
+
+		public Image GetCurrentImage() {
+			if (!ViewModel.HidePreviewImage) {
+				return GetPreviewImage();
+			} else {
+				return GetSampleImage();
+			}
+		}
 	}
 
 	public class ImageViewItemViewModel : BindableBase {
 		private E621Post post;
 		private string typeHint;
-		private bool showBetterImage;
+
+		private LoadStage imageLoadStage = LoadStage.None;
 
 		private string previewImageURL;
 		private string sampleImageURL;
 		private string errorLoadingHint;
+		private bool hidePreviewImage;
 
 		public string PreviewImageURL {
 			get => previewImageURL;
@@ -90,14 +101,19 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			set => SetProperty(ref typeHint, value);
 		}
 
-		public bool ShowBetterImage {
-			get => showBetterImage;
-			set => SetProperty(ref showBetterImage, value);
+		public LoadStage ImageLoadStage {
+			get => imageLoadStage;
+			set => SetProperty(ref imageLoadStage, value);
 		}
 
 		public string ErrorLoadingHint {
 			get => errorLoadingHint;
 			set => SetProperty(ref errorLoadingHint, value);
+		}
+
+		public bool HidePreviewImage {
+			get => hidePreviewImage;
+			set => SetProperty(ref hidePreviewImage, value);
 		}
 
 		private void OnPostChanged() {
@@ -112,12 +128,18 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		}
 
 		public ICommand OnPreviewLoadedCommand => new DelegateCommand(OnPreviewLoaded);
+		public ICommand OnSampleLoadedCommand => new DelegateCommand(OnSampleLoaded);
 		public ICommand OpenInBrowserCommand => new DelegateCommand(OpenInBrowser);
 		public ICommand OpenCommand => new DelegateCommand(Open);
 
 		private void OnPreviewLoaded() {
-			ShowBetterImage = true;
 			SampleImageURL = Post.Sample.URL;
+			ImageLoadStage = LoadStage.Preview;
+		}
+
+		private void OnSampleLoaded() {
+			ImageLoadStage = LoadStage.Sample;
+			HidePreviewImage = true;
 		}
 
 		private async void OpenInBrowser() {
@@ -131,5 +153,9 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 		}
 
+	}
+
+	public enum LoadStage {
+		None, Preview, Sample
 	}
 }

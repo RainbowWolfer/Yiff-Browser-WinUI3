@@ -79,7 +79,7 @@ namespace Yiff_Browser_WinUI3.Views.Pages.E621 {
 		}
 
 		public E621HomePageViewModel() {
-			Items.Add(new HomeTabViewItem(""));
+			Items.Add(new HomeTabViewItem("brazhnik"));
 			SelectedIndex = 0;
 		}
 
@@ -137,6 +137,12 @@ namespace Yiff_Browser_WinUI3.Views.Pages.E621 {
 				Tags = Tags,
 			};
 
+		}
+
+		public ICommand CopyCommand => new DelegateCommand(Copy);
+
+		private void Copy() {
+			Title.CopyToClipboard();
 		}
 	}
 }

@@ -57,7 +57,7 @@
 
 						<TabViewItem.ContextFlyout>
 							<MenuFlyout>
-								<MenuFlyoutItem/>
+								<MenuFlyoutItem Text="Copy" Icon="Copy" Command="{Binding CopyCommand}"/>
 								<MenuFlyoutSeparator/>
 								<MenuFlyoutItem/>
 							</MenuFlyout>
