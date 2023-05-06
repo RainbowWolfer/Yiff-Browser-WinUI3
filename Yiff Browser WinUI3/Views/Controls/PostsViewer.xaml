@@ -125,6 +125,7 @@
 						</Border>
 					</Grid>
 
+					<!-- Content -->
 					<ScrollViewer VerticalScrollMode="Auto" Grid.Row="1">
 						<VariableSizedWrapGrid x:Name="MainGrid" Orientation="Horizontal" ItemHeight="{x:Bind ItemHeight}" ItemWidth="{x:Bind ItemWidth}"/>
 					</ScrollViewer>

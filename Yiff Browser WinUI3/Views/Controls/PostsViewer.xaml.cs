@@ -22,6 +22,7 @@ using System.Windows.Input;
 using Prism.Commands;
 using Yiff_Browser_WinUI3.Helpers;
 using Microsoft.UI.Xaml.Media.Animation;
+using Yiff_Browser_WinUI3.Services.Locals;
 
 namespace Yiff_Browser_WinUI3.Views.Controls {
 	public delegate void OnPreviewsUpdateEventHandler(object sender, OnPreviewsUpdateEventArgs e);
@@ -120,8 +121,6 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			}
 
 			openedImageItem = view;
-			ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("image", view.GetCurrentImage());
-
 			PostDetailView.Visibility = Visibility.Visible;
 
 			PostDetailView.E621Post = view.Post;
@@ -131,8 +130,11 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 				_ => throw new NotSupportedException(),
 			};
 
-			ConnectedAnimation imageAnimation = ConnectedAnimationService.GetForCurrentView().GetAnimation("image");
-			imageAnimation?.TryStart(PostDetailView.GetCurrentImage());
+			if (Local.Settings.EnanbleTransitionAnimation) {
+				ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("image", view.GetCurrentImage());
+				ConnectedAnimation imageAnimation = ConnectedAnimationService.GetForCurrentView().GetAnimation("image");
+				imageAnimation?.TryStart(PostDetailView.GetCurrentImage());
+			}
 
 		}
 
@@ -141,11 +143,13 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 				return;
 			}
 
-			ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("image", PostDetailView.GetCurrentImage());
 			PostDetailView.Visibility = Visibility.Collapsed;
 
-			ConnectedAnimation imageAnimation = ConnectedAnimationService.GetForCurrentView().GetAnimation("image");
-			imageAnimation?.TryStart(openedImageItem.GetCurrentImage());
+			if (Local.Settings.EnanbleTransitionAnimation) {
+				ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("image", PostDetailView.GetCurrentImage());
+				ConnectedAnimation imageAnimation = ConnectedAnimationService.GetForCurrentView().GetAnimation("image");
+				imageAnimation?.TryStart(openedImageItem.GetCurrentImage());
+			}
 
 			openedImageItem = null;
 		}

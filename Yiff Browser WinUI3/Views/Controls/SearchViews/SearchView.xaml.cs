@@ -25,10 +25,15 @@ using Yiff_Browser_WinUI3.Services.Networks;
 
 namespace Yiff_Browser_WinUI3.Views.Controls.SearchViews {
 	public sealed partial class SearchView : UserControl {
-		public SearchView(ContentDialog dialog) {
+		public SearchView(ContentDialog dialog, string searchText = "") {
 			this.InitializeComponent();
 			ViewModel.Dialog = dialog;
 			ViewModel.RequestSearchBoxFocus += () => SearchTextBox.Focus(FocusState.Programmatic);
+
+			if (searchText.IsNotBlank()) {
+				ViewModel.SearchText = searchText + " ";
+				ViewModel.SearchTextSelectionStart = searchText.Length + 1;
+			}
 		}
 
 		public bool IsConfirmDialog() => ViewModel.ConfirmDialog;

@@ -10,6 +10,13 @@ namespace Yiff_Browser_WinUI3.Services.Locals {
 		public int E621PageLimitCount { get; set; } = 75;
 
 
+		public string[] StartupTags { get; set; } = { "brazhnik" };
+
+		public bool EnanbleTransitionAnimation { get; set; } = true;
+
+		public int ImageAdaptWidth { get; set; } = 380;
+		public int ImageAdaptHeight { get; set; } = 50;
+
 		public string Username { get; set; } = "";
 		public string UserAPI { get; set; } = "";
 

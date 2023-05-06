@@ -118,7 +118,7 @@ namespace Yiff_Browser_WinUI3.Helpers {
 
 		public static string FileSizeToKB(this int size) {
 			string kb = $"{size / 1000}";
-			string output = Regex.Replace(kb, ".{3}(?!.)", ",$&");
+			string output = Regex.Replace(kb, ".{3}(?!.)", ",$&").Trim(',');
 			return $"{output}KB";
 		}
 	}

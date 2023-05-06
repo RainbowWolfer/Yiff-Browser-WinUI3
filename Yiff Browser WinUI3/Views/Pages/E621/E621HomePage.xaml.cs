@@ -1,26 +1,13 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using Newtonsoft.Json;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Windows.Input;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Yiff_Browser_WinUI3.Helpers;
-using Yiff_Browser_WinUI3.Models.E621;
+using Yiff_Browser_WinUI3.Services.Locals;
 using Yiff_Browser_WinUI3.Services.Networks;
 using Yiff_Browser_WinUI3.Views.Controls;
 using Yiff_Browser_WinUI3.Views.Controls.SearchViews;
@@ -60,7 +47,13 @@ namespace Yiff_Browser_WinUI3.Views.Pages.E621 {
 				Style = App.DialogStyle,
 				Title = "Search",
 			};
-			SearchView searchView = new(dialog);
+
+			string pretext = "";
+			if (SelectedIndex != -1) {
+				pretext = Items[SelectedIndex].Title;
+			}
+
+			SearchView searchView = new(dialog, pretext);
 			dialog.Content = searchView;
 
 			await dialog.ShowAsync();
@@ -79,7 +72,8 @@ namespace Yiff_Browser_WinUI3.Views.Pages.E621 {
 		}
 
 		public E621HomePageViewModel() {
-			Items.Add(new HomeTabViewItem("brazhnik"));
+			string[] startupTags = Local.Settings.StartupTags;
+			Items.Add(new HomeTabViewItem(startupTags));
 			SelectedIndex = 0;
 		}
 
