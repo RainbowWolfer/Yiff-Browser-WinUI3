@@ -16,6 +16,7 @@
     <None Remove="Views\Controls\ImageViewItem.xaml" />
     <None Remove="Views\Controls\ListingsManager.xaml" />
     <None Remove="Views\Controls\LoadingViews\LoadingRingWithTextBelow.xaml" />
+    <None Remove="Views\Controls\MediaDisplayView.xaml" />
     <None Remove="Views\Controls\PictureDisplayView.xaml" />
     <None Remove="Views\Controls\PostDetailView.xaml" />
     <None Remove="Views\Controls\PostsInfoListView.xaml" />
@@ -121,6 +122,12 @@
 
   <ItemGroup>
     <Resource Remove="Views\Pages\E621\TestPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\Controls\MediaDisplayView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>

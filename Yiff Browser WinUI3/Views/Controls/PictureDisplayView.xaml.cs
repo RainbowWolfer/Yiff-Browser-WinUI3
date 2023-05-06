@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using Prism.Mvvm;
 using System;
 using System.Windows.Input;
+using Yiff_Browser_WinUI3.Helpers;
 
 namespace Yiff_Browser_WinUI3.Views.Controls {
 	public sealed partial class PictureDisplayView : UserControl {
@@ -272,12 +273,16 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 			DownloadedFileSize = 0;
 
-			Bitmap = new(new Uri(URL));
-			Bitmap.DownloadProgress += (s, e) => {
-				Progress = e.Progress;
-				IsProgressIndeterminate = false;
-				DownloadedFileSize = (int)(FileSize * (Progress / 100d));
-			};
+			if (url.IsBlank()) {
+				Bitmap = null;
+			} else {
+				Bitmap = new(new Uri(URL));
+				Bitmap.DownloadProgress += (s, e) => {
+					Progress = e.Progress;
+					IsProgressIndeterminate = false;
+					DownloadedFileSize = (int)(FileSize * (Progress / 100d));
+				};
+			}
 		}
 
 

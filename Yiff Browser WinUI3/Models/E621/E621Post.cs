@@ -226,4 +226,9 @@ namespace Yiff_Browser_WinUI3.Models.E621 {
 		[EnumMember(Value = "e")]
 		Explict
 	}
+
+
+	public enum FileType {
+		Png, Jpg, Gif, Webm, Anim
+	}
 }

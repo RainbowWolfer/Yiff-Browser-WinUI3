@@ -15,6 +15,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Windows.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Yiff_Browser_WinUI3.Helpers;
 using Yiff_Browser_WinUI3.Models.E621;
 
 namespace Yiff_Browser_WinUI3.Views.Controls {
@@ -25,7 +26,12 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 		public E621Post E621Post {
 			get => (E621Post)GetValue(E621PostProperty);
-			set => SetValue(E621PostProperty, value);
+			set {
+				if (E621Post == value) {
+					MediaDisplayView.Play();
+				}
+				SetValue(E621PostProperty, value);
+			}
 		}
 
 		public static readonly DependencyProperty E621PostProperty = DependencyProperty.Register(
@@ -67,25 +73,32 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		}
 
 		private void Button_Click(object sender, RoutedEventArgs e) {
+			MediaDisplayView.Pause();
 			RequestBack?.Invoke();
 		}
 	}
 
 	public class PostDetailViewModel : BindableBase {
 		private E621Post e621Post;
-		private string targetURL;
+		private string imageURL;
 		private bool isMedia;
 		private int fileSize;
 		private bool showBackgroundImage = true;
+		private string mediaURL;
 
 		public E621Post E621Post {
 			get => e621Post;
 			set => SetProperty(ref e621Post, value, OnPostChanged);
 		}
 
-		public string TargetURL {
-			get => targetURL;
-			set => SetProperty(ref targetURL, value);
+		public string ImageURL {
+			get => imageURL;
+			set => SetProperty(ref imageURL, value);
+		}
+
+		public string MediaURL {
+			get => mediaURL;
+			set => SetProperty(ref mediaURL, value);
 		}
 
 		public int FileSize {
@@ -106,7 +119,24 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		private void OnPostChanged() {
 			ShowBackgroundImage = true;
 			FileSize = E621Post.File.Size;
-			TargetURL = E621Post.File.URL;
+			switch (E621Post.GetFileType()) {
+				case FileType.Png:
+				case FileType.Jpg:
+				case FileType.Gif:
+					ImageURL = E621Post.File.URL;
+					MediaURL = string.Empty;
+					IsMedia = false;
+					break;
+				case FileType.Webm:
+					ImageURL = string.Empty;
+					MediaURL = E621Post.File.URL;
+					IsMedia = true;
+					break;
+				case FileType.Anim:
+					//display error
+					break;
+				default: throw new NotSupportedException();
+			}
 		}
 
 		public ICommand OnImageLoadedCommand => new DelegateCommand(OnImageLoaded);

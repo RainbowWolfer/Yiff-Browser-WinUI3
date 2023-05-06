@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Windows.ApplicationModel.DataTransfer;
+using Yiff_Browser_WinUI3.Models.E621;
 
 namespace Yiff_Browser_WinUI3.Helpers {
 	public static class CommonHelpers {
@@ -120,6 +121,17 @@ namespace Yiff_Browser_WinUI3.Helpers {
 			string kb = $"{size / 1000}";
 			string output = Regex.Replace(kb, ".{3}(?!.)", ",$&").Trim(',');
 			return $"{output}KB";
+		}
+
+		public static FileType GetFileType(this E621Post post) {
+			return post.File.Ext.ToLower().Trim() switch {
+				"jpg" => FileType.Jpg,
+				"png" => FileType.Png,
+				"gif" => FileType.Gif,
+				"anim" or "swf" => FileType.Anim,
+				"webm" => FileType.Webm,
+				_ => throw new System.Exception($"New Type({post.File.Ext}) Found"),
+			};
 		}
 	}
 }

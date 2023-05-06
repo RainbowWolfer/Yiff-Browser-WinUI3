@@ -193,11 +193,11 @@
 			<Image x:Name="BackgroundImage" Source="{x:Bind InitialImageURL,Mode=OneWay}" Margin="0,30,0,0" Visibility="{Binding ShowBackgroundImage,Converter={StaticResource BoolToVisibility}}"/>
 
 			<Grid Visibility="{Binding IsMedia,Converter={StaticResource BoolToVisibilityRe}}">
-				<local:PictureDisplayView x:Name="PictureDisplayView" URL="{Binding TargetURL}" FileSize="{Binding FileSize}" OnImageLoadedCommand="{Binding OnImageLoadedCommand}"/>
+				<local:PictureDisplayView x:Name="PictureDisplayView" URL="{Binding ImageURL}" FileSize="{Binding FileSize}" OnImageLoadedCommand="{Binding OnImageLoadedCommand}"/>
 			</Grid>
 
 			<Grid Visibility="{Binding IsMedia,Converter={StaticResource BoolToVisibility}}">
-
+				<local:MediaDisplayView x:Name="MediaDisplayView" URL="{Binding MediaURL}"/>
 			</Grid>
 		</Grid>
 
