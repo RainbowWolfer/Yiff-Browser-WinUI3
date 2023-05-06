@@ -32,7 +32,7 @@
 		</Border>
 
 		<ScrollViewer x:Name="MyScrollViewer" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled">
-			<Image x:Name="MainImage"
+			<Image x:Name="MainImage" Source="{Binding Bitmap}"
 				DoubleTapped="MainImage_DoubleTapped" 
 				PointerWheelChanged="MainImage_PointerWheelChanged" 
 				RenderTransformOrigin="0,0" 
