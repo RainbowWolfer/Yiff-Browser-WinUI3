@@ -35,10 +35,8 @@
 			<Image x:Name="MainImage" Source="{Binding Bitmap}"
 				DoubleTapped="MainImage_DoubleTapped" 
 				PointerWheelChanged="MainImage_PointerWheelChanged" 
-				RenderTransformOrigin="0,0" 
 				ManipulationMode="TranslateX,TranslateY,Scale" 
 				ManipulationDelta="MainImage_ManipulationDelta" 
-				Stretch="Uniform" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0,0,0,0" 
 				ImageOpened="MainImage_ImageOpened" 
 				ImageFailed="MainImage_ImageFailed">
 				<Image.RenderTransform>

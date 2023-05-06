@@ -57,12 +57,12 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		}
 
 		public Image GetBackgroundImage() => BackgroundImage;
-		public Image GetCurrentImage() {
+		public FrameworkElement GetCurrentImage() {
+			PictureDisplayView.ResetImage();
 			if (ViewModel.ShowBackgroundImage) {
 				return BackgroundImage;
 			} else {
-				PictureDisplayView.ResetImage();
-				return PictureDisplayView.GetMainImage();
+				return PictureDisplayView.GetTargetImage();
 			}
 		}
 

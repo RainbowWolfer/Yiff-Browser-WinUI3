@@ -131,8 +131,9 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			};
 
 			if (Local.Settings.EnanbleTransitionAnimation) {
-				ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("image", view.GetCurrentImage());
-				ConnectedAnimation imageAnimation = ConnectedAnimationService.GetForCurrentView().GetAnimation("image");
+				ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("image_in", view.GetCurrentImage());
+				ConnectedAnimation imageAnimation = ConnectedAnimationService.GetForCurrentView().GetAnimation("image_in");
+				imageAnimation.Configuration = new DirectConnectedAnimationConfiguration();
 				imageAnimation?.TryStart(PostDetailView.GetCurrentImage());
 			}
 
@@ -146,8 +147,9 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			PostDetailView.Visibility = Visibility.Collapsed;
 
 			if (Local.Settings.EnanbleTransitionAnimation) {
-				ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("image", PostDetailView.GetCurrentImage());
-				ConnectedAnimation imageAnimation = ConnectedAnimationService.GetForCurrentView().GetAnimation("image");
+				ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("image_out", PostDetailView.GetCurrentImage());
+				ConnectedAnimation imageAnimation = ConnectedAnimationService.GetForCurrentView().GetAnimation("image_out");
+				imageAnimation.Configuration = new DirectConnectedAnimationConfiguration();
 				imageAnimation?.TryStart(openedImageItem.GetCurrentImage());
 			}
 
@@ -275,7 +277,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 					Tags = Tags,
 				});
 			} catch {
-				posts = Array.Empty<E621Post>();
+				posts = null;
 			}
 			if (posts != null) {
 				foreach (E621Post post in posts) {

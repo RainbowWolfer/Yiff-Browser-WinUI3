@@ -207,6 +207,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 
 		public Image GetMainImage() => MainImage;
+		public FrameworkElement GetTargetImage() => MyScrollViewer;
 
 
 		public PictureDisplayView() {
@@ -261,7 +262,6 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		}
 
 		public string URL { get; private set; }
-
 
 		public void Initialize(string url) {
 			URL = url;
