@@ -165,7 +165,7 @@
 						</MenuFlyout>
 					</DropDownButton.Flyout>
 				</DropDownButton>
-				<Button FontSize="18" Background="Transparent" BorderThickness="0" Height="38" Padding="7,0,7,0">
+				<Button FontSize="18" Background="Transparent" BorderThickness="0" Height="38" Padding="7,0,7,0" Command="{Binding OpenMoreInfoCommand}">
 					<Button.Content>
 						<StackPanel Orientation="Horizontal">
 							<TextBlock Text="More Info" Margin="5"/>
@@ -189,16 +189,37 @@
 			</Button>
 		</Grid>
 
-		<Grid x:Name="ContentRootGrid" Grid.Row="1" Grid.Column="1">
-			<Image x:Name="BackgroundImage" Source="{x:Bind InitialImageURL,Mode=OneWay}" Margin="0,30,0,0" Visibility="{Binding ShowBackgroundImage,Converter={StaticResource BoolToVisibility}}"/>
+		<Grid Grid.Row="1" Grid.Column="1">
+			<SplitView IsPaneOpen="{Binding ShowMoreInfoSplitView,Mode=TwoWay}" DisplayMode="Overlay" PanePlacement="Right" OpenPaneLength="550">
 
-			<Grid Visibility="{Binding IsMedia,Converter={StaticResource BoolToVisibilityRe}}">
-				<local:PictureDisplayView x:Name="PictureDisplayView" URL="{Binding ImageURL}" FileSize="{Binding FileSize}" OnImageLoadedCommand="{Binding OnImageLoadedCommand}"/>
-			</Grid>
+				<SplitView.Pane>
+					<Pivot>
+						<PivotItem Header="Description">
+						
+						</PivotItem>
+						<PivotItem Header="Comments">
+						
+						</PivotItem>
+						<PivotItem Header="Relations">
+						
+						</PivotItem>
+					</Pivot>
+				</SplitView.Pane>
 
-			<Grid Visibility="{Binding IsMedia,Converter={StaticResource BoolToVisibility}}">
-				<local:MediaDisplayView x:Name="MediaDisplayView" URL="{Binding MediaURL}"/>
-			</Grid>
+				<Grid>
+
+					<Image x:Name="BackgroundImage" Source="{x:Bind InitialImageURL,Mode=OneWay}" Margin="0,30,0,0" Visibility="{Binding ShowBackgroundImage,Converter={StaticResource BoolToVisibility}}"/>
+
+					<Grid Visibility="{Binding IsMedia,Converter={StaticResource BoolToVisibilityRe}}">
+						<local:PictureDisplayView x:Name="PictureDisplayView" URL="{Binding ImageURL}" FileSize="{Binding FileSize}" OnImageLoadedCommand="{Binding OnImageLoadedCommand}"/>
+					</Grid>
+
+					<Grid Visibility="{Binding IsMedia,Converter={StaticResource BoolToVisibility}}">
+						<local:MediaDisplayView x:Name="MediaDisplayView" URL="{Binding MediaURL}"/>
+					</Grid>
+
+				</Grid>
+			</SplitView>
 		</Grid>
 
 	</Grid>

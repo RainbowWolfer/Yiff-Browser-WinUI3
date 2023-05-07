@@ -85,6 +85,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		private int fileSize;
 		private bool showBackgroundImage = true;
 		private string mediaURL;
+		private bool showMoreInfoSplitView;
 
 		public E621Post E621Post {
 			get => e621Post;
@@ -116,6 +117,11 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			set => SetProperty(ref showBackgroundImage, value);
 		}
 
+		public bool ShowMoreInfoSplitView {
+			get => showMoreInfoSplitView;
+			set => SetProperty(ref showMoreInfoSplitView, value);
+		}
+
 		private void OnPostChanged() {
 			ShowBackgroundImage = true;
 			FileSize = E621Post.File.Size;
@@ -143,6 +149,12 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 		private void OnImageLoaded() {
 			ShowBackgroundImage = false;
+		}
+
+		public ICommand OpenMoreInfoCommand => new DelegateCommand(OpenMoreInfo);
+
+		private void OpenMoreInfo() {
+			ShowMoreInfoSplitView = true;
 		}
 	}
 }

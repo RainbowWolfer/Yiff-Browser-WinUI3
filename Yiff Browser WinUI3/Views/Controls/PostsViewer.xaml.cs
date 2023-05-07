@@ -179,6 +179,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 		private bool isPostsInfoPaneOpen;
 		private bool isInSelectionMode;
+		private int postsTargetCount;
 
 		public int PageValue {
 			get => pageValue;
@@ -211,6 +212,13 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		}
 
 		public ObservableCollection<E621Post> Posts { get; } = new ObservableCollection<E621Post>();
+		public ObservableCollection<E621Post> Blocks { get; } = new ObservableCollection<E621Post>();
+
+		public int PostsTargetCount {
+			get => postsTargetCount;
+			set => SetProperty(ref postsTargetCount, value);
+		}
+
 
 		#region Posts Info
 
@@ -270,6 +278,8 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			IsLoading = true;
 
 			Posts.Clear();
+			Blocks.Clear();
+
 			E621Post[] posts;
 			try {
 				posts = await E621API.GetE621PostsByTagsAsync(new E621PostParameters() {
@@ -280,8 +290,13 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 				posts = null;
 			}
 			if (posts != null) {
+				PostsTargetCount = posts.Length;
 				foreach (E621Post post in posts) {
-					Posts.Add(post);
+					if (Local.Listing.ContainBlocks(post)) {
+						Blocks.Add(post);
+					} else {
+						Posts.Add(post);
+					}
 				}
 				string[] previews = Posts.Select(x => x.Sample.URL).Where(x => x.IsNotBlank()).Take(5).ToArray();
 				OnPreviewsUpdated?.Invoke(this, new OnPreviewsUpdateEventArgs(previews));

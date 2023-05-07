@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Yiff_Browser_WinUI3.Helpers;
+using Yiff_Browser_WinUI3.Models.E621;
 
 namespace Yiff_Browser_WinUI3.Services.Locals {
 	public class Listing {
@@ -54,6 +55,19 @@ namespace Yiff_Browser_WinUI3.Services.Locals {
 		public bool ContainBlocks(string tag) {
 			ListingItem list = GetActiveBlocks();
 			return list.Tags.Contains(tag.Trim().ToLower());
+		}
+
+		public bool ContainBlocks(E621Post post) {
+			ListingItem list = GetActiveBlocks();
+			List<string> tags = post.Tags.GetAllTags();
+
+			foreach (string tag in tags) {
+				if (list.Tags.Contains(tag)) {
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		public void AddFollow(string tag) {
