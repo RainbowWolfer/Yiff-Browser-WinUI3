@@ -142,11 +142,8 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			HidePreviewImage = true;
 		}
 
-		private async void OpenInBrowser() {
-			bool result = await Launcher.LaunchUriAsync(new Uri(@$"https://e621.net/posts/{Post.ID}"));
-			if (!result) {
-				//show error
-			}
+		private void OpenInBrowser() {
+			@$"https://e621.net/posts/{Post.ID}".OpenInBrowser();
 		}
 
 		private void Open() {

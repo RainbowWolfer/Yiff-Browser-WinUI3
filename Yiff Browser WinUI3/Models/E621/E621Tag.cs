@@ -40,7 +40,8 @@ namespace Yiff_Browser_WinUI3.Models.E621 {
 			};
 		}
 
-		public static Color GetCatrgoryColor(E621TagCategory category, bool isDarkTheme = true) {
+		public static Color GetCatrgoryColor(E621TagCategory category) {
+			bool isDarkTheme = App.IsDarkTheme();
 			return category switch {
 				E621TagCategory.Artists => (isDarkTheme ? "#F2AC08" : "#E39B00").ToColor(),
 				E621TagCategory.Copyrights => (isDarkTheme ? "#DD00DD" : "#DD00DD").ToColor(),
@@ -56,8 +57,8 @@ namespace Yiff_Browser_WinUI3.Models.E621 {
 			};
 		}
 
-		public static Color GetCatrgoryColor(int category, bool isDarkTheme = true) {
-			return GetCatrgoryColor((E621TagCategory)category, isDarkTheme);
+		public static Color GetCatrgoryColor(int category) {
+			return GetCatrgoryColor((E621TagCategory)category);
 		}
 	}
 

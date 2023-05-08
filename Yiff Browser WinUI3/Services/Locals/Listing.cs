@@ -102,8 +102,6 @@ namespace Yiff_Browser_WinUI3.Services.Locals {
 			}
 		}
 
-
-
 		#region Local
 
 		public static async Task Read() {

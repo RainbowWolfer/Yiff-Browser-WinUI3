@@ -117,9 +117,8 @@ namespace Yiff_Browser_WinUI3.Views.Controls.SearchViews {
 				FromName = AutoComplete.antecedent_name;
 				ToName = AutoComplete.name;
 			}
-			E621TagCategory catrgory = (E621TagCategory)AutoComplete.category;
-			bool isDark = App.GetApplicationTheme() == ApplicationTheme.Dark;
-			MainColor = E621Tag.GetCatrgoryColor(catrgory, isDark);
+
+			MainColor = E621Tag.GetCatrgoryColor(AutoComplete.category);
 		}
 
 	}

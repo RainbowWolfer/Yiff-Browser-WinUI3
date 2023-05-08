@@ -6,6 +6,8 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using Prism.Mvvm;
 using System;
 using System.Windows.Input;
+using Windows.System;
+using Windows.UI.Core;
 using Yiff_Browser_WinUI3.Helpers;
 
 namespace Yiff_Browser_WinUI3.Views.Controls {
@@ -79,16 +81,20 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			ImageTransform.TranslateY += e.Delta.Translation.Y;
 
 			Limit();
+
+			if (InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Control).HasFlag(CoreVirtualKeyStates.Down)) {
+
+			}
 		}
 
 
 		private void MainImage_ImageOpened(object sender, RoutedEventArgs e) {
-			OnImageLoadedCommand?.Execute(true);
+			OnImageLoadedCommand?.Execute(ViewModel.Bitmap);
 			ViewModel.ShowProgress = false;
 		}
 
 		private void MainImage_ImageFailed(object sender, ExceptionRoutedEventArgs e) {
-			OnImageLoadedCommand?.Execute(false);
+			OnImageLoadedCommand?.Execute(null);
 			ViewModel.ShowProgressError = true;
 		}
 

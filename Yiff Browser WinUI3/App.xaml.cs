@@ -40,5 +40,7 @@ namespace Yiff_Browser_WinUI3 {
 		public static ApplicationTheme GetApplicationTheme() {
 			return ShouldSystemUseDarkMode() ? ApplicationTheme.Dark : ApplicationTheme.Dark;
 		}
+
+		public static bool IsDarkTheme() => ShouldSystemUseDarkMode();
 	}
 }

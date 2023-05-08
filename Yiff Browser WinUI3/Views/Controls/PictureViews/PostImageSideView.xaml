@@ -1,0 +1,66 @@
+<UserControl
+    x:Class="Yiff_Browser_WinUI3.Views.Controls.PictureViews.PostImageSideView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Yiff_Browser_WinUI3.Views.Controls.PictureViews"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+	<Pivot>
+		<Pivot.DataContext>
+			<local:PostImageSideViewModel x:Name="ViewModel" E621Post="{x:Bind E621Post,Mode=OneWay}"/>
+		</Pivot.DataContext>
+
+		<PivotItem Header="Description">
+			<Grid>
+
+				<Grid.RowDefinitions>
+					<RowDefinition Height="*"/>
+					<RowDefinition Height="auto"/>
+				</Grid.RowDefinitions>
+
+				<ScrollViewer Padding="20">
+					<TextBlock Text="No Description" TextWrapping="Wrap" FontSize="18" IsTextSelectionEnabled="True" VerticalAlignment="Top"/>
+				</ScrollViewer>
+
+				<StackPanel Grid.Row="1" Padding="20">
+					<TextBlock Text="{Binding SourceTitle}" FontSize="24"/>
+					<ListView ItemsSource="{Binding SourceURLs}" SelectionMode="None" IsItemClickEnabled="False" MaxHeight="200">
+						<ListView.ItemTemplate>
+							<DataTemplate x:DataType="x:String">
+								<local:SourceHyperLinkButton URL="{Binding}"/>
+							</DataTemplate>
+						</ListView.ItemTemplate>
+					</ListView>
+				</StackPanel>
+
+			</Grid>
+		</PivotItem>
+
+		<PivotItem Header="Comments">
+			<Grid>
+
+				<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding IsLoadingComments,Converter={StaticResource BoolToVisibility}}">
+					<TextBlock Text="Loading Comments" FontSize="22" Margin="5"/>
+					<ProgressBar IsIndeterminate="True" Margin="5"/>
+				</StackPanel>
+
+				<ListView ItemsSource="{Binding CommentItems}" Visibility="{Binding IsLoadingComments,Converter={StaticResource BoolToVisibilityRe}}">
+					<ListView.ItemTemplate>
+						<DataTemplate x:DataType="local:CommentItem">
+							<Grid>
+							
+							</Grid>
+						</DataTemplate>
+					</ListView.ItemTemplate>
+				</ListView>
+			</Grid>
+		</PivotItem>
+
+		<PivotItem Header="Relations">
+
+		</PivotItem>
+
+	</Pivot>
+</UserControl>

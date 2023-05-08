@@ -23,6 +23,7 @@ using Prism.Commands;
 using Yiff_Browser_WinUI3.Helpers;
 using Microsoft.UI.Xaml.Media.Animation;
 using Yiff_Browser_WinUI3.Services.Locals;
+using Yiff_Browser_WinUI3.Views.Controls.TagsInfoViews;
 
 namespace Yiff_Browser_WinUI3.Views.Controls {
 	public delegate void OnPreviewsUpdateEventHandler(object sender, OnPreviewsUpdateEventArgs e);
@@ -238,9 +239,11 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			await new ContentDialog() {
 				XamlRoot = XamlRoot,
 				Style = App.DialogStyle,
-				Title = Tags.ToFullString(),
+				//Title = Tags.ToFullString(),
 				CloseButtonText = "Back",
-
+				Content = new TagsInfoView() {
+					Tags = Tags,
+				},
 			}.ShowAsync();
 		}
 

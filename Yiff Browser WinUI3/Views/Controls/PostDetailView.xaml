@@ -5,7 +5,7 @@
     xmlns:local="using:Yiff_Browser_WinUI3.Views.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-	xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+	xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls" xmlns:pictureviews="using:Yiff_Browser_WinUI3.Views.Controls.PictureViews"
 	mc:Ignorable="d">
 
 	<UserControl.Resources>
@@ -18,6 +18,19 @@
 			<Setter Property="RadiusY" Value="2"/>
 			<Setter Property="RelativePanel.AlignVerticalCenterWithPanel" Value="True"/>
 			<Setter Property="Fill" Value="{x:Bind DownloadButton.Foreground}"/>
+		</Style>
+
+		<Style x:Key="IDFlyoutInfoBorderStyle" TargetType="Border">
+			<Setter Property="Margin" Value="0,0,0,5"/>
+			<Setter Property="Background" Value="{StaticResource ControlFillColorDefaultBrush}"/>
+			<Setter Property="Padding" Value="10,5,10,5"/>
+			<Setter Property="CornerRadius" Value="5"/>
+		</Style>
+
+		<Style x:Key="IDFlyoutInfoTextStyle" TargetType="TextBlock">
+			<Setter Property="Margin" Value="10,0,0,5"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="Grid.Column" Value="1"/>
 		</Style>
 
 	</UserControl.Resources>
@@ -40,25 +53,108 @@
 		<!--<GridSplitter />-->
 		<controls:GridSplitter Grid.RowSpan="2" HorizontalAlignment="Right" Width="8" MinWidth="0" Background="#14000000"/>
 
-		<Grid>
-
-		</Grid>
-
 		<Grid Grid.Column="1" Background="{StaticResource SystemColorBackgroundBrush}" CornerRadius="10" Margin="10" Padding="5,3,5,3">
 			<StackPanel Orientation="Horizontal">
-				<FontIcon Glyph="&#xE116;" Height="38" Width="40" FontSize="24" Margin="0,0,5,0" ToolTipService.Placement="Bottom"/>
-				<TextBlock Text="{Binding E621Post.ID}" VerticalAlignment="Center" FontFamily="Cascadia Mono" FontSize="24" Foreground="Red"/>
-				<FontIcon Glyph="&#xE7BA;" Height="38" Width="40" FontSize="24" Margin="5,0,0,0" Foreground="Yellow" ToolTipService.Placement="Bottom"/>
+
+				<FontIcon Glyph="{Binding FileTypeIcon}" Height="33" Width="40" FontSize="24" Margin="0,0,5,0" ToolTipService.Placement="Bottom" ToolTipService.ToolTip="{Binding FileTypeToolTip}"/>
+
+				<Button Height="33" Padding="11,0,11,0" ToolTipService.Placement="Bottom" ToolTipService.ToolTip="{Binding RatingToolTip}">
+					<TextBlock Text="{Binding IDTitle}" VerticalAlignment="Center" FontFamily="Cascadia Mono" FontSize="24" Foreground="{Binding RatingColor,Converter={StaticResource ColorToBrush}}"/>
+					<Button.Flyout>
+						<Flyout Placement="Bottom">
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="auto"/>
+									<ColumnDefinition Width="*"/>
+								</Grid.ColumnDefinitions>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="auto"/>
+									<RowDefinition Height="auto"/>
+									<RowDefinition Height="auto"/>
+									<RowDefinition Height="auto"/>
+									<RowDefinition Height="auto"/>
+									<RowDefinition Height="auto"/>
+								</Grid.RowDefinitions>
+
+								<Border Grid.Row="0" Style="{StaticResource IDFlyoutInfoBorderStyle}">
+									<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+										<TextBlock Text="Created Date"/>
+										<FontIcon Glyph="&#xEE93;" Margin="10,0,0,0"/>
+									</StackPanel>
+								</Border>
+								<TextBlock Text="{Binding E621Post.CreatedAt}" Grid.Row="0" Style="{StaticResource IDFlyoutInfoTextStyle}"/>
+
+								<Border Grid.Row="1" Style="{StaticResource IDFlyoutInfoBorderStyle}">
+									<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+										<TextBlock Text="Updated Date"/>
+										<FontIcon Glyph="&#xE163;" Margin="10,0,0,0"/>
+									</StackPanel>
+								</Border>
+								<TextBlock Text="{Binding E621Post.UpdatedAt}" Grid.Row="1" Style="{StaticResource IDFlyoutInfoTextStyle}"/>
+
+								<Border Grid.Row="2" Style="{StaticResource IDFlyoutInfoBorderStyle}">
+									<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+										<TextBlock Text="Size"/>
+										<FontIcon Glyph="&#xEE93;" Margin="10,0,0,0"/>
+									</StackPanel>
+								</Border>
+								<TextBlock Text="{Binding E621Post.File.SizeInfo}" Grid.Row="2" Style="{StaticResource IDFlyoutInfoTextStyle}"/>
+
+								<Border Grid.Row="3" Style="{StaticResource IDFlyoutInfoBorderStyle}">
+									<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+										<TextBlock Text="Approver ID"/>
+										<FontIcon Glyph="&#xE2AF;" Margin="10,0,0,0"/>
+									</StackPanel>
+								</Border>
+								<TextBlock Text="{Binding E621Post.ApproverId}" Grid.Row="3" Style="{StaticResource IDFlyoutInfoTextStyle}"/>
+
+								<Border Grid.Row="4" Style="{StaticResource IDFlyoutInfoBorderStyle}">
+									<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+										<TextBlock Text="Uploader ID"/>
+										<FontIcon Glyph="&#xE898;" Margin="10,0,0,0"/>
+									</StackPanel>
+								</Border>
+								<TextBlock Text="{Binding E621Post.UploaderId}" Grid.Row="4" Style="{StaticResource IDFlyoutInfoTextStyle}"/>
+
+								<Grid Grid.Row="5" Grid.ColumnSpan="2">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="*"/>
+										<ColumnDefinition Width="*"/>
+									</Grid.ColumnDefinitions>
+
+									<Button HorizontalAlignment="Stretch" Margin="0,5,5,0" Command="{Binding CopyIDCommand}">
+										<StackPanel Orientation="Horizontal">
+											<FontIcon Glyph="&#xE16F;"/>
+											<TextBlock Text="Copy ID" Margin="10,0,0,0"/>
+										</StackPanel>
+									</Button>
+
+									<Button Grid.Column="1" HorizontalAlignment="Stretch" Margin="5,5,0,0" Command="{Binding OpenInBrowserCommand}">
+										<StackPanel Orientation="Horizontal">
+											<FontIcon Glyph="&#xE12B;"/>
+											<TextBlock Text="Open In Browser" Margin="10,0,0,0"/>
+										</StackPanel>
+									</Button>
+
+								</Grid>
+
+
+							</Grid>
+						</Flyout>
+					</Button.Flyout>
+				</Button>
+
+				<FontIcon Glyph="&#xE7BA;" Height="33" Width="40" FontSize="24" Margin="5,0,0,0" Foreground="{Binding SoundWarningColor,Converter={StaticResource ColorToBrush}}" ToolTipService.Placement="Bottom" ToolTipService.ToolTip="{Binding SoundWarningToolTip}" Visibility="{Binding ShowSounWarning,Converter={StaticResource BoolToVisibility}}"/>
 
 				<Rectangle Style="{StaticResource RectangleSeparator}"/>
 
 				<FontIcon Glyph="&#xE10C;" FontSize="24" Visibility="Collapsed" ToolTipService.ToolTip="Loading"/>
 
-				<ToggleButton Height="38" Width="38" Padding="0" CornerRadius="4" BorderThickness="0"  ToolTipService.ToolTip="Vote Up">
+				<ToggleButton Height="33" Width="38" Padding="0" CornerRadius="4" BorderThickness="0"  ToolTipService.ToolTip="Vote Up">
 					<FontIcon Glyph="&#xE96D;" Foreground="LightGreen"/>
 				</ToggleButton>
 
-				<Button Margin="10,0,10,0" Height="38">
+				<Button Margin="10,0,10,0" Height="33" Padding="11,0,11,0">
 					<TextBlock Text="{Binding E621Post.Score.Total}" FontSize="18" MinWidth="35" TextAlignment="Center"/>
 					<Button.Flyout>
 						<Flyout Placement="Bottom">
@@ -76,23 +172,15 @@
 					</Button.Flyout>
 				</Button>
 
-				<ToggleButton Height="38" Width="38" Padding="0" CornerRadius="4" BorderThickness="0" ToolTipService.ToolTip="Vote Down">
+				<ToggleButton Height="33" Width="38" Padding="0" CornerRadius="4" BorderThickness="0" ToolTipService.ToolTip="Vote Down">
 					<FontIcon Glyph="&#xE96E;" Foreground="OrangeRed"/>
 				</ToggleButton>
 
 				<Rectangle Style="{StaticResource RectangleSeparator}"/>
 
-				<ToggleButton Height="38" Padding="10,0,10,0" CornerRadius="4,0,0,4">
-					<StackPanel Orientation="Horizontal">
-						<FontIcon Glyph="&#xEB51;"/>
-						<TextBlock Text="Favorite" Margin="10,0,0,0"/>
-					</StackPanel>
-				</ToggleButton>
-				<ToggleSplitButton Height="38" Width="38" Padding="0" CornerRadius="0,4,4,0">
-					<FontIcon Glyph="&#xE972;" Margin="5" FontSize="12"/>
-				</ToggleSplitButton>
+				<local:CustomToggleSplitButton IsOn="{Binding HasFavorited,Mode=TwoWay}" IsLoading="{Binding IsFavoriteLoading}" OnTitle="Favorited" OffTitle="Favorite" OffIcon="&#xEB51;" OnIcon="&#xEB52;" MinWidth="160"/>
 
-				<Button x:Name="DownloadButton" Height="38" Padding="10,0,10,0" Margin="10,0,0,0">
+				<Button x:Name="DownloadButton" Height="33" Padding="10,0,10,0" Margin="10,0,0,0">
 					<StackPanel Orientation="Horizontal">
 						<FontIcon Glyph="&#xE118;"/>
 						<TextBlock Text="Download" Margin="10,0,0,0"/>
@@ -102,25 +190,10 @@
 			</StackPanel>
 
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-				<DropDownButton FontSize="18" Content="Action" Height="38" CornerRadius="5" BorderThickness="0" Background="Transparent" Margin="0,0,10,0">
+				<DropDownButton FontSize="18" Content="Action" Height="33" CornerRadius="5" BorderThickness="0" Background="Transparent" Margin="0,0,10,0">
 					<DropDownButton.Flyout>
 						<MenuFlyout Placement="Bottom">
-							<MenuFlyoutItem Text="More Info">
-								<MenuFlyoutItem.Icon>
-									<FontIcon Glyph="&#xE946;"/>
-								</MenuFlyoutItem.Icon>
-							</MenuFlyoutItem>
-							<MenuFlyoutItem Text="Open In Browser">
-								<MenuFlyoutItem.Icon>
-									<FontIcon Glyph="&#xE12B;"/>
-								</MenuFlyoutItem.Icon>
-							</MenuFlyoutItem>
-							<MenuFlyoutItem Text="Copy ID">
-								<MenuFlyoutItem.Icon>
-									<FontIcon Glyph="&#xE16F;"/>
-								</MenuFlyoutItem.Icon>
-							</MenuFlyoutItem>
-							<MenuFlyoutItem Text="Copy Image">
+							<MenuFlyoutItem Text="Copy Image" Visibility="{Binding IsMedia,Converter={StaticResource BoolToVisibilityRe}}" IsEnabled="{Binding AbleToCopyImage}" Command="{Binding CopyImageCommand}">
 								<MenuFlyoutItem.Icon>
 									<FontIcon Glyph="&#xE91B;"/>
 								</MenuFlyoutItem.Icon>
@@ -139,6 +212,11 @@
 										<FontIcon Glyph="&#xEE3F;"/>
 									</MenuFlyoutItem.Icon>
 								</MenuFlyoutItem>
+								<MenuFlyoutItem Text="Set As Avatar" IsEnabled="False">
+									<MenuFlyoutItem.Icon>
+										<FontIcon Glyph="&#xE156;"/>
+									</MenuFlyoutItem.Icon>
+								</MenuFlyoutItem>
 							</MenuFlyoutSubItem>
 							<MenuFlyoutItem Text="Open In Photos">
 								<MenuFlyoutItem.Icon>
@@ -150,22 +228,10 @@
 									<FontIcon Glyph="&#xE173;"/>
 								</MenuFlyoutItem.Icon>
 							</MenuFlyoutItem>
-							<!--Dont forget here. Patch request not finished-->
-							<MenuFlyoutItem Text="Set As Avatar">
-								<MenuFlyoutItem.Icon>
-									<FontIcon Glyph="&#xE156;"/>
-								</MenuFlyoutItem.Icon>
-							</MenuFlyoutItem>
-							<!---->
-							<MenuFlyoutItem Text="Debug">
-								<MenuFlyoutItem.Icon>
-									<FontIcon Glyph="&#xE8A1;"/>
-								</MenuFlyoutItem.Icon>
-							</MenuFlyoutItem>
 						</MenuFlyout>
 					</DropDownButton.Flyout>
 				</DropDownButton>
-				<Button FontSize="18" Background="Transparent" BorderThickness="0" Height="38" Padding="7,0,7,0" Command="{Binding OpenMoreInfoCommand}">
+				<Button FontSize="18" Background="Transparent" BorderThickness="0" Height="33" Padding="7,0,7,0" Command="{Binding OpenMoreInfoCommand}">
 					<Button.Content>
 						<StackPanel Orientation="Horizontal">
 							<TextBlock Text="More Info" Margin="5"/>
@@ -193,17 +259,7 @@
 			<SplitView IsPaneOpen="{Binding ShowMoreInfoSplitView,Mode=TwoWay}" DisplayMode="Overlay" PanePlacement="Right" OpenPaneLength="550">
 
 				<SplitView.Pane>
-					<Pivot>
-						<PivotItem Header="Description">
-						
-						</PivotItem>
-						<PivotItem Header="Comments">
-						
-						</PivotItem>
-						<PivotItem Header="Relations">
-						
-						</PivotItem>
-					</Pivot>
+					<pictureviews:PostImageSideView/>
 				</SplitView.Pane>
 
 				<Grid>

@@ -1,12 +1,11 @@
-﻿using ABI.System;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Shapes;
+﻿using Microsoft.UI.Xaml;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.System;
 using Yiff_Browser_WinUI3.Models.E621;
 
 namespace Yiff_Browser_WinUI3.Helpers {
@@ -94,6 +93,9 @@ namespace Yiff_Browser_WinUI3.Helpers {
 		}
 
 		public static void CopyToClipboard(this string text) {
+			if (text.IsBlank()) {
+				return;
+			}
 			DataPackage package = new();
 			package.SetText(text);
 			Clipboard.SetContent(package);
@@ -132,6 +134,14 @@ namespace Yiff_Browser_WinUI3.Helpers {
 				"webm" => FileType.Webm,
 				_ => throw new System.Exception($"New Type({post.File.Ext}) Found"),
 			};
+		}
+
+
+		public static async void OpenInBrowser(this string url) {
+			if (url.IsBlank()) {
+				return;
+			}
+			await Launcher.LaunchUriAsync(new Uri(url));
 		}
 	}
 }

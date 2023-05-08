@@ -66,8 +66,8 @@ namespace Yiff_Browser_WinUI3.Views.Pages.E621 {
 
 		public ICommand HelpInBrowserCommand => new DelegateCommand<string>(HelpInBrowser);
 
-		private async void HelpInBrowser(string address) {
-			_ = await Launcher.LaunchUriAsync(new Uri(address));
+		private void HelpInBrowser(string address) {
+			address.OpenInBrowser();
 		}
 
 		public void Submit() {

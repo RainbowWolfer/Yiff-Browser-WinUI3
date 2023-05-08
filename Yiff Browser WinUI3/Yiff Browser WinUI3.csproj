@@ -11,13 +11,15 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Views\Controls\AddButtonInput.xaml" />
-    <None Remove="Views\Controls\FollowBlockToggleSplitButton.xaml" />
+    <None Remove="Views\Controls\CustomToggleSplitButton.xaml" />
     <None Remove="Views\Controls\ImagesSlideShowView.xaml" />
     <None Remove="Views\Controls\ImageViewItem.xaml" />
     <None Remove="Views\Controls\ListingsManager.xaml" />
     <None Remove="Views\Controls\LoadingViews\LoadingRingWithTextBelow.xaml" />
     <None Remove="Views\Controls\MediaDisplayView.xaml" />
     <None Remove="Views\Controls\PictureDisplayView.xaml" />
+    <None Remove="Views\Controls\PictureViews\PostImageSideView.xaml" />
+    <None Remove="Views\Controls\PictureViews\SourceHyperLinkButton.xaml" />
     <None Remove="Views\Controls\PostDetailView.xaml" />
     <None Remove="Views\Controls\PostsInfoListView.xaml" />
     <None Remove="Views\Controls\PostsViewer.xaml" />
@@ -47,7 +49,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Page Update="Views\Controls\FollowBlockToggleSplitButton.xaml">
+    <Page Update="Views\Controls\CustomToggleSplitButton.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
@@ -127,6 +129,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="Views\Controls\PictureViews\SourceHyperLinkButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
     <Page Update="Views\Pages\E621\E621LoginPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -190,5 +198,15 @@
     <Page Update="Views\Controls\UserHelperViews\LoginHelpSection.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\Controls\PictureViews\PostImageSideView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Resources\Icons\" />
   </ItemGroup>
 </Project>

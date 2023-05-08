@@ -39,16 +39,15 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 				return;
 			}
 			RemoveGroup();
-			bool isDark = App.GetApplicationTheme() == ApplicationTheme.Dark;
 
-			AddNewGroup("Artist", ToGroupTag(tags.Artist, E621Tag.GetCatrgoryColor(E621TagCategory.Artists, isDark)));
-			AddNewGroup("Copyright", ToGroupTag(tags.Copyright, E621Tag.GetCatrgoryColor(E621TagCategory.Copyrights, isDark)));
-			AddNewGroup("Species", ToGroupTag(tags.Species, E621Tag.GetCatrgoryColor(E621TagCategory.Species, isDark)));
-			AddNewGroup("Character", ToGroupTag(tags.Character, E621Tag.GetCatrgoryColor(E621TagCategory.Characters, isDark)));
-			AddNewGroup("General", ToGroupTag(tags.General, E621Tag.GetCatrgoryColor(E621TagCategory.General, isDark)));
-			AddNewGroup("Meta", ToGroupTag(tags.Meta, E621Tag.GetCatrgoryColor(E621TagCategory.Meta, isDark)));
-			AddNewGroup("Invalid", ToGroupTag(tags.Invalid, E621Tag.GetCatrgoryColor(E621TagCategory.Invalid, isDark)));
-			AddNewGroup("Lore", ToGroupTag(tags.Lore, E621Tag.GetCatrgoryColor(E621TagCategory.Lore, isDark)));
+			AddNewGroup($"Artist ({tags.Artist.Count})", ToGroupTag(tags.Artist, E621Tag.GetCatrgoryColor(E621TagCategory.Artists)));
+			AddNewGroup($"Copyright ({tags.Copyright.Count})", ToGroupTag(tags.Copyright, E621Tag.GetCatrgoryColor(E621TagCategory.Copyrights)));
+			AddNewGroup($"Species ({tags.Species.Count})", ToGroupTag(tags.Species, E621Tag.GetCatrgoryColor(E621TagCategory.Species)));
+			AddNewGroup($"Character ({tags.Character.Count})", ToGroupTag(tags.Character, E621Tag.GetCatrgoryColor(E621TagCategory.Characters)));
+			AddNewGroup($"General ({tags.General.Count})", ToGroupTag(tags.General, E621Tag.GetCatrgoryColor(E621TagCategory.General)));
+			AddNewGroup($"Meta ({tags.Meta.Count})", ToGroupTag(tags.Meta, E621Tag.GetCatrgoryColor(E621TagCategory.Meta)));
+			AddNewGroup($"Invalid ({tags.Invalid.Count})", ToGroupTag(tags.Invalid, E621Tag.GetCatrgoryColor(E621TagCategory.Invalid)));
+			AddNewGroup($"Lore ({tags.Lore.Count})", ToGroupTag(tags.Lore, E621Tag.GetCatrgoryColor(E621TagCategory.Lore)));
 
 		}
 

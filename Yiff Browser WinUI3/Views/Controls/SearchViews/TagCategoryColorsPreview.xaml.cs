@@ -9,7 +9,6 @@ namespace Yiff_Browser_WinUI3.Views.Controls.SearchViews {
 	public sealed partial class TagCategoryColorsPreview : UserControl {
 		public TagCategoryColorsPreview() {
 			this.InitializeComponent();
-			bool isDark = App.GetApplicationTheme() == ApplicationTheme.Dark;
 			foreach (var item in new Dictionary<Rectangle, E621TagCategory>() {
 				{ Artists, E621TagCategory.Artists },
 				{ Copyrights, E621TagCategory.Copyrights },
@@ -20,7 +19,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls.SearchViews {
 				{ Invalid, E621TagCategory.Invalid },
 				{ Lore, E621TagCategory.Lore },
 			}) {
-				item.Key.Fill = new SolidColorBrush(E621Tag.GetCatrgoryColor(item.Value, isDark));
+				item.Key.Fill = new SolidColorBrush(E621Tag.GetCatrgoryColor(item.Value));
 			}
 		}
 	}

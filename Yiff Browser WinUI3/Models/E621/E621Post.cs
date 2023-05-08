@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -42,7 +41,7 @@ namespace Yiff_Browser_WinUI3.Models.E621 {
 		public Flags Flags { get; set; }
 
 		[JsonProperty("rating")]
-		public string Rating { get; set; }
+		public E621Rating Rating { get; set; }
 
 		[JsonProperty("fav_count")]
 		public int FavCount { get; set; }
@@ -80,7 +79,6 @@ namespace Yiff_Browser_WinUI3.Models.E621 {
 
 		public bool HasNoValidURLs() => Preview.URL.IsBlank() || Sample.URL.IsBlank() || File.URL.IsBlank();
 
-
 		public override string ToString() {
 			return $"E621Post ({ID}.{File.Ext})";
 		}
@@ -110,6 +108,9 @@ namespace Yiff_Browser_WinUI3.Models.E621 {
 
 		[JsonProperty("url")]
 		public string URL { get; set; }
+
+		[JsonIgnore]
+		public string SizeInfo => $"{Width} × {Height} ({Size.FileSizeToKB()})";
 	}
 
 	public class Preview {
@@ -224,7 +225,7 @@ namespace Yiff_Browser_WinUI3.Models.E621 {
 		[EnumMember(Value = "q")]
 		Questionable,
 		[EnumMember(Value = "e")]
-		Explict
+		Explict,
 	}
 
 

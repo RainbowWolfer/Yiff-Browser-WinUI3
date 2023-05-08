@@ -19,6 +19,8 @@ namespace Yiff_Browser_WinUI3.Models.E621 {
 		public string creator_name;
 		public int category_name;
 
+		public static Dictionary<string, E621Wiki> Pool { get; } = new();
+
 
 		public static readonly Dictionary<string, string> wikiDictionary = new Dictionary<string, string>() {
 			{ "order:score", "Highest score first" },

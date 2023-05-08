@@ -23,7 +23,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls.TagsInfoViews {
 				view.TitleText.Text = value.name;
 				view.PostCountText.Text = value.post_count.NumberToK();
 				view.CategoryText.Text = E621Tag.GetCategory(value.category);
-				view.CategoryRectangle.Fill = new SolidColorBrush(E621Tag.GetCatrgoryColor(value.category, App.GetApplicationTheme() == ApplicationTheme.Dark));
+				view.CategoryRectangle.Fill = new SolidColorBrush(E621Tag.GetCatrgoryColor(value.category));
 			}
 		}
 

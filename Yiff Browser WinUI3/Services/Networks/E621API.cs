@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -54,11 +55,12 @@ namespace Yiff_Browser_WinUI3.Services.Networks {
 		}
 
 		public static async Task<E621Tag> GetE621TagAsync(string tag, CancellationToken? token = null) {
+			tag = tag.ToLower().Trim();
+
 			if (E621Tag.Pool.TryGetValue(tag, out E621Tag e621Tag)) {
 				return e621Tag;
 			}
 
-			tag = tag.ToLower().Trim();
 			string url = $"https://{GetHost()}/tags.json?search[name_matches]={tag}";
 			HttpResult<string> result = await NetCode.ReadURLAsync(url, token);
 			if (result.Result == HttpResultType.Success && result.Content != "{\"tags\":[]}") {
@@ -67,6 +69,66 @@ namespace Yiff_Browser_WinUI3.Services.Networks {
 					E621Tag.Pool.TryAdd(tag, t);
 				}
 				return t;
+			} else {
+				return null;
+			}
+		}
+
+		public static async Task<E621Wiki> GetE621WikiAsync(string tag, CancellationToken? token = null) {
+			tag = tag.ToLower().Trim();
+
+			if (E621Wiki.wikiDictionary.ContainsKey(tag)) {
+				return new E621Wiki() {
+					body = E621Wiki.wikiDictionary[tag]
+				};
+			} else if (tag.StartsWith("fav:")) {
+				return new E621Wiki() {
+					body = $"Favorites of \"{tag[4..]}\"",
+				};
+			}
+
+			if (E621Wiki.Pool.TryGetValue(tag, out E621Wiki e621Wiki)) {
+				return e621Wiki;
+			}
+
+			string url = $"https://{GetHost()}/wiki_pages.json?search[title]={tag}";
+			HttpResult<string> result = await NetCode.ReadURLAsync(url, token);
+			if (result.Result == HttpResultType.Success) {
+				if (result.Content == "[]") {
+					return new E621Wiki();
+				}
+				return JsonConvert.DeserializeObject<E621Wiki[]>(result.Content).FirstOrDefault();
+			} else {
+				return null;
+			}
+		}
+
+		#endregion
+
+		#region Comments
+		public static async Task<E621Comment[]> GetCommentsAsync(int postID, CancellationToken? token = null) {
+			string url = $"https://{GetHost()}/comments.json?group_by=comment&search[post_id]={postID}";
+			HttpResult<string> result = await NetCode.ReadURLAsync(url, token);
+			if (result?.Content == "{\"comments\":[]}") {
+				return Array.Empty<E621Comment>();
+			}
+			if (result.Result == HttpResultType.Success) {
+				return JsonConvert.DeserializeObject<E621Comment[]>(result.Content);
+			} else {
+				return null;
+			}
+		}
+
+		#endregion
+
+
+		#region
+
+		public static async Task<E621User> GetUserAsync(string username, CancellationToken? token = null) {
+			string url = $"https://{GetHost()}/users.json?search[name_matches]={username}";
+			HttpResult<string> result = await NetCode.ReadURLAsync(url, token);
+			if (result.Result == HttpResultType.Success) {
+				return JsonConvert.DeserializeObject<E621User[]>(result.Content).FirstOrDefault();
 			} else {
 				return null;
 			}
