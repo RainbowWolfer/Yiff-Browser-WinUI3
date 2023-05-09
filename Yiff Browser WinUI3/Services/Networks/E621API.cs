@@ -133,6 +133,15 @@ namespace Yiff_Browser_WinUI3.Services.Networks {
 				return null;
 			}
 		}
+		public static async Task<E621User> GetUserAsync(int id, CancellationToken? token = null) {
+			string url = $"https://{GetHost()}/users.json?search[id]={id}";
+			HttpResult<string> result = await NetCode.ReadURLAsync(url, token);
+			if (result.Result == HttpResultType.Success) {
+				return JsonConvert.DeserializeObject<E621User[]>(result.Content).FirstOrDefault();
+			} else {
+				return null;
+			}
+		}
 
 		#endregion
 	}

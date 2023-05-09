@@ -22,7 +22,9 @@
 					<converters:AbsConverter x:Key="Abs"/>
 					<converters:NumberToKBConvetert x:Key="NumberToKB"/>
 				</ResourceDictionary>
-            </ResourceDictionary.MergedDictionaries>
+
+				<ResourceDictionary Source="\Themes\Generic.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
             <!-- Other app resources here -->
         </ResourceDictionary>
     </Application.Resources>

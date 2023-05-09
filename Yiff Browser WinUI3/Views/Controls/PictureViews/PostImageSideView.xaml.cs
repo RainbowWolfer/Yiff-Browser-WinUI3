@@ -86,7 +86,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls.PictureViews {
 				SourceTitle = "Sources";
 			}
 
-
+			LoadComments();
 
 		}
 
@@ -117,6 +117,8 @@ namespace Yiff_Browser_WinUI3.Views.Controls.PictureViews {
 
 		private string textContent;
 		private E621User e621User;
+		private E621Post avatarPost;
+		private bool isLoadingAvatar;
 
 		public E621Comment E621Comment {
 			get => e621Comment;
@@ -125,14 +127,18 @@ namespace Yiff_Browser_WinUI3.Views.Controls.PictureViews {
 
 		public E621User E621User {
 			get => e621User;
-			set => SetProperty(ref e621User, value);
+			set => SetProperty(ref e621User, value, OnUserChanged);
+		}
+
+		public E621Post AvatarPost {
+			get => avatarPost;
+			set => SetProperty(ref avatarPost, value);
 		}
 
 		public string UserAvatarURL {
 			get => userAvatarURL;
 			set => SetProperty(ref userAvatarURL, value);
 		}
-
 
 		public string Username {
 			get => username;
@@ -149,12 +155,30 @@ namespace Yiff_Browser_WinUI3.Views.Controls.PictureViews {
 			set => SetProperty(ref textContent, value);
 		}
 
+		public bool IsLoadingAvatar {
+			get => isLoadingAvatar;
+			set => SetProperty(ref isLoadingAvatar, value);
+		}
 
-		private void OnCommentChanged() {
+		private async void OnCommentChanged() {
+			if (E621Comment == null) {
+				return;
+			}
+
 			Username = E621Comment.creator_name;
 			Score = E621Comment.score;
 			TextContent = E621Comment.body;
+
+			E621User = await E621API.GetUserAsync(E621Comment.creator_id);
+		}
+
+		private void OnUserChanged() {
+			if (E621User == null) {
+				return;
+			}
+
 			//UserAvatarURL= E621Comment.
+
 		}
 
 	}

@@ -51,34 +51,34 @@ namespace Yiff_Browser_WinUI3.Views.Controls.PictureViews {
 			}
 			string path = string.Empty;
 			if (_url.Contains("tumblr")) {//something.tumblr.com
-				path = "/Icons/tumblr-icon.png";
+				path = "/Resources/Icons/tumblr-icon.png";
 			}
 			if (_url.StartsWith("twitter") || _url.StartsWith("www.twitter") || _url.StartsWith("pbs.twimg")) {
-				path = "/Icons/Twitter-icon.png";
+				path = "/Resources/Icons/Twitter-icon.png";
 			} else if (_url.StartsWith("www.furaffinity") || _url.StartsWith("furaffinity") || _url.StartsWith("d.furaffinity")) {
-				path = "/Icons/Furaffinity-icon.png";
+				path = "/Resources/Icons/Furaffinity-icon.png";
 			} else if (_url.StartsWith("www.deviantart") || _url.StartsWith("deviantart")) {
-				path = "/Icons/DeviantArt-icon.png";
+				path = "/Resources/Icons/DeviantArt-icon.png";
 			} else if (_url.StartsWith("www.inkbunny") || _url.StartsWith("inkbunny")) {
-				path = "/Icons/InkBunny-icon.png";
+				path = "/Resources/Icons/InkBunny-icon.png";
 			} else if (_url.StartsWith("www.weasyl.com") || _url.StartsWith("weasyl.com")) {
-				path = "/Icons/weasyl-icon.png";
+				path = "/Resources/Icons/weasyl-icon.png";
 			} else if (_url.StartsWith("www.pixiv") || _url.StartsWith("pixiv")) {
-				path = "/Icons/Pixiv-icon.png";
+				path = "/Resources/Icons/Pixiv-icon.png";
 			} else if (_url.StartsWith("www.instagram") || _url.StartsWith("instagram")) {
-				path = "/Icons/Instagram-icon.png";
+				path = "/Resources/Icons/Instagram-icon.png";
 			} else if (_url.StartsWith("www.patreon") || _url.StartsWith("patreon")) {
-				path = "/Icons/Patreon-icon.png";
+				path = "/Resources/Icons/Patreon-icon.png";
 			} else if (_url.StartsWith("www.subscribestar") || _url.StartsWith("subscribestar")) {
-				path = "/Icons/SubscribeStar-icon.png";
+				path = "/Resources/Icons/SubscribeStar-icon.png";
 			} else if (_url.StartsWith("mega")) {
-				path = "/Icons/Mega-icon.png";
+				path = "/Resources/Icons/Mega-icon.png";
 			} else if (_url.StartsWith("furrynetwork")) {
-				path = "/Icons/FurryNetwork-icon.png";
+				path = "/Resources/Icons/FurryNetwork-icon.png";
 			} else if (_url.StartsWith("t.me")) {
-				path = "/Icons/Telegram-icon.png";
+				path = "/Resources/Icons/Telegram-icon.png";
 			} else if (_url.StartsWith("newgrounds") || _url.StartsWith("www.newgrounds")) {
-				path = "/Icons/NewGrounds-icon.png";
+				path = "/Resources/Icons/NewGrounds-icon.png";
 			}
 
 			IconPath = path;

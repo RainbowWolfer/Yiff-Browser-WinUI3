@@ -259,7 +259,7 @@
 			<SplitView IsPaneOpen="{Binding ShowMoreInfoSplitView,Mode=TwoWay}" DisplayMode="Overlay" PanePlacement="Right" OpenPaneLength="550">
 
 				<SplitView.Pane>
-					<pictureviews:PostImageSideView/>
+					<pictureviews:PostImageSideView E621Post="{Binding E621Post}"/>
 				</SplitView.Pane>
 
 				<Grid>

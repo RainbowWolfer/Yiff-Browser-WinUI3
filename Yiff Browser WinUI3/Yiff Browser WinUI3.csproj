@@ -19,6 +19,7 @@
     <None Remove="Views\Controls\MediaDisplayView.xaml" />
     <None Remove="Views\Controls\PictureDisplayView.xaml" />
     <None Remove="Views\Controls\PictureViews\PostImageSideView.xaml" />
+    <None Remove="Views\Controls\PictureViews\ScoreButton.xaml" />
     <None Remove="Views\Controls\PictureViews\SourceHyperLinkButton.xaml" />
     <None Remove="Views\Controls\PostDetailView.xaml" />
     <None Remove="Views\Controls\PostsInfoListView.xaml" />
@@ -208,5 +209,11 @@
 
   <ItemGroup>
     <Folder Include="Resources\Icons\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\Controls\PictureViews\ScoreButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 </Project>
