@@ -7,7 +7,8 @@ namespace Yiff_Browser_WinUI3.Services.Locals {
 		public int E621PageLimitCount { get; set; } = 75;
 
 
-		public string[] StartupTags { get; set; } = { "brazhnik" };
+		//"brazhnik"
+		public string[] StartupTags { get; set; } = { "order:rank" };
 
 		public bool EnanbleTransitionAnimation { get; set; } = true;
 

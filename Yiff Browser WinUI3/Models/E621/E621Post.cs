@@ -32,7 +32,7 @@ namespace Yiff_Browser_WinUI3.Models.E621 {
 		public Tags Tags { get; set; }
 
 		[JsonProperty("locked_tags")]
-		public List<object> LockedTags { get; set; }
+		public List<string> LockedTags { get; set; }
 
 		[JsonProperty("change_seq")]
 		public int ChangeSeq { get; set; }
@@ -50,13 +50,13 @@ namespace Yiff_Browser_WinUI3.Models.E621 {
 		public List<string> Sources { get; set; }
 
 		[JsonProperty("pools")]
-		public List<object> Pools { get; set; }
+		public List<string> Pools { get; set; }
 
 		[JsonProperty("relationships")]
 		public Relationships Relationships { get; set; }
 
 		[JsonProperty("approver_id")]
-		public object ApproverId { get; set; }
+		public string ApproverId { get; set; }
 
 		[JsonProperty("uploader_id")]
 		public int UploaderId { get; set; }
@@ -74,10 +74,15 @@ namespace Yiff_Browser_WinUI3.Models.E621 {
 		public bool HasNotes { get; set; }
 
 		[JsonProperty("duration")]
-		public object Duration { get; set; }
+		public string Duration { get; set; }
 
 
-		public bool HasNoValidURLs() => Preview.URL.IsBlank() || Sample.URL.IsBlank() || File.URL.IsBlank();
+		public bool HasNoValidURLs() {
+			if (Preview == null || Sample == null || File == null) {
+				return true;
+			}
+			return Preview.URL.IsBlank() || Sample.URL.IsBlank() || File.URL.IsBlank();
+		}
 
 		public override string ToString() {
 			return $"E621Post ({ID}.{File.Ext})";
@@ -88,6 +93,9 @@ namespace Yiff_Browser_WinUI3.Models.E621 {
 	public class E621PostsRoot {
 		[JsonProperty("posts")]
 		public List<E621Post> Posts { get; set; }
+
+		[JsonProperty("post")]
+		public E621Post Post { get; set; }
 	}
 
 	public class File {
@@ -207,7 +215,7 @@ namespace Yiff_Browser_WinUI3.Models.E621 {
 
 	public class Relationships {
 		[JsonProperty("parent_id")]
-		public object ParentId { get; set; }
+		public string ParentId { get; set; }
 
 		[JsonProperty("has_children")]
 		public bool HasChildren { get; set; }
@@ -216,7 +224,7 @@ namespace Yiff_Browser_WinUI3.Models.E621 {
 		public bool HasActiveChildren { get; set; }
 
 		[JsonProperty("children")]
-		public List<object> Children { get; set; }
+		public List<string> Children { get; set; }
 	}
 
 	public enum E621Rating {

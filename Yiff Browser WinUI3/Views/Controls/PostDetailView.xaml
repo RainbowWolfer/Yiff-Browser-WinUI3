@@ -5,7 +5,7 @@
     xmlns:local="using:Yiff_Browser_WinUI3.Views.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-	xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls" xmlns:pictureviews="using:Yiff_Browser_WinUI3.Views.Controls.PictureViews"
+	xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls" xmlns:pictureviews="using:Yiff_Browser_WinUI3.Views.Controls.PictureViews" xmlns:converters="using:Yiff_Browser_WinUI3.Converters"
 	mc:Ignorable="d">
 
 	<UserControl.Resources>
@@ -33,6 +33,7 @@
 			<Setter Property="Grid.Column" Value="1"/>
 		</Style>
 
+		<converters:BoolToSplitViewDisplayModeConverter x:Key="IsOverlay" TrueValue="Overlay" FalseValue="Inline"/>
 	</UserControl.Resources>
 
 	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -256,10 +257,10 @@
 		</Grid>
 
 		<Grid Grid.Row="1" Grid.Column="1">
-			<SplitView IsPaneOpen="{Binding ShowMoreInfoSplitView,Mode=TwoWay}" DisplayMode="Overlay" PanePlacement="Right" OpenPaneLength="550">
+			<SplitView IsPaneOpen="{Binding ShowMoreInfoSplitView,Mode=TwoWay}" DisplayMode="{Binding IsSidePaneOverlay,Converter={StaticResource IsOverlay}}" PanePlacement="Right" OpenPaneLength="550">
 
 				<SplitView.Pane>
-					<pictureviews:PostImageSideView E621Post="{Binding E621Post}"/>
+					<pictureviews:PostImageSideView E621Post="{Binding E621Post}" IsOverlayCheck="{Binding IsSidePaneOverlay,Mode=TwoWay}"/>
 				</SplitView.Pane>
 
 				<Grid>

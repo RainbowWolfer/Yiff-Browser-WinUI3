@@ -61,6 +61,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 				return;
 			}
 			E621PostParameters value = (E621PostParameters)e.NewValue;
+			view.ViewModel.Initialize();
 			view.ViewModel.Tags = value.Tags;
 			view.ViewModel.Page = value.Page;
 		}
@@ -254,6 +255,10 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			Posts.CollectionChanged += (s, e) => PostsCollectionChanged?.Invoke(s, e);
 		}
 
+		public void Initialize() {
+			page = -1;
+		}
+
 		private void OnPageChanged() {
 			Refresh();
 			EnablePreviousPageButton = Page > 1;
@@ -285,7 +290,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 			E621Post[] posts;
 			try {
-				posts = await E621API.GetE621PostsByTagsAsync(new E621PostParameters() {
+				posts = await E621API.GetPostsByTagsAsync(new E621PostParameters() {
 					Page = Page,
 					Tags = Tags,
 				});

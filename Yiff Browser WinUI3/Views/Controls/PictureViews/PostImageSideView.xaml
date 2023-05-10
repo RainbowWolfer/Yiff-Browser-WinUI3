@@ -5,7 +5,9 @@
     xmlns:local="using:Yiff_Browser_WinUI3.Views.Controls.PictureViews"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-	xmlns:customcontrols="using:Yiff_Browser_WinUI3.Views.Controls.CustomControls"
+	xmlns:customcontrols="using:Yiff_Browser_WinUI3.Views.Controls.CustomControls" 
+	xmlns:controls="using:Yiff_Browser_WinUI3.Views.Controls" 
+	xmlns:e621="using:Yiff_Browser_WinUI3.Models.E621"
 	mc:Ignorable="d">
 
 	<UserControl.Resources>
@@ -21,95 +23,188 @@
 		</Style>
 	</UserControl.Resources>
 
-	<Pivot>
-		<Pivot.DataContext>
+	<Grid>
+		<Grid.DataContext>
 			<local:PostImageSideViewModel x:Name="ViewModel" E621Post="{x:Bind E621Post,Mode=OneWay}"/>
-		</Pivot.DataContext>
+		</Grid.DataContext>
 
-		<PivotItem Header="Description">
-			<Grid>
+		<Pivot>
 
-				<Grid.RowDefinitions>
-					<RowDefinition Height="*"/>
-					<RowDefinition Height="auto"/>
-				</Grid.RowDefinitions>
+			<PivotItem Header="Description">
+				<Grid>
 
-				<ScrollViewer Padding="20">
-					<TextBlock Text="No Description" TextWrapping="Wrap" FontSize="18" IsTextSelectionEnabled="True" VerticalAlignment="Top"/>
-				</ScrollViewer>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="*"/>
+						<RowDefinition Height="auto"/>
+					</Grid.RowDefinitions>
 
-				<StackPanel Grid.Row="1" Padding="20">
-					<TextBlock Text="{Binding SourceTitle}" FontSize="24"/>
-					<ListView ItemsSource="{Binding SourceURLs}" SelectionMode="None" IsItemClickEnabled="False" MaxHeight="200">
-						<ListView.ItemTemplate>
-							<DataTemplate x:DataType="x:String">
-								<local:SourceHyperLinkButton URL="{Binding}"/>
-							</DataTemplate>
-						</ListView.ItemTemplate>
-					</ListView>
-				</StackPanel>
+					<ScrollViewer Padding="20">
+						<TextBlock Text="No Description" TextWrapping="Wrap" FontSize="18" IsTextSelectionEnabled="True" VerticalAlignment="Top"/>
+					</ScrollViewer>
 
-			</Grid>
-		</PivotItem>
+					<StackPanel Grid.Row="1" Padding="20">
+						<TextBlock Text="{Binding SourceTitle}" FontSize="24"/>
+						<ListView ItemsSource="{Binding SourceURLs}" SelectionMode="None" IsItemClickEnabled="False" MaxHeight="200">
+							<ListView.ItemTemplate>
+								<DataTemplate x:DataType="x:String">
+									<local:SourceHyperLinkButton URL="{Binding}"/>
+								</DataTemplate>
+							</ListView.ItemTemplate>
+						</ListView>
+					</StackPanel>
 
-		<PivotItem Header="Comments">
-			<Grid>
+				</Grid>
+			</PivotItem>
 
-				<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding IsLoadingComments,Converter={StaticResource BoolToVisibility}}">
-					<TextBlock Text="Loading Comments" FontSize="22" Margin="5"/>
-					<ProgressBar IsIndeterminate="True" Margin="5"/>
-				</StackPanel>
+			<PivotItem Header="Comments">
+				<Grid Margin="0,10,0,0">
 
-				<ListView ItemsSource="{Binding CommentItems}" Visibility="{Binding IsLoadingComments,Converter={StaticResource BoolToVisibilityRe}}" SelectionMode="None" IsItemClickEnabled="False" Padding="0,0,10,0">
-					<ListView.ItemTemplate>
-						<DataTemplate x:DataType="local:CommentItem">
-							<Grid Background="{StaticResource CardBackgroundFillColorDefaultBrush}" Margin="0,0,0,10" CornerRadius="10" Padding="5">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="140"/>
-									<ColumnDefinition Width="*"/>
-								</Grid.ColumnDefinitions>
-								<Grid.RowDefinitions>
-									<RowDefinition Height="auto"/>
-									<RowDefinition Height="*"/>
-									<RowDefinition Height="auto"/>
-									<RowDefinition Height="auto"/>
-								</Grid.RowDefinitions>
+					<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding IsLoadingComments,Converter={StaticResource BoolToVisibility}}">
+						<TextBlock Text="Loading Comments" FontSize="22" Margin="5"/>
+						<ProgressBar IsIndeterminate="True" Margin="5"/>
+					</StackPanel>
 
-								<Image Source="{Binding UserAvatarURL}" VerticalAlignment="Top" Height="120" Width="120"/>
-								<ProgressRing Height="70" Width="70" IsActive="True" Visibility="{Binding IsLoadingAvatar,Converter={StaticResource BoolToVisibility}}"/>
+					<Grid Visibility="{Binding IsLoadingComments,Converter={StaticResource BoolToVisibilityRe}}">
 
-								<TextBlock VerticalAlignment="Top" FontSize="14" Grid.Row="1" Text="{x:Bind E621Comment.creator_name}" TextAlignment="Center" Margin="0,10,0,0"/>
+						<Grid Visibility="{Binding CommentItems,Converter={StaticResource ArrayEmptyToVisibility}}">
+							<TextBlock Text="No Comments Yet" FontSize="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+						</Grid>
 
-								<Grid Grid.Column="0" Grid.Row="2" Margin="10,0,10,0">
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="*" />
-										<ColumnDefinition Width="*" />
-										<ColumnDefinition Width="*" />
-									</Grid.ColumnDefinitions>
+						<ListView ItemsSource="{Binding CommentItems}" SelectionMode="None" IsItemClickEnabled="False" Padding="0,0,10,0" Visibility="{Binding CommentItems,Converter={StaticResource ArrayNotEmptyToVisibility}}">
+							<ListView.ItemTemplate>
+								<DataTemplate x:DataType="local:CommentItem">
+									<Grid Background="{StaticResource CardBackgroundFillColorDefaultBrush}" Margin="0,0,0,10" CornerRadius="10">
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="140"/>
+											<ColumnDefinition Width="*"/>
+										</Grid.ColumnDefinitions>
 
-									<!--<customcontrols:LoadableButton Style="{StaticResource ScoreButton}">
-										<FontIcon Glyph="&#xE96D;" Foreground="{StaticResource ButtonForegroundThemeBrush}"/>
-									</customcontrols:LoadableButton>-->
+										<StackPanel Background="#1b0056ff">
 
-									<TextBlock Text="{Binding Score}" Grid.Column="1" FontSize="16" HorizontalAlignment="Stretch" TextAlignment="Center" VerticalAlignment="Center"/>
+											<TextBlock FontSize="16" Text="{Binding Username}" TextAlignment="Left" Margin="15,5,5,0" FontWeight="SemiBold" TextWrapping="Wrap"/>
+											<TextBlock FontSize="14" Text="{Binding LevelString}" TextAlignment="Left" Margin="15,0,0,0" Visibility="{Binding LevelString,Converter={StaticResource ArrayNotEmptyToVisibility}}"/>
 
-									<Button Grid.Column="2" Padding="0" CornerRadius="5">
-										<Button.Content>
-											<FontIcon Foreground="{StaticResource ButtonForegroundThemeBrush}"/>
-										</Button.Content>
-									</Button>
-								</Grid>
+											<Border Height="120" Width="120" CornerRadius="10" Visibility="{Binding UserAvatarURL,Converter={StaticResource ArrayNotEmptyToVisibility}}" Margin="0,5,0,0">
+												<Border.Background>
+													<ImageBrush ImageSource="{Binding UserAvatarURL}" Stretch="UniformToFill"/>
+												</Border.Background>
+											</Border>
+
+											<ProgressBar Width="80" IsIndeterminate="True" Visibility="{Binding IsLoadingAvatar,Converter={StaticResource BoolToVisibility}}" Margin="5"/>
+
+											<Grid Margin="5">
+												<Grid.ColumnDefinitions>
+													<ColumnDefinition Width="*"/>
+													<ColumnDefinition Width="*"/>
+													<ColumnDefinition Width="*"/>
+												</Grid.ColumnDefinitions>
+
+												<local:ScoreButton UpOrDown="True" Height="25" Width="25"/>
+
+												<TextBlock Text="{Binding Score}" Grid.Column="1" FontSize="16" HorizontalAlignment="Stretch" TextAlignment="Center" VerticalAlignment="Center" MinWidth="30"/>
+
+												<local:ScoreButton UpOrDown="False" Height="25" Width="25" Grid.Column="2"/>
+											</Grid>
+
+										</StackPanel>
+
+										<StackPanel Grid.Column="1" Grid.RowSpan="4" Margin="8">
+											<TextBlock Text="{Binding CreatedDateTime}" Margin="0,0,0,5"/>
+
+											<TextBlock Text="{Binding TextContent}" TextWrapping="Wrap"/>
+										</StackPanel>
+
+									</Grid>
+								</DataTemplate>
+							</ListView.ItemTemplate>
+						</ListView>
+
+					</Grid>
+
+				</Grid>
+			</PivotItem>
+
+			<PivotItem Header="Relations">
+
+				<ScrollViewer Margin="0,10,0,0">
+					<StackPanel>
+
+						<Expander HorizontalAlignment="Stretch" IsExpanded="True" Margin="0,0,0,10">
+							<Expander.Header>
+								<StackPanel Orientation="Horizontal">
+									<FontIcon Glyph="&#xE292;" FontSize="22"/>
+									<TextBlock Text="Pools" Margin="15,0,0,0" FontSize="22"/>
+								</StackPanel>
+							</Expander.Header>
+
+							<Grid>
+								<TextBlock Text="Not Found" HorizontalAlignment="Center" Visibility="{Binding PoolItems,Converter={StaticResource ArrayEmptyToVisibility}}"/>
+								<ListView SelectionMode="None" IsItemClickEnabled="True" ItemsSource="{Binding PoolItems}" Visibility="{Binding PoolItems,Converter={StaticResource ArrayNotEmptyToVisibility}}">
+									<ListView.ItemTemplate>
+										<DataTemplate x:DataType="local:PostPoolItem">
+											<Grid>
+												<FontIcon Glyph="&#xE158;" HorizontalAlignment="Left"/>
+												<TextBlock Text="#" FontSize="18" Margin="35,0,0,0"/>
+												<TextBlock Text="{x:Bind PoolID}" FontSize="18" Margin="47,0,0,0"/>
+												<FontIcon Glyph="&#xE0E3;" HorizontalAlignment="Right" FontSize="18"/>
+											</Grid>
+										</DataTemplate>
+									</ListView.ItemTemplate>
+								</ListView>
+							</Grid>
+
+						</Expander>
+
+						<Expander HorizontalAlignment="Stretch" IsExpanded="True" Margin="0,0,0,10">
+							<Expander.Header>
+								<StackPanel Orientation="Horizontal">
+									<FontIcon Glyph="&#xE8CF;" FontSize="22"/>
+									<TextBlock Text="Parent" Margin="15,0,0,0" FontSize="22"/>
+								</StackPanel>
+							</Expander.Header>
+
+							<Grid>
+								<TextBlock Text="Not Found" HorizontalAlignment="Center" Visibility="{Binding ParentPost,Converter={StaticResource NullToVisibility}}"/>
+
+								<StackPanel Orientation="Horizontal" Visibility="{Binding ParentPost,Converter={StaticResource NotNullToVisibility}}">
+									<controls:ImageViewItem Post="{Binding ParentPost}" Height="230" Width="230" Margin="5"/>
+								</StackPanel>
 
 							</Grid>
-						</DataTemplate>
-					</ListView.ItemTemplate>
-				</ListView>
-			</Grid>
-		</PivotItem>
 
-		<PivotItem Header="Relations">
+						</Expander>
 
-		</PivotItem>
+						<Expander HorizontalAlignment="Stretch" IsExpanded="True" Margin="0,0,0,10">
+							<Expander.Header>
+								<StackPanel Orientation="Horizontal">
+									<FontIcon Glyph="&#xE902;" FontSize="22"/>
+									<TextBlock Text="Children" Margin="15,0,0,0" FontSize="22"/>
+								</StackPanel>
+							</Expander.Header>
+							<Grid>
+								<TextBlock Text="Not Found" HorizontalAlignment="Center" Visibility="{Binding ChildrenPost,Converter={StaticResource ArrayEmptyToVisibility}}"/>
 
-	</Pivot>
+								<GridView ItemsSource="{Binding ChildrenPost}" IsItemClickEnabled="False" SelectionMode="None" Visibility="{Binding ChildrenPost,Converter={StaticResource ArrayNotEmptyToVisibility}}">
+									<GridView.ItemTemplate>
+										<DataTemplate x:DataType="e621:E621Post">
+											<controls:ImageViewItem Post="{Binding}" Height="230" Width="230" Margin="5"/>
+										</DataTemplate>
+									</GridView.ItemTemplate>
+								</GridView>
+
+							</Grid>
+
+						</Expander>
+
+					</StackPanel>
+				</ScrollViewer>
+
+			</PivotItem>
+
+		</Pivot>
+
+
+		<ToggleSwitch IsOn="{x:Bind IsOverlayCheck,Mode=TwoWay}" Height="38" OnContent="Overlay" OffContent="Inline" FlowDirection="RightToLeft" Margin="0,5,20,0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+
+	</Grid>
 </UserControl>

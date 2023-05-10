@@ -1,4 +1,5 @@
 ﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using System;
@@ -26,6 +27,7 @@ namespace Yiff_Browser_WinUI3.Converters {
 	public class BoolToBrushConverter : BoolToValueConverter<Brush> { }
 	public class BoolToThicknessConverter : BoolToValueConverter<Thickness> { }
 	public class BoolToCornerRadiusConverter : BoolToValueConverter<CornerRadius> { }
+	public class BoolToSplitViewDisplayModeConverter : BoolToValueConverter<SplitViewDisplayMode> { }
 
 
 }

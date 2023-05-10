@@ -21,6 +21,11 @@
 					<converters:JoinStringConverter x:Key="JoinStringWithSpace"/>
 					<converters:AbsConverter x:Key="Abs"/>
 					<converters:NumberToKBConvetert x:Key="NumberToKB"/>
+					<converters:SubStringConverter x:Key="RatingHeader" Length="1"/>
+					<converters:E621RatingToBrushConverter x:Key="E621RatingToBrush"/>
+					<converters:E621RatingToIconConverter x:Key="E621RatingToIcon"/>
+					<converters:NotNullToVisibilityConverter x:Key="NotNullToVisibility"/>
+					<converters:NullToVisibilityConverter x:Key="NullToVisibility"/>
 				</ResourceDictionary>
 
 				<ResourceDictionary Source="\Themes\Generic.xaml"/>

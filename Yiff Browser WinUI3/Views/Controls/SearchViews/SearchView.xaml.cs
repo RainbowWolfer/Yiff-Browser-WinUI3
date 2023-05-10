@@ -307,7 +307,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls.SearchViews {
 				return;
 			}
 			IsRandomTagLoading = true;
-			E621Post[] posts = await E621API.GetE621PostsByTagsAsync(new E621PostParameters() {
+			E621Post[] posts = await E621API.GetPostsByTagsAsync(new E621PostParameters() {
 				Page = 1,
 				Tags = new string[] { "limit:1", "order:random" },
 				UsePageLimit = false,

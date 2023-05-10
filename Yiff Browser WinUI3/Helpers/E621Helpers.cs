@@ -14,5 +14,14 @@ namespace Yiff_Browser_WinUI3.Helpers {
 			};
 		}
 
+		public static string GetRatingIcon(this E621Rating rating){
+			return rating switch {
+				E621Rating.Safe => "\uF78C",
+				E621Rating.Questionable => "\uE897",
+				E621Rating.Explict => "\uE814",
+				_ => "\uE8BB",
+			};
+		}
+
 	}
 }

@@ -49,6 +49,18 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			}
 		}
 
+		public bool ShowPostInfo {
+			get => (bool)GetValue(ShowPostInfoProperty);
+			set => SetValue(ShowPostInfoProperty, value);
+		}
+
+		public static readonly DependencyProperty ShowPostInfoProperty = DependencyProperty.Register(
+			nameof(ShowPostInfo),
+			typeof(bool),
+			typeof(ImageViewItem),
+			new PropertyMetadata(true)
+		);
+
 		public ImageViewItem() {
 			this.InitializeComponent();
 			TypeHintBorder.Translation += new Vector3(0, 0, 32);

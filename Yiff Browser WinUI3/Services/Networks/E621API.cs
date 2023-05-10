@@ -20,7 +20,7 @@ namespace Yiff_Browser_WinUI3.Services.Networks {
 		public static int GetPostsPerPageCount() => Local.Settings?.E621PageLimitCount ?? 75;
 
 		#region Posts
-		public static async Task<E621Post[]> GetE621PostsByTagsAsync(E621PostParameters parameters) {
+		public static async Task<E621Post[]> GetPostsByTagsAsync(E621PostParameters parameters) {
 			if (parameters.Page <= 0) {
 				parameters.Page = 1;
 			}
@@ -36,6 +36,20 @@ namespace Yiff_Browser_WinUI3.Services.Networks {
 
 			if (result.Result == HttpResultType.Success) {
 				return JsonConvert.DeserializeObject<E621PostsRoot>(result.Content)?.Posts.ToArray() ?? Array.Empty<E621Post>();
+			} else {
+				return null;
+			}
+		}
+
+		public static async Task<E621Post> GetPostAsync(string postID, CancellationToken? token = null) {
+			if (postID.IsBlank()) {
+				return null;
+			}
+			string url = $"https://{GetHost()}/posts/{postID}.json";
+			HttpResult<string> result = await NetCode.ReadURLAsync(url, token);
+			if (result.Result == HttpResultType.Success) {
+				E621Post post = JsonConvert.DeserializeObject<E621PostsRoot>(result.Content).Post;
+				return post;
 			} else {
 				return null;
 			}
@@ -133,6 +147,7 @@ namespace Yiff_Browser_WinUI3.Services.Networks {
 				return null;
 			}
 		}
+
 		public static async Task<E621User> GetUserAsync(int id, CancellationToken? token = null) {
 			string url = $"https://{GetHost()}/users.json?search[id]={id}";
 			HttpResult<string> result = await NetCode.ReadURLAsync(url, token);

@@ -104,6 +104,12 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		private bool isFavoriteLoading;
 		private bool hasFavorited;
 		private bool ableToCopyImage;
+		private bool isSidePaneOverlay = true;
+
+		public bool IsSidePaneOverlay {
+			get => isSidePaneOverlay;
+			set => SetProperty(ref isSidePaneOverlay, value);
+		}
 
 		public E621Post E621Post {
 			get => e621Post;
@@ -271,7 +277,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		public ICommand OpenMoreInfoCommand => new DelegateCommand(OpenMoreInfo);
 
 		private void OpenMoreInfo() {
-			ShowMoreInfoSplitView = true;
+			ShowMoreInfoSplitView = !ShowMoreInfoSplitView;
 		}
 
 		public ICommand CopyIDCommand => new DelegateCommand(CopyID);
@@ -298,7 +304,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			};
 
 			imageDataPackage.SetBitmap(RandomAccessStreamReference.CreateFromUri(new Uri(E621Post.File.URL)));
-			Clipboard.SetContent(imageDataPackage);	
+			Clipboard.SetContent(imageDataPackage);
 		}
 	}
 }

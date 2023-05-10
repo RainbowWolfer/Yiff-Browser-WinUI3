@@ -6,13 +6,15 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:i="using:Microsoft.Xaml.Interactivity"
-	xmlns:core="using:Microsoft.Xaml.Interactions.Core"
-    mc:Ignorable="d">
+	xmlns:core="using:Microsoft.Xaml.Interactions.Core" 
+	xmlns:converters="using:Yiff_Browser_WinUI3.Converters"
+	mc:Ignorable="d">
 
 	<UserControl.Resources>
 		<Style x:Key="MyButtonStyle" TargetType="Button">
 
 		</Style>
+
 	</UserControl.Resources>
 
 	<Grid ToolTipService.ToolTip="{x:Bind Post}">
@@ -25,21 +27,28 @@
 
 			<Grid>
 
-				<Image x:Name="PreviewImage" Source="{Binding PreviewImageURL}" Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding HidePreviewImage,Converter={StaticResource BoolToVisibilityRe}}">
-					<i:Interaction.Behaviors>
-						<core:EventTriggerBehavior EventName="ImageOpened">
-							<core:InvokeCommandAction Command="{Binding OnPreviewLoadedCommand}"/>
-						</core:EventTriggerBehavior>
-					</i:Interaction.Behaviors>
-				</Image>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="*"/>
+					<RowDefinition Height="auto"/>
+				</Grid.RowDefinitions>
 
-				<Image x:Name="SampleImage" Source="{Binding SampleImageURL}" Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center">
-					<i:Interaction.Behaviors>
-						<core:EventTriggerBehavior EventName="ImageOpened">
-							<core:InvokeCommandAction Command="{Binding OnSampleLoadedCommand}"/>
-						</core:EventTriggerBehavior>
-					</i:Interaction.Behaviors>
-				</Image>
+				<Grid>
+					<Image x:Name="PreviewImage" Source="{Binding PreviewImageURL}" Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding HidePreviewImage,Converter={StaticResource BoolToVisibilityRe}}">
+						<i:Interaction.Behaviors>
+							<core:EventTriggerBehavior EventName="ImageOpened">
+								<core:InvokeCommandAction Command="{Binding OnPreviewLoadedCommand}"/>
+							</core:EventTriggerBehavior>
+						</i:Interaction.Behaviors>
+					</Image>
+
+					<Image x:Name="SampleImage" Source="{Binding SampleImageURL}" Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center">
+						<i:Interaction.Behaviors>
+							<core:EventTriggerBehavior EventName="ImageOpened">
+								<core:InvokeCommandAction Command="{Binding OnSampleLoadedCommand}"/>
+							</core:EventTriggerBehavior>
+						</i:Interaction.Behaviors>
+					</Image>
+				</Grid>
 
 				<Grid Visibility="{Binding ErrorLoadingHint,Converter={StaticResource ArrayNotEmptyToVisibility}}">
 					<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -63,6 +72,36 @@
 						</TextBlock.Shadow>
 					</TextBlock>
 				</Border>
+
+				<Grid VerticalAlignment="Bottom" Height="25" Background="{StaticResource CardBackgroundFillColorDefaultBrush}" Grid.Row="1" Padding="20,0,20,0" Visibility="{x:Bind ShowPostInfo,Mode=OneWay,Converter={StaticResource BoolToVisibility}}">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+
+					<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0">
+						<TextBlock Text="{Binding Post.Score.Total}"/>
+						<FontIcon Glyph="&#xE878;" FontSize="15" Margin="5,0,0,0"/>
+					</StackPanel>
+					
+					<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1">
+						<TextBlock Text="{Binding Post.FavCount}"/>
+						<FontIcon Glyph="&#xEB52;" FontSize="15" Margin="5,0,0,0"/>
+					</StackPanel>
+					
+					<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2">
+						<TextBlock Text="{Binding Post.CommentCount}"/>
+						<FontIcon Glyph="&#xE90A;" FontSize="15" Margin="5,0,0,0"/>
+					</StackPanel>
+					
+					<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="3">
+						<TextBlock Text="{Binding Post.Rating,Converter={StaticResource RatingHeader}}"/>
+						<FontIcon Glyph="{Binding Post.Rating,Converter={StaticResource E621RatingToIcon}}" FontSize="15" Margin="5,0,0,0" Foreground="{Binding Post.Rating,Converter={StaticResource E621RatingToBrush}}"/>
+					</StackPanel>
+
+				</Grid>
 
 			</Grid>
 
