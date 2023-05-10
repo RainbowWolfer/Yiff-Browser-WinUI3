@@ -167,6 +167,14 @@ namespace Yiff_Browser_WinUI3.Services.Networks {
 		public int Page { get; set; } = 1;
 		public string[] Tags { get; set; } = { "" };
 		public bool UsePageLimit { get; set; } = true;
+
+
+		public bool InputPosts { get; set; }
+		public E621Post[] Posts { get; set; }
+
+
+
+
 	}
 
 }

@@ -61,6 +61,18 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			new PropertyMetadata(true)
 		);
 
+		public ICommand Command {
+			get => (ICommand)GetValue(CommandProperty);
+			set => SetValue(CommandProperty, value);
+		}
+
+		public static readonly DependencyProperty CommandProperty =DependencyProperty.Register(
+			nameof(Command),
+			typeof(ICommand),
+			typeof(ImageViewItem),
+			new PropertyMetadata(null)
+		);
+
 		public ImageViewItem() {
 			this.InitializeComponent();
 			TypeHintBorder.Translation += new Vector3(0, 0, 32);
@@ -68,6 +80,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 		private void Button_Click(object sender, RoutedEventArgs e) {
 			ImageClick?.Invoke(this, ViewModel);
+			Command?.Execute(e);
 		}
 
 		public Image GetSampleImage() => SampleImage;

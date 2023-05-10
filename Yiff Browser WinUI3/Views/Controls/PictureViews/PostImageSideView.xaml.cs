@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Prism.Commands;
 using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
@@ -15,11 +16,13 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Yiff_Browser_WinUI3.Helpers;
 using Yiff_Browser_WinUI3.Models.E621;
 using Yiff_Browser_WinUI3.Services.Networks;
+using Yiff_Browser_WinUI3.Views.Pages.E621;
 
 namespace Yiff_Browser_WinUI3.Views.Controls.PictureViews {
 	public sealed partial class PostImageSideView : UserControl {
@@ -54,6 +57,10 @@ namespace Yiff_Browser_WinUI3.Views.Controls.PictureViews {
 
 		public PostImageSideView() {
 			this.InitializeComponent();
+		}
+
+		private void ImageViewItem_ImageClick(ImageViewItem sender, ImageViewItemViewModel args) {
+			ViewModel.RelationsCommand?.Execute(null);
 		}
 	}
 
@@ -111,6 +118,15 @@ namespace Yiff_Browser_WinUI3.Views.Controls.PictureViews {
 			set => SetProperty(ref isLoadingComments, value);
 		}
 
+		public bool IsLoadingParent {
+			get => isLoadingParent;
+			set => SetProperty(ref isLoadingParent, value);
+		}
+		public bool IsLoadingChildren {
+			get => isLoadingChildren;
+			set => SetProperty(ref isLoadingChildren, value);
+		}
+
 		private void OnPostChanged() {
 			Description = E621Post.Description.NotBlankCheck() ?? "No Description";
 			SourceURLs = E621Post.Sources.ToArray();
@@ -130,8 +146,13 @@ namespace Yiff_Browser_WinUI3.Views.Controls.PictureViews {
 
 		private CancellationTokenSource cts1;
 		private CancellationTokenSource cts2;
+		private bool isLoadingParent;
+		private bool isLoadingChildren;
 
 		private async void LoadRelations() {
+			IsLoadingParent = true;
+			IsLoadingChildren = true;
+
 			ParentPost = null;
 			ChildrenPost = null;
 
@@ -146,10 +167,13 @@ namespace Yiff_Browser_WinUI3.Views.Controls.PictureViews {
 				ParentPost = parent;
 			}
 
+			IsLoadingParent = false;
+
 			if (childrenIDs.IsNotEmpty()) {
 				List<E621Post> list = new();
 				foreach (string id in childrenIDs) {
 					if (cts2.IsCancellationRequested) {
+						IsLoadingChildren = false;
 						return;
 					}
 					E621Post post = await E621API.GetPostAsync(id, cts2.Token);
@@ -159,6 +183,8 @@ namespace Yiff_Browser_WinUI3.Views.Controls.PictureViews {
 				}
 				ChildrenPost = list.ToArray();
 			}
+
+			IsLoadingChildren = false;
 
 		}
 
@@ -195,6 +221,24 @@ namespace Yiff_Browser_WinUI3.Views.Controls.PictureViews {
 				}
 				await item;
 			}
+		}
+
+		public ICommand RelationsCommand => new DelegateCommand(Relations);
+
+		private void Relations() {
+			if (IsLoadingChildren || IsLoadingParent) {
+				return;
+			}
+
+			List<E621Post> posts = new() { E621Post };
+			if (ParentPost != null) {
+				posts.Add(ParentPost);
+			}
+			if (ChildrenPost.IsNotEmpty()) {
+				posts.AddRange(ChildrenPost);
+			}
+
+			E621HomePageViewModel.CreatePosts($"Relations of {E621Post.ID}", posts);
 		}
 	}
 

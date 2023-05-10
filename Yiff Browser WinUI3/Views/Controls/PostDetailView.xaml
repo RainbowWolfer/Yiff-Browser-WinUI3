@@ -244,7 +244,7 @@
 		</Grid>
 
 		<Grid Grid.Row="1" Margin="0,0,10,0">
-			<local:PostTagsListView Tags="{Binding E621Post.Tags}"/>
+			<local:PostTagsListView Tags="{Binding E621Post.Tags}" ShowAddMinusButton="{Binding InputByPosts,Converter={StaticResource BoolToBoolRe}}"/>
 		</Grid>
 
 		<Grid Margin="0,0,10,0">

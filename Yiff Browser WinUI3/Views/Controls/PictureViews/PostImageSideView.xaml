@@ -8,6 +8,7 @@
 	xmlns:customcontrols="using:Yiff_Browser_WinUI3.Views.Controls.CustomControls" 
 	xmlns:controls="using:Yiff_Browser_WinUI3.Views.Controls" 
 	xmlns:e621="using:Yiff_Browser_WinUI3.Models.E621"
+	xmlns:helpers="using:Yiff_Browser_WinUI3.Helpers"
 	mc:Ignorable="d">
 
 	<UserControl.Resources>
@@ -23,7 +24,7 @@
 		</Style>
 	</UserControl.Resources>
 
-	<Grid>
+	<Grid x:Name="Root">
 		<Grid.DataContext>
 			<local:PostImageSideViewModel x:Name="ViewModel" E621Post="{x:Bind E621Post,Mode=OneWay}"/>
 		</Grid.DataContext>
@@ -160,6 +161,7 @@
 								<StackPanel Orientation="Horizontal">
 									<FontIcon Glyph="&#xE8CF;" FontSize="22"/>
 									<TextBlock Text="Parent" Margin="15,0,0,0" FontSize="22"/>
+									<ProgressRing IsActive="True" Margin="15,0,0,0" Height="20" Width="20" Visibility="{Binding IsLoadingParent,Converter={StaticResource BoolToVisibility}}"/>
 								</StackPanel>
 							</Expander.Header>
 
@@ -167,7 +169,7 @@
 								<TextBlock Text="Not Found" HorizontalAlignment="Center" Visibility="{Binding ParentPost,Converter={StaticResource NullToVisibility}}"/>
 
 								<StackPanel Orientation="Horizontal" Visibility="{Binding ParentPost,Converter={StaticResource NotNullToVisibility}}">
-									<controls:ImageViewItem Post="{Binding ParentPost}" Height="230" Width="230" Margin="5"/>
+									<controls:ImageViewItem Post="{Binding ParentPost}" Height="230" Width="230" Margin="5" Command="{Binding RelationsCommand}"/>
 								</StackPanel>
 
 							</Grid>
@@ -179,15 +181,19 @@
 								<StackPanel Orientation="Horizontal">
 									<FontIcon Glyph="&#xE902;" FontSize="22"/>
 									<TextBlock Text="Children" Margin="15,0,0,0" FontSize="22"/>
+									<ProgressRing IsActive="True" Margin="15,0,0,0" Height="20" Width="20" Visibility="{Binding IsLoadingChildren,Converter={StaticResource BoolToVisibility}}"/>
 								</StackPanel>
 							</Expander.Header>
 							<Grid>
 								<TextBlock Text="Not Found" HorizontalAlignment="Center" Visibility="{Binding ChildrenPost,Converter={StaticResource ArrayEmptyToVisibility}}"/>
 
-								<GridView ItemsSource="{Binding ChildrenPost}" IsItemClickEnabled="False" SelectionMode="None" Visibility="{Binding ChildrenPost,Converter={StaticResource ArrayNotEmptyToVisibility}}">
+								<GridView x:Name="ChildrenRelationsView" ItemsSource="{Binding ChildrenPost}" IsItemClickEnabled="False" SelectionMode="None" Visibility="{Binding ChildrenPost,Converter={StaticResource ArrayNotEmptyToVisibility}}">
 									<GridView.ItemTemplate>
 										<DataTemplate x:DataType="e621:E621Post">
-											<controls:ImageViewItem Post="{Binding}" Height="230" Width="230" Margin="5"/>
+											<Grid>
+												<TextBlock x:Name="proxy" helpers:AncestorSource.AncestorType="GridView" />
+												<controls:ImageViewItem Post="{Binding}" Height="230" Width="230" Margin="5" ImageClick="ImageViewItem_ImageClick"/>
+											</Grid>
 										</DataTemplate>
 									</GridView.ItemTemplate>
 								</GridView>

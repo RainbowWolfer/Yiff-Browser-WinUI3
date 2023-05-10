@@ -4,9 +4,12 @@ using Microsoft.UI.Xaml.Navigation;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
 using Yiff_Browser_WinUI3.Helpers;
+using Yiff_Browser_WinUI3.Models.E621;
 using Yiff_Browser_WinUI3.Services.Locals;
 using Yiff_Browser_WinUI3.Services.Networks;
 using Yiff_Browser_WinUI3.Views.Controls;
@@ -72,10 +75,56 @@ namespace Yiff_Browser_WinUI3.Views.Pages.E621 {
 		}
 
 		public E621HomePageViewModel() {
+			Instance = this;
+
 			string[] startupTags = Local.Settings.StartupTags;
 			Items.Add(new HomeTabViewItem(startupTags));
 			SelectedIndex = 0;
 		}
+
+
+		#region Static
+		public static E621HomePageViewModel Instance { get; private set; }
+
+		public static void CreateNewTag(string tag) {
+			if (Instance == null) {
+				return;
+			}
+			Instance.Items.Add(new HomeTabViewItem(tag));
+			Instance.SelectedIndex = Instance.Items.Count - 1;
+		}
+
+		public static void CreateConcatTag(string tag, bool addOrRemove) {
+			if (Instance == null) {
+				return;
+			}
+
+			HomeTabViewItem item = Instance.Items[Instance.SelectedIndex];
+			if (item.Parameters.Tags == null) {
+				return;
+			}
+
+			List<string> tags = item.Parameters.Tags.ToList();
+			if (addOrRemove) {
+				tags.Add($"{tag}");
+			} else {
+				tags.Add($"-{tag}");
+			}
+
+			Instance.Items.Add(new HomeTabViewItem(tags.ToArray()));
+			Instance.SelectedIndex = Instance.Items.Count - 1;
+		}
+
+		public static void CreatePosts(string title, IEnumerable<E621Post> posts) {
+			if (Instance == null || posts.IsEmpty()) {
+				return;
+			}
+			Instance.Items.Add(new HomeTabViewItem(title, posts));
+			Instance.SelectedIndex = Instance.Items.Count - 1;
+		}
+
+
+		#endregion
 
 	}
 
@@ -130,7 +179,14 @@ namespace Yiff_Browser_WinUI3.Views.Pages.E621 {
 				Page = 1,
 				Tags = Tags,
 			};
+		}
 
+		public HomeTabViewItem(string title, IEnumerable<E621Post> posts) {
+			Title = title.NotBlankCheck() ?? "Empty title";
+			Parameters = new E621PostParameters() {
+				Posts = posts.ToArray(),
+				InputPosts = true,
+			};
 		}
 
 		public ICommand CopyCommand => new DelegateCommand(Copy);

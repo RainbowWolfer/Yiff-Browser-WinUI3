@@ -1,7 +1,9 @@
 ﻿using Newtonsoft.Json;
+using Prism.Commands;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using System.Windows.Input;
 using Yiff_Browser_WinUI3.Helpers;
 
 namespace Yiff_Browser_WinUI3.Models.E621 {
@@ -87,7 +89,6 @@ namespace Yiff_Browser_WinUI3.Models.E621 {
 		public override string ToString() {
 			return $"E621Post ({ID}.{File.Ext})";
 		}
-
 	}
 
 	public class E621PostsRoot {

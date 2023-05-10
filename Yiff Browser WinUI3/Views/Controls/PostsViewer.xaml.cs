@@ -61,9 +61,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 				return;
 			}
 			E621PostParameters value = (E621PostParameters)e.NewValue;
-			view.ViewModel.Initialize();
-			view.ViewModel.Tags = value.Tags;
-			view.ViewModel.Page = value.Page;
+			view.ViewModel.Initialize(value);
 		}
 
 		public PostsViewer() {
@@ -182,6 +180,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		private bool isPostsInfoPaneOpen;
 		private bool isInSelectionMode;
 		private int postsTargetCount;
+		private bool inputByPosts;
 
 		public int PageValue {
 			get => pageValue;
@@ -221,6 +220,10 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			set => SetProperty(ref postsTargetCount, value);
 		}
 
+		public bool InputByPosts {
+			get => inputByPosts;
+			set => SetProperty(ref inputByPosts, value);
+		}
 
 		#region Posts Info
 
@@ -252,13 +255,16 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			Posts.CollectionChanged += (s, e) => PostsCollectionChanged?.Invoke(s, e);
 		}
 
-		public void Initialize() {
+		public void Initialize(E621PostParameters value) {
 			page = -1;
-		}
-
-		private void OnPageChanged() {
-			Refresh();
-			EnablePreviousPageButton = Page > 1;
+			if (value.InputPosts) {
+				SetByPosts(value.Posts);
+				InputByPosts = true;
+			} else {
+				Tags = value.Tags;
+				Page = value.Page;
+				InputByPosts = false;
+			}
 		}
 
 		public ICommand RefreshCommand => new DelegateCommand(Refresh);
@@ -274,40 +280,71 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 		}
 
+		private void OnPageChanged() {
+			Refresh();
+			EnablePreviousPageButton = Page > 1;
+		}
 
-		private async void Refresh() {
-			if (IsLoading) {
-				return;
-			}
-
-			IsLoading = true;
-
+		private void SetByPosts(IEnumerable<E621Post> posts) {
 			Posts.Clear();
 			Blocks.Clear();
 
-			E621Post[] posts;
-			try {
-				posts = await E621API.GetPostsByTagsAsync(new E621PostParameters() {
-					Page = Page,
-					Tags = Tags,
-				});
-			} catch {
-				posts = null;
-			}
-			if (posts != null) {
-				PostsTargetCount = posts.Length;
-				foreach (E621Post post in posts) {
-					if (Local.Listing.ContainBlocks(post)) {
-						Blocks.Add(post);
-					} else {
-						Posts.Add(post);
-					}
-				}
-				string[] previews = Posts.Select(x => x.Sample.URL).Where(x => x.IsNotBlank()).Take(5).ToArray();
-				OnPreviewsUpdated?.Invoke(this, new OnPreviewsUpdateEventArgs(previews));
+			if (posts.IsEmpty()) {
+				return;
 			}
 
-			IsLoading = false;
+			LoadPosts(posts);
+		}
+
+		private async void Refresh() {
+			if (InputByPosts) {
+				E621Post[] posts = Posts.ToArray().Concat(Blocks).ToArray();
+
+				Posts.Clear();
+				Blocks.Clear();
+
+				LoadPosts(posts);
+			} else {
+				if (IsLoading) {
+					return;
+				}
+
+				IsLoading = true;
+
+				Posts.Clear();
+				Blocks.Clear();
+
+				E621Post[] posts;
+				try {
+					posts = await E621API.GetPostsByTagsAsync(new E621PostParameters() {
+						Page = Page,
+						Tags = Tags,
+					});
+				} catch {
+					posts = null;
+				}
+
+				LoadPosts(posts);
+
+				IsLoading = false;
+			}
+		}
+
+		private void LoadPosts(IEnumerable<E621Post> posts) {
+			if (posts == null) {
+				return;
+			}
+
+			PostsTargetCount = posts.Count();
+			foreach (E621Post post in posts) {
+				if (Local.Listing.ContainBlocks(post)) {
+					Blocks.Add(post);
+				} else {
+					Posts.Add(post);
+				}
+			}
+			string[] previews = Posts.Select(x => x.Sample.URL).Where(x => x.IsNotBlank()).Take(5).ToArray();
+			OnPreviewsUpdated?.Invoke(this, new OnPreviewsUpdateEventArgs(previews));
 		}
 
 		private void PreviousPage() {

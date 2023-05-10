@@ -76,33 +76,37 @@
 										</StackPanel>
 									</Button>
 
-									<Border Style="{StaticResource BorderSeparator}"/>
+									<StackPanel Orientation="Horizontal" Visibility="{Binding InputByPosts,Converter={StaticResource BoolToVisibilityRe}}">
 
-									<Button Height="36" Command="{Binding PreviousPageCommand}" IsEnabled="{Binding EnablePreviousPageButton}">
-										<FontIcon Glyph="&#xE0E2;"/>
-									</Button>
+										<Border Style="{StaticResource BorderSeparator}"/>
 
-									<Button Margin="10,0,10,0" Padding="7,0,7,0" Height="36" MinWidth="50">
-										<TextBlock Text="{Binding Page}" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-										<Button.Flyout>
-											<Flyout x:Name="PageFlyout">
-												<StackPanel Orientation="Horizontal">
-													<NumberBox Value="{Binding PageValue,Mode=TwoWay}" SpinButtonPlacementMode="Hidden" SmallChange="1" LargeChange="5" Minimum="1" MinWidth="100" ValidationMode="InvalidInputOverwritten">
-														<NumberBox.NumberFormatter>
-															<numberformatting:DecimalFormatter IntegerDigits="1" FractionDigits="0"/>
-														</NumberBox.NumberFormatter>
-													</NumberBox>
-													<Button x:Name="PageForwardButton" Margin="10,0,0,0" Click="PageForwardButton_Click" Command="{Binding ForwardPageCommand}">
-														<SymbolIcon Symbol="Forward"/>
-													</Button>
-												</StackPanel>
-											</Flyout>
-										</Button.Flyout>
-									</Button>
+										<Button Height="36" Command="{Binding PreviousPageCommand}" IsEnabled="{Binding EnablePreviousPageButton}">
+											<FontIcon Glyph="&#xE0E2;"/>
+										</Button>
 
-									<Button Height="36" Command="{Binding NextPageCommand}">
-										<FontIcon Glyph="&#xE0E3;"/>
-									</Button>
+										<Button Margin="10,0,10,0" Padding="7,0,7,0" Height="36" MinWidth="50">
+											<TextBlock Text="{Binding Page}" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+											<Button.Flyout>
+												<Flyout x:Name="PageFlyout">
+													<StackPanel Orientation="Horizontal">
+														<NumberBox Value="{Binding PageValue,Mode=TwoWay}" SpinButtonPlacementMode="Hidden" SmallChange="1" LargeChange="5" Minimum="1" MinWidth="100" ValidationMode="InvalidInputOverwritten">
+															<NumberBox.NumberFormatter>
+																<numberformatting:DecimalFormatter IntegerDigits="1" FractionDigits="0"/>
+															</NumberBox.NumberFormatter>
+														</NumberBox>
+														<Button x:Name="PageForwardButton" Margin="10,0,0,0" Click="PageForwardButton_Click" Command="{Binding ForwardPageCommand}">
+															<SymbolIcon Symbol="Forward"/>
+														</Button>
+													</StackPanel>
+												</Flyout>
+											</Button.Flyout>
+										</Button>
+
+										<Button Height="36" Command="{Binding NextPageCommand}">
+											<FontIcon Glyph="&#xE0E3;"/>
+										</Button>
+
+									</StackPanel>
 
 									<Border Style="{StaticResource BorderSeparator}"/>
 
@@ -139,8 +143,7 @@
 
 					<!-- Detail Page -->
 					<Grid Grid.RowSpan="2" Visibility="{Binding IsLoading,Converter={StaticResource BoolToVisibilityRe}}">
-						<!--<Image x:Name="DetailImage" Source="/Resources/F1.png" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>-->
-						<local:PostDetailView x:Name="PostDetailView" Visibility="Collapsed" RequestBack="PostDetailView_RequestBack"/>
+						<local:PostDetailView x:Name="PostDetailView" Visibility="Collapsed" RequestBack="PostDetailView_RequestBack" InputByPosts="{Binding InputByPosts}"/>
 					</Grid>
 
 

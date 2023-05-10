@@ -50,6 +50,24 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 
 
+		public bool InputByPosts {
+			get => (bool)GetValue(InputByPostsProperty);
+			set => SetValue(InputByPostsProperty, value);
+		}
+
+		public static readonly DependencyProperty InputByPostsProperty = DependencyProperty.Register(
+			nameof(InputByPosts),
+			typeof(bool),
+			typeof(PostDetailView),
+			new PropertyMetadata(false, OnInputByPostsChanged)
+		);
+
+		private static void OnInputByPostsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+			if (d is PostDetailView view) {
+				view.ViewModel.InputByPosts = (bool)e.NewValue;
+			}
+		}
+
 		public string InitialImageURL {
 			get => (string)GetValue(InitialImageURLProperty);
 			set => SetValue(InitialImageURLProperty, value);
@@ -61,9 +79,6 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			typeof(PostDetailView),
 			new PropertyMetadata(string.Empty)
 		);
-
-
-
 
 		public PostDetailView() {
 			this.InitializeComponent();
@@ -105,6 +120,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		private bool hasFavorited;
 		private bool ableToCopyImage;
 		private bool isSidePaneOverlay = true;
+		private bool inputByPosts;
 
 		public bool IsSidePaneOverlay {
 			get => isSidePaneOverlay;
@@ -181,6 +197,11 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		public string SoundWarningToolTip {
 			get => soundWarningToolTip;
 			set => SetProperty(ref soundWarningToolTip, value);
+		}
+
+		public bool InputByPosts {
+			get => inputByPosts;
+			set => SetProperty(ref inputByPosts, value);
 		}
 
 		private void OnPostChanged() {

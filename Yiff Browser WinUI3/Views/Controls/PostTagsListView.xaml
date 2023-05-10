@@ -67,11 +67,11 @@
 
 						<TextBlock x:Name="TagText" Grid.Column="1" Text="{Binding Content}" Margin="2,0,20,0" TextWrapping="Wrap" Foreground="{Binding Color,Converter={StaticResource ColorToBrush}}" VerticalAlignment="Center"/>
 
-						<Button x:Name="MinusButton" Grid.Column="2" Style="{StaticResource TagButton}" Command="{Binding MinusCommand}">
+						<Button x:Name="MinusButton" Grid.Column="2" Style="{StaticResource TagButton}" Command="{Binding MinusCommand}" Visibility="{Binding ShowAddMinusButton,Converter={StaticResource BoolToVisibility}}">
 							<FontIcon Glyph="&#xE108;" FontSize="16"/>
 						</Button>
 
-						<Button x:Name="AddButton" Grid.Column="3" Style="{StaticResource TagButton}" Command="{Binding AddCommand}">
+						<Button x:Name="AddButton" Grid.Column="3" Style="{StaticResource TagButton}" Command="{Binding AddCommand}" Visibility="{Binding ShowAddMinusButton,Converter={StaticResource BoolToVisibility}}">
 							<FontIcon Glyph="&#xE109;" FontSize="16"/>
 						</Button>
 					</Grid>

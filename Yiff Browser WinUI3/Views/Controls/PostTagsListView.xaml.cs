@@ -11,6 +11,7 @@ using Yiff_Browser_WinUI3.Helpers;
 using Yiff_Browser_WinUI3.Models.E621;
 using Yiff_Browser_WinUI3.Services.Locals;
 using Yiff_Browser_WinUI3.Views.Controls.TagsInfoViews;
+using Yiff_Browser_WinUI3.Views.Pages.E621;
 
 namespace Yiff_Browser_WinUI3.Views.Controls {
 	public sealed partial class PostTagsListView : UserControl {
@@ -34,6 +35,20 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			}
 		}
 
+
+
+		public bool ShowAddMinusButton {
+			get => (bool)GetValue(ShowAddMinusButtonProperty);
+			set => SetValue(ShowAddMinusButtonProperty, value);
+		}
+
+		public static readonly DependencyProperty ShowAddMinusButtonProperty = DependencyProperty.Register(
+			nameof(ShowAddMinusButton),
+			typeof(bool),
+			typeof(PostTagsListView),
+			new PropertyMetadata(true)
+		);
+
 		private void UpdateTagsGroup(Tags tags) {
 			if (tags == null) {
 				return;
@@ -54,7 +69,9 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		public List<GroupTag> ToGroupTag(List<string> tags, Color color) {
 			List<GroupTag> result = new();
 			foreach (string tag in tags) {
-				GroupTag item = new(tag, color);
+				GroupTag item = new(tag, color) {
+					ShowAddMinusButton = ShowAddMinusButton
+				};
 				item.InfoAction += Item_InfoAction;
 				item.AddAction += Item_AddAction;
 				item.MinusAction += Item_MinusAction;
@@ -64,11 +81,11 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		}
 
 		private void Item_MinusAction(string tag) {
-
+			E621HomePageViewModel.CreateConcatTag(tag, false);
 		}
 
 		private void Item_AddAction(string tag) {
-
+			E621HomePageViewModel.CreateConcatTag(tag, true);
 		}
 
 		private async void Item_InfoAction(string tag) {
@@ -117,6 +134,8 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 		private void TagsListView_ItemClick(object sender, ItemClickEventArgs e) {
 			ItemClickCommand?.Execute(e.ClickedItem);
+			GroupTag group = (GroupTag)e.ClickedItem;
+			E621HomePageViewModel.CreateNewTag(group.Content);
 		}
 	}
 
@@ -129,6 +148,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		private Color color;
 		private bool isInFollows;
 		private bool isInBlocks;
+		private bool showAddMinusButton = true;
 
 		public string Content {
 			get => content;
@@ -147,6 +167,11 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		public bool IsInBlocks {
 			get => isInBlocks;
 			set => SetProperty(ref isInBlocks, value);
+		}
+
+		public bool ShowAddMinusButton {
+			get => showAddMinusButton;
+			set => SetProperty(ref showAddMinusButton, value);
 		}
 
 		public ICommand InfoCommand => new DelegateCommand(Info);

@@ -27,7 +27,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls.PictureViews {
 
 	public class SourceHyperLinkButtonViewModel : BindableBase {
 		private string url = string.Empty;
-		private string iconPath = string.Empty;
+		private string iconPath = null;
 
 		public string URL {
 			get => url;
@@ -49,7 +49,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls.PictureViews {
 			} else if (_url.StartsWith("http://")) {
 				_url = _url[7..];
 			}
-			string path = string.Empty;
+			string path = null;
 			if (_url.Contains("tumblr")) {//something.tumblr.com
 				path = "/Resources/Icons/tumblr-icon.png";
 			}
