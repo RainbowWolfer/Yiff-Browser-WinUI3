@@ -13,10 +13,10 @@ namespace Yiff_Browser_WinUI3.Models.E621 {
 		public int ID { get; set; }
 
 		[JsonProperty("created_at")]
-		public DateTime CreatedAt { get; set; }
+		public DateTime? CreatedAt { get; set; }
 
 		[JsonProperty("updated_at")]
-		public DateTime UpdatedAt { get; set; }
+		public DateTime? UpdatedAt { get; set; }
 
 		[JsonProperty("file")]
 		public File File { get; set; }

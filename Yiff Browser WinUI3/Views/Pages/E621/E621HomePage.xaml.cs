@@ -135,6 +135,7 @@ namespace Yiff_Browser_WinUI3.Views.Pages.E621 {
 		private string[] tags;
 		private bool isLoading;
 		private E621PostParameters parameters;
+		private string titleIcon;
 
 		public string Title {
 			get => title;
@@ -159,6 +160,11 @@ namespace Yiff_Browser_WinUI3.Views.Pages.E621 {
 		public bool IsLoading {
 			get => isLoading;
 			set => SetProperty(ref isLoading, value);
+		}
+
+		public string TitleIcon {
+			get => titleIcon;
+			set => SetProperty(ref titleIcon, value);
 		}
 
 		public E621PostParameters Parameters {

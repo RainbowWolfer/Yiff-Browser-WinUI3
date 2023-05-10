@@ -26,6 +26,8 @@
 					<converters:E621RatingToIconConverter x:Key="E621RatingToIcon"/>
 					<converters:NotNullToVisibilityConverter x:Key="NotNullToVisibility"/>
 					<converters:NullToVisibilityConverter x:Key="NullToVisibility"/>
+					<converters:NotNullToBoolConverter x:Key="NotNullToBool"/>
+					<converters:NullToBoolConverter x:Key="NullToBool"/>
 				</ResourceDictionary>
 
 				<ResourceDictionary Source="\Themes\Generic.xaml"/>

@@ -32,7 +32,7 @@
 
 			<SplitView.Pane>
 				<Grid>
-					<local:PostsInfoListView Posts="{Binding Posts}" Blocks="{Binding Blocks}" TargetPostsCount="{Binding PostsTargetCount}"/>
+					<local:PostsInfoListView Parameters="{Binding PostsInfoViewParameters}"/>
 				</Grid>
 			</SplitView.Pane>
 
@@ -49,7 +49,7 @@
 						<Border Background="{StaticResource SystemColorBackgroundBrush}" CornerRadius="10" Margin="5" Padding="5">
 							<Grid>
 
-								<StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+								<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Visibility="{Binding InputByPosts,Converter={StaticResource BoolToVisibilityRe}}">
 									<Button Height="36" Background="Transparent" BorderBrush="Transparent" ToolTipService.ToolTip="Tags Info" Command="{Binding TagsInfoButtonCommand}">
 										<StackPanel Orientation="Horizontal">
 											<FontIcon Glyph="&#xE946;"/>

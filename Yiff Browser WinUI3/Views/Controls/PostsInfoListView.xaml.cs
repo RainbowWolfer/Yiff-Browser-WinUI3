@@ -25,82 +25,29 @@ using Yiff_Browser_WinUI3.Models.E621;
 namespace Yiff_Browser_WinUI3.Views.Controls {
 	public sealed partial class PostsInfoListView : UserControl {
 
-		public ObservableCollection<E621Post> Posts {
-			get => (ObservableCollection<E621Post>)GetValue(MyPropertyProperty);
-			set => SetValue(MyPropertyProperty, value);
+
+
+		public PostsInfoViewParameters Parameters {
+			get => (PostsInfoViewParameters)GetValue(ParametersProperty);
+			set => SetValue(ParametersProperty, value);
 		}
 
-		public static readonly DependencyProperty MyPropertyProperty = DependencyProperty.Register(
-			nameof(Posts),
-			typeof(ObservableCollection<E621Post>),
+		public static readonly DependencyProperty ParametersProperty = DependencyProperty.Register(
+			nameof(Parameters),
+			typeof(PostsInfoViewParameters),
 			typeof(PostsInfoListView),
-			new PropertyMetadata(new ObservableCollection<E621Post>(), OnPostsChanged)
+			new PropertyMetadata(null, OnParametersChanged)
 		);
 
-		private static void OnPostsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+		private static void OnParametersChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
 			if (d is not PostsInfoListView view) {
 				return;
 			}
 
-			ObservableCollection<E621Post> oldCollection = (ObservableCollection<E621Post>)e.OldValue;
-			ObservableCollection<E621Post> newCollection = (ObservableCollection<E621Post>)e.NewValue;
-
-			if (oldCollection != null) {
-				oldCollection.CollectionChanged -= view.Posts_CollectionChanged;
-			}
-
-			newCollection.CollectionChanged += view.Posts_CollectionChanged;
-		}
-
-
-
-		public ObservableCollection<E621Post> Blocks {
-			get => (ObservableCollection<E621Post>)GetValue(BlocksProperty);
-			set => SetValue(BlocksProperty, value);
-		}
-
-		public static readonly DependencyProperty BlocksProperty = DependencyProperty.Register(
-			nameof(Blocks),
-			typeof(ObservableCollection<E621Post>),
-			typeof(PostsInfoListView),
-			new PropertyMetadata(new ObservableCollection<E621Post>(), OnBlocksChanged)
-		);
-
-		private static void OnBlocksChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-			if (d is not PostsInfoListView view) {
-				return;
-			}
-
-			ObservableCollection<E621Post> oldCollection = (ObservableCollection<E621Post>)e.OldValue;
-			ObservableCollection<E621Post> newCollection = (ObservableCollection<E621Post>)e.NewValue;
-
-			if (oldCollection != null) {
-				oldCollection.CollectionChanged -= view.Posts_CollectionChanged;
-			}
-
-			newCollection.CollectionChanged += view.Posts_CollectionChanged;
-		}
-
-		public int TargetPostsCount {
-			get => (int)GetValue(TargetPostsCountProperty);
-			set => SetValue(TargetPostsCountProperty, value);
-		}
-
-		public static readonly DependencyProperty TargetPostsCountProperty = DependencyProperty.Register(
-			nameof(TargetPostsCount),
-			typeof(int),
-			typeof(PostsInfoListView),
-			new PropertyMetadata(0)
-		);
-
-
-
-
-		private void Posts_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
-			if (e.Action == NotifyCollectionChangedAction.Reset) {
-				Clear();
+			if (e.NewValue is PostsInfoViewParameters parameters) {
+				view.UpdatePostsInfo(parameters);
 			} else {
-				UpdatePostsInfo();
+				view.Clear();
 			}
 		}
 
@@ -109,15 +56,11 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			List.Add(new PostsInfoList("Hot Tags (Top 20)", new List<PostInfoLine>()));
 		}
 
-		private void UpdatePostsInfo() {
-			if (Posts.Count + Blocks.Count != TargetPostsCount) {
-				return;
-			}
-
+		private void UpdatePostsInfo(PostsInfoViewParameters parameters) {
 			List.Clear();
 
-			AddToList("Blacklist", Blocks);
-			AddToList("Hot Tags (Top 20)", Posts, 20);
+			AddToList("Blacklist", parameters.Blocks);
+			AddToList("Hot Tags (Top 20)", parameters.Posts, 20);
 		}
 
 		private void AddToList(string name, IEnumerable<E621Post> posts, int limit = int.MaxValue) {
@@ -203,4 +146,5 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		}
 	}
 
+	public record PostsInfoViewParameters(E621Post[] Posts, E621Post[] Blocks);
 }

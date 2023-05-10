@@ -334,22 +334,34 @@ namespace Yiff_Browser_WinUI3.Views.Controls.PictureViews {
 
 			LevelString = E621User.level_string;
 
-			E621Post post = await E621API.GetPostAsync(E621User.avatar_id, cts.Token);
-			if (post == null) {
+			AvatarPost = await E621API.GetPostAsync(E621User.avatar_id, cts.Token);
+			if (AvatarPost == null) {
 				IsLoadingAvatar = false;
 				return;
 			}
 
-			if (post.HasNoValidURLs()) {
+			if (AvatarPost.HasNoValidURLs()) {
 				IsLoadingAvatar = false;
 				return;
 			}
 
-			UserAvatarURL = post.Sample.URL;
+			UserAvatarURL = AvatarPost.Sample.URL;
 
 			IsLoadingAvatar = false;
 		}
 
+		public ICommand CopyCommand => new DelegateCommand(Copy);
+		public ICommand OpenInNewTabCommand => new DelegateCommand(OpenInNewTab);
+
+		private void Copy() {
+			$"https://www.e621.net/posts/{E621User.avatar_id}".CopyToClipboard();
+		}
+
+		private void OpenInNewTab() {
+			if (AvatarPost != null) {
+				E621HomePageViewModel.CreatePosts($"Post {AvatarPost.ID}", new E621Post[] { AvatarPost });
+			}
+		}
 	}
 
 	public class PostPoolItem : BindableBase {

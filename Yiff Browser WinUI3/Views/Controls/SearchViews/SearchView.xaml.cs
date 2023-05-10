@@ -173,19 +173,13 @@ namespace Yiff_Browser_WinUI3.Views.Controls.SearchViews {
 		}
 
 		private void CancelLoading() {
-			if (cts != null) {
-				cts.Cancel();
-				cts.Dispose();
-			}
+			cts?.Cancel();
 			cts = null;
 			IsLoading = false;
 		}
 
 		private async void LoadAutoSuggestionAsync(string tag) {
-			if (cts != null) {
-				cts.Cancel();
-				cts.Dispose();
-			}
+			cts?.Cancel();
 			CancellationTokenSource _cts = new();
 			cts = _cts;
 
@@ -515,6 +509,10 @@ namespace Yiff_Browser_WinUI3.Views.Controls.SearchViews {
 		}
 
 		private void UpdateMetaViews() {
+			if (CurrentTags == null) {
+				return;
+			}
+
 			if (CurrentTags.Contains("order:new")) {
 				OrderDropDownText = "New";
 			} else if (CurrentTags.Contains("order:rank")) {

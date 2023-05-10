@@ -43,7 +43,6 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		public int ItemWidth { get; } = 380;
 		public int ItemHeight { get; } = 50;
 
-
 		public E621PostParameters Parameters {
 			get => (E621PostParameters)GetValue(MyPropertyProperty);
 			set => SetValue(MyPropertyProperty, value);
@@ -177,10 +176,10 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		private int page = -1;
 		private string[] tags = { "" };
 
-		private bool isPostsInfoPaneOpen;
+		private bool isPostsInfoPaneOpen = false;
 		private bool isInSelectionMode;
-		private int postsTargetCount;
 		private bool inputByPosts;
+		private PostsInfoViewParameters postsInfoViewParameters;
 
 		public int PageValue {
 			get => pageValue;
@@ -215,9 +214,9 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		public ObservableCollection<E621Post> Posts { get; } = new ObservableCollection<E621Post>();
 		public ObservableCollection<E621Post> Blocks { get; } = new ObservableCollection<E621Post>();
 
-		public int PostsTargetCount {
-			get => postsTargetCount;
-			set => SetProperty(ref postsTargetCount, value);
+		public PostsInfoViewParameters PostsInfoViewParameters {
+			get => postsInfoViewParameters;
+			set => SetProperty(ref postsInfoViewParameters, value);
 		}
 
 		public bool InputByPosts {
@@ -236,7 +235,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		public ICommand TagsInfoButtonCommand => new DelegateCommand(TagsInfoButton);
 
 		private void PostsInfoButton() {
-			IsPostsInfoPaneOpen = true;
+			IsPostsInfoPaneOpen = !IsPostsInfoPaneOpen;
 		}
 
 		private async void TagsInfoButton() {
@@ -335,7 +334,6 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 				return;
 			}
 
-			PostsTargetCount = posts.Count();
 			foreach (E621Post post in posts) {
 				if (Local.Listing.ContainBlocks(post)) {
 					Blocks.Add(post);
@@ -345,6 +343,11 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			}
 			string[] previews = Posts.Select(x => x.Sample.URL).Where(x => x.IsNotBlank()).Take(5).ToArray();
 			OnPreviewsUpdated?.Invoke(this, new OnPreviewsUpdateEventArgs(previews));
+
+			RaisePropertyChanged(nameof(Blocks));
+			RaisePropertyChanged(nameof(Posts));
+
+			PostsInfoViewParameters = new PostsInfoViewParameters(Posts.ToArray(), Blocks.ToArray());
 		}
 
 		private void PreviousPage() {
