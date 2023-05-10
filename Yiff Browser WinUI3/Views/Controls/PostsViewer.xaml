@@ -129,11 +129,6 @@
 						</Border>
 					</Grid>
 
-					<!-- Content -->
-					<ScrollViewer VerticalScrollMode="Auto" Grid.Row="1" Visibility="{Binding IsLoading,Converter={StaticResource BoolToVisibilityRe}}">
-						<VariableSizedWrapGrid x:Name="MainGrid" Orientation="Horizontal" ItemHeight="{x:Bind ItemHeight}" ItemWidth="{x:Bind ItemWidth}"/>
-					</ScrollViewer>
-
 					<!-- Loading -->
 					<Grid Grid.Row="1">
 						<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="30" Visibility="{Binding IsLoading,Converter={StaticResource BoolToVisibility}}">
@@ -141,14 +136,27 @@
 						</StackPanel>
 					</Grid>
 
+					<!-- Content -->
+					<Grid Grid.Row="1" Visibility="{Binding IsLoading,Converter={StaticResource BoolToVisibilityRe}}">
+						<ScrollViewer VerticalScrollMode="Auto" Visibility="{Binding ErrorHint,Converter={StaticResource ArrayEmptyToVisibility}}">
+							<VariableSizedWrapGrid x:Name="MainGrid" Orientation="Horizontal" ItemHeight="{x:Bind ItemHeight}" ItemWidth="{x:Bind ItemWidth}"/>
+						</ScrollViewer>
+					</Grid>
+
+					<!-- Error Hint -->
+					<Grid Grid.Row="1" Visibility="{Binding ErrorHint,Converter={StaticResource ArrayNotEmptyToVisibility}}">
+						<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="30" Visibility="{Binding IsLoading,Converter={StaticResource BoolToVisibilityRe}}">
+							<FontIcon Glyph="&#xE7BA;" FontSize="36" Margin="5"/>
+							<TextBlock Text="{Binding ErrorHint}" FontSize="24" Margin="5"/>
+						</StackPanel>
+					</Grid>	
+
 					<!-- Detail Page -->
 					<Grid Grid.RowSpan="2" Visibility="{Binding IsLoading,Converter={StaticResource BoolToVisibilityRe}}">
 						<local:PostDetailView x:Name="PostDetailView" Visibility="Collapsed" RequestBack="PostDetailView_RequestBack" InputByPosts="{Binding InputByPosts}"/>
 					</Grid>
 
-
 				</Grid>
-
 
 			</SplitView.Content>
 

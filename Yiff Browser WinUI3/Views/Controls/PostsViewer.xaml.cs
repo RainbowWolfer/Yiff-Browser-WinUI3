@@ -208,6 +208,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		private bool isInSelectionMode;
 		private bool inputByPosts;
 		private PostsInfoViewParameters postsInfoViewParameters;
+		private string errorHint;
 
 		public int PageValue {
 			get => pageValue;
@@ -232,6 +233,11 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		public int Page {
 			get => page;
 			set => SetProperty(ref page, value, OnPageChanged);
+		}
+
+		public string ErrorHint {
+			get => errorHint;
+			set => SetProperty(ref errorHint, value);
 		}
 
 		public bool IsInSelectionMode {
@@ -374,6 +380,14 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 			RaisePropertyChanged(nameof(Blocks));
 			RaisePropertyChanged(nameof(Posts));
+
+			if (Blocks.IsNotEmpty() && Blocks.Count == posts.Count()) {
+				ErrorHint = "All posts are blocked";
+			} else if (Posts.IsEmpty()) {
+				ErrorHint = "No posts found";
+			} else {
+				ErrorHint = string.Empty;
+			}
 
 			PostsInfoViewParameters = new PostsInfoViewParameters(Posts.ToArray(), Blocks.ToArray());
 		}
