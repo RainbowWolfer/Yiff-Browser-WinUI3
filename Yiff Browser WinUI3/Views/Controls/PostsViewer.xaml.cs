@@ -43,6 +43,22 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		public int ItemWidth { get; } = 380;
 		public int ItemHeight { get; } = 50;
 
+
+
+		public ICommand OnPreviewsUpdatedCommand {
+			get => (ICommand)GetValue(OnPreviewsUpdatedCommandProperty);
+			set => SetValue(OnPreviewsUpdatedCommandProperty, value);
+		}
+
+		public static readonly DependencyProperty OnPreviewsUpdatedCommandProperty = DependencyProperty.Register(
+			nameof(OnPreviewsUpdatedCommand),
+			typeof(ICommand),
+			typeof(PostsViewer),
+			new PropertyMetadata(null)
+		);
+
+
+
 		public E621PostParameters Parameters {
 			get => (E621PostParameters)GetValue(MyPropertyProperty);
 			set => SetValue(MyPropertyProperty, value);
@@ -66,7 +82,10 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		public PostsViewer() {
 			this.InitializeComponent();
 			ViewModel.PostsCollectionChanged += Posts_CollectionChanged;
-			ViewModel.OnPreviewsUpdated += (s, e) => OnPreviewsUpdated?.Invoke(s, e);
+			ViewModel.OnPreviewsUpdated += (s, e) => {
+				OnPreviewsUpdated?.Invoke(s, e);
+				OnPreviewsUpdatedCommand?.Execute(e);
+			};
 		}
 
 		private void Posts_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {

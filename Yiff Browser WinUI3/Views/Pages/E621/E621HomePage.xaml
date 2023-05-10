@@ -66,13 +66,7 @@
 
 						<TabViewItem.Content>
 							<Grid>
-								<controls:PostsViewer Parameters="{Binding Parameters}">
-									<i:Interaction.Behaviors>
-										<core:EventTriggerBehavior EventName="OnPreviewsUpdated">
-											<core:InvokeCommandAction Command="{Binding OnPreviewsUpdateCommand}"/>
-										</core:EventTriggerBehavior>
-									</i:Interaction.Behaviors>
-								</controls:PostsViewer>
+								<controls:PostsViewer Parameters="{Binding Parameters}" OnPreviewsUpdatedCommand="{Binding OnPreviewsUpdateCommand}"/>
 							</Grid>
 						</TabViewItem.Content>
 					</TabViewItem>
