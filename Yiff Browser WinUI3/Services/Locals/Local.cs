@@ -32,11 +32,22 @@ namespace Yiff_Browser_WinUI3.Services.Locals {
 
 
 		public static async Task<string> ReadFile(IStorageFile file) {
-			return await FileIO.ReadTextAsync(file);
+			try {
+				return await FileIO.ReadTextAsync(file);
+			} catch (Exception ex) {
+				Debug.WriteLine(ex);
+				Debugger.Break();
+				return null;
+			}
 		}
 
 		public static async Task WriteFile(IStorageFile file, string content) {
-			await FileIO.WriteTextAsync(file, content);
+			try {
+				await FileIO.WriteTextAsync(file, content);
+			} catch (Exception ex) {
+				Debug.WriteLine(ex);
+				Debugger.Break();
+			}
 		}
 
 	}

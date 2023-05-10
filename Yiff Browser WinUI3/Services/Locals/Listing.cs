@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +22,8 @@ namespace Yiff_Browser_WinUI3.Services.Locals {
 			FollowPools = followPools ?? new List<int>();
 
 			Preinflate();
+			var b1 = Follows == Blocks;
+			var b2 = Follows.Equals(Blocks);
 		}
 
 		public Listing() {

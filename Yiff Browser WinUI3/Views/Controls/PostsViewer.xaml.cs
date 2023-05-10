@@ -34,6 +34,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		public int ItemWidth { get; } = 380;
 		public int ItemHeight { get; } = 50;
 
+		public PostsViewerViewModel ViewModel { get; private set; }
 
 
 		public ICommand OnPreviewsUpdatedCommand {
@@ -66,17 +67,34 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			if (d is not PostsViewer view) {
 				return;
 			}
+
 			E621PostParameters value = (E621PostParameters)e.NewValue;
+
+			if (view.ViewModel != null) {
+				view.ViewModel.PostsCollectionChanged -= view.Posts_CollectionChanged;
+				view.ViewModel.OnPreviewsUpdated -= view.ViewModel_OnPreviewsUpdated;
+			}
+
+			view.ViewModel = new PostsViewerViewModel();
+			view.ViewModel.PostsCollectionChanged += view.Posts_CollectionChanged;
+			view.ViewModel.OnPreviewsUpdated += view.ViewModel_OnPreviewsUpdated;
+			view.Root.DataContext = view.ViewModel;
+
 			view.ViewModel.Initialize(value);
+
+			view.PostDetailView.Visibility = Visibility.Collapsed;
+			view.openedImageItem = null;
+
+			//view.MainGrid.scro
+		}
+
+		private void ViewModel_OnPreviewsUpdated(object sender, OnPreviewsUpdateEventArgs e) {
+			OnPreviewsUpdated?.Invoke(sender, e);
+			OnPreviewsUpdatedCommand?.Execute(e);
 		}
 
 		public PostsViewer() {
 			this.InitializeComponent();
-			ViewModel.PostsCollectionChanged += Posts_CollectionChanged;
-			ViewModel.OnPreviewsUpdated += (s, e) => {
-				OnPreviewsUpdated?.Invoke(s, e);
-				OnPreviewsUpdatedCommand?.Execute(e);
-			};
 		}
 
 		private void Posts_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {

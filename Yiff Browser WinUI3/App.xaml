@@ -28,6 +28,7 @@
 					<converters:NullToVisibilityConverter x:Key="NullToVisibility"/>
 					<converters:NotNullToBoolConverter x:Key="NotNullToBool"/>
 					<converters:NullToBoolConverter x:Key="NullToBool"/>
+					<converters:ArrayToCountConverter x:Key="ArrayToCount"/>
 				</ResourceDictionary>
 
 				<ResourceDictionary Source="\Themes\Generic.xaml"/>

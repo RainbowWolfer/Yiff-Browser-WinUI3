@@ -21,6 +21,7 @@ using Windows.Foundation.Collections;
 using Windows.UI;
 using Yiff_Browser_WinUI3.Helpers;
 using Yiff_Browser_WinUI3.Models.E621;
+using Yiff_Browser_WinUI3.Services.Locals;
 
 namespace Yiff_Browser_WinUI3.Views.Controls {
 	public sealed partial class PostsInfoListView : UserControl {
@@ -59,7 +60,12 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		private void UpdatePostsInfo(PostsInfoViewParameters parameters) {
 			List.Clear();
 
-			AddToList("Blacklist", parameters.Blocks);
+			Dictionary<string, int> tags = CountTags(parameters.Blocks).Where(x => Local.Listing.ContainBlocks(x.Key)).ToDictionary(x => x.Key, x => x.Value);
+			List<PostInfoLine> list = new();
+			foreach (KeyValuePair<string, int> item in tags) {
+				list.Add(new PostInfoLine(item.Key, $"{item.Value}"));
+			}
+			List.Add(new PostsInfoList("Blacklist", list));
 			AddToList("Hot Tags (Top 20)", parameters.Posts, 20);
 		}
 
@@ -102,6 +108,11 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 		public PostsInfoListView() {
 			this.InitializeComponent();
+		}
+
+		private async void ManageButton_Click(object sender, RoutedEventArgs e) {
+			await ListingsManager.ShowAsDialog(XamlRoot, false);
+			//call refresh
 		}
 	}
 

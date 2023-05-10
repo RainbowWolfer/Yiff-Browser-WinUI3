@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.ApplicationModel.DataTransfer;
 using Yiff_Browser_WinUI3.Helpers;
@@ -47,6 +48,23 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		}
 
 		public List<ListingItem> GetResult() => ViewModel.ListingItems.Select(x => x.Item).ToList();
+
+
+		public static async Task ShowAsDialog(XamlRoot xamlRoot, bool followsOrBlocks) {
+			ListingsManager view = new(followsOrBlocks);
+			await view.CreateContentDialog(xamlRoot, new ContentDialogParameters() {
+				Title = followsOrBlocks ? "Follows" : "Blocks",
+				CloseText = "Back",
+			}).ShowDialogAsync();
+
+			if (followsOrBlocks) {
+				Local.Listing.Follows = view.GetResult();
+			} else {
+				Local.Listing.Blocks = view.GetResult();
+			}
+
+			Listing.Write();
+		}
 	}
 
 	public class ListingsManagerViewModel : BindableBase {
@@ -188,7 +206,11 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 				text = await dataPackageView.GetTextAsync();
 			}
 			EnablePasting = text.IsNotBlank();
-			PasteTagsContent = text.Trim().Split('\n', '\r', '\t', ' ').ToArray();
+			if (EnablePasting) {
+				PasteTagsContent = text.Trim().Split('\n', '\r', '\t', ' ').ToArray();
+			} else {
+				PasteTagsContent = null;
+			}
 		}
 
 		private void ItemTags_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {

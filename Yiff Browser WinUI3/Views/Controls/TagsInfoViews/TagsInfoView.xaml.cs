@@ -56,8 +56,11 @@ namespace Yiff_Browser_WinUI3.Views.Controls.TagsInfoViews {
 				TagItems.Add(new TagInfoViewPivotItem(tag));
 			}
 
-			IsFollowChecked = Local.Listing.ContainFollows(Tags.ToFullString());
-			IsBlockChecked = Local.Listing.ContainBlocks(Tags.ToFullString());
+			isFollowChecked = Local.Listing.ContainFollows(Tags.ToFullString());
+			isBlockChecked = Local.Listing.ContainBlocks(Tags.ToFullString());
+
+			RaisePropertyChanged(nameof(IsFollowChecked));
+			RaisePropertyChanged(nameof(IsBlockChecked));
 		}
 
 		public bool IsFollowChecked {

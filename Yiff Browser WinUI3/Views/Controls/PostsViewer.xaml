@@ -23,9 +23,9 @@
 		</Style>
 	</UserControl.Resources>
 
-	<Grid>
+	<Grid x:Name="Root">
 		<Grid.DataContext>
-			<local:PostsViewerViewModel x:Name="ViewModel"/>
+			<local:PostsViewerViewModel/>
 		</Grid.DataContext>
 
 		<SplitView IsPaneOpen="{Binding IsPostsInfoPaneOpen,Mode=TwoWay}" DisplayMode="Overlay" PanePlacement="Right">
