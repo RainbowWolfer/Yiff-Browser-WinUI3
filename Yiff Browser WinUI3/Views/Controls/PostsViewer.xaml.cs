@@ -237,15 +237,12 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		}
 
 		private async void TagsInfoButton() {
-			await new ContentDialog() {
-				XamlRoot = XamlRoot,
-				Style = App.DialogStyle,
-				//Title = Tags.ToFullString(),
-				CloseButtonText = "Back",
-				Content = new TagsInfoView() {
-					Tags = Tags,
-				},
-			}.ShowAsync();
+			await new TagsInfoView() {
+				Tags = Tags,
+			}.CreateContentDialog(XamlRoot, new ContentDialogParameters() {
+				CloseText = "Back",
+				SkipWidthSet = true,
+			}).ShowDialogAsync();
 		}
 
 		#endregion

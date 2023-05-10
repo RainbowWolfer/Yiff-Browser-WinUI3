@@ -79,7 +79,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			}
 		}
 
-		private void Button_Click(object sender, RoutedEventArgs e) {
+		private void BackButton_Click(object sender, RoutedEventArgs e) {
 			MediaDisplayView.Pause();
 			RequestBack?.Invoke();
 		}

@@ -1,6 +1,5 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
@@ -11,6 +10,7 @@ using Windows.UI;
 using Yiff_Browser_WinUI3.Helpers;
 using Yiff_Browser_WinUI3.Models.E621;
 using Yiff_Browser_WinUI3.Services.Locals;
+using Yiff_Browser_WinUI3.Views.Controls.TagsInfoViews;
 
 namespace Yiff_Browser_WinUI3.Views.Controls {
 	public sealed partial class PostTagsListView : UserControl {
@@ -64,12 +64,20 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		}
 
 		private void Item_MinusAction(string tag) {
+
 		}
 
 		private void Item_AddAction(string tag) {
+
 		}
 
-		private void Item_InfoAction(string tag) {
+		private async void Item_InfoAction(string tag) {
+			await new TagsInfoView() {
+				Tags = new string[] { tag },
+			}.CreateContentDialog(XamlRoot, new ContentDialogParameters() {
+				CloseText = "Back",
+				SkipWidthSet = true,
+			}).ShowDialogAsync();
 		}
 
 		private void RemoveGroup() {

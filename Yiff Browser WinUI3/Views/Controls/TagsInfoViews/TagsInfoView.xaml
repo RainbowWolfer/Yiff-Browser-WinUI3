@@ -1,11 +1,11 @@
 <UserControl
     x:Class="Yiff_Browser_WinUI3.Views.Controls.TagsInfoViews.TagsInfoView"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Yiff_Browser_WinUI3.Views.Controls.TagsInfoViews"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:controls="using:Yiff_Browser_WinUI3.Views.Controls"
+	xmlns:local="using:Yiff_Browser_WinUI3.Views.Controls.TagsInfoViews"
 	mc:Ignorable="d"
 	MinWidth="300">
 
@@ -68,9 +68,6 @@
 				</StackPanel>
 			</controls:CustomToggleSplitButton.SideToggleContent>
 		</controls:CustomToggleSplitButton>
-
-		<!--<ToggleSplitButton x:Uid="FollowToggle" x:Name="FollowingToggle" OffIcon="&#xEB51;" OnIcon="&#xEB52;" OnText="Following" OffText="Follow" Margin="5" OnSettingsClick="FollowingToggle_OnSettingsClick"/>
-		<ToggleSplitButton x:Uid="BlackToggle" x:Name="BlackToggle" Grid.Column="1" OffIcon="&#xEA39;" OnIcon="&#xEA39;" OnText="Blocking" OffText="Block" Margin="5" OnSettingsClick="BlackToggle_OnSettingsClick"/>-->
 
 		<Pivot ItemsSource="{Binding TagItems}" Grid.Row="1" Grid.ColumnSpan="2" SelectedIndex="0">
 
