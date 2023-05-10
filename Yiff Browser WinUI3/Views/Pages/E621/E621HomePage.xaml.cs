@@ -23,6 +23,7 @@ namespace Yiff_Browser_WinUI3.Views.Pages.E621 {
 
 		private void TabView_TabCloseRequested(TabView sender, TabViewTabCloseRequestedEventArgs args) {
 			ViewModel.Items.Remove((HomeTabViewItem)args.Item);
+			//sender.TabItems.Remove(args.Tab);
 		}
 
 		private void Page_Loaded(object sender, RoutedEventArgs e) {
