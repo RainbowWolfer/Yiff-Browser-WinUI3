@@ -25,6 +25,7 @@ namespace Yiff_Browser_WinUI3.Helpers {
 				PrimaryButtonText = parameters.PrimaryText,
 				SecondaryButtonText = parameters.SecondaryText,
 				CloseButtonText = parameters.CloseText,
+				DefaultButton = parameters.DefaultButton,
 			};
 
 			if (!parameters.SkipWidthSet) {

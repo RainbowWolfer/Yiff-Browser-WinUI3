@@ -2,6 +2,7 @@
 using Microsoft.UI.Xaml.Media;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Yiff_Browser_WinUI3.Models.E621;
 using Yiff_Browser_WinUI3.Services.Locals;
 
 namespace Yiff_Browser_WinUI3 {
@@ -13,6 +14,14 @@ namespace Yiff_Browser_WinUI3 {
 
 		public static Style DialogStyle => Current.Resources["DefaultContentDialogStyle"] as Style;
 		public static Brush TextBoxDefaultBorderBrush => (Brush)Current.Resources["TextControlBorderBrush"];
+
+		#endregion
+
+
+		#region User
+
+		public static E621User User { get; set; }
+		public static E621Post AvatarPost { get; set; }
 
 		#endregion
 

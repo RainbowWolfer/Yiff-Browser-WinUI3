@@ -8,10 +8,13 @@
     mc:Ignorable="d">
 
 	<Grid x:Name="Root" Loaded="Root_Loaded">
+
 		<Grid.DataContext>
 			<local:MainWindowViewModel x:Name="ViewModel"/>
 		</Grid.DataContext>
-		<NavigationView x:Name="MainNavigationView" PaneTitle="Yiff Browser" ItemInvoked="MainNavigationView_ItemInvoked" IsPaneOpen="False">
+
+		<NavigationView x:Name="MainNavigationView" PaneTitle="Yiff Browser" ItemInvoked="MainNavigationView_ItemInvoked" IsPaneOpen="False" PaneOpening="MainNavigationView_PaneOpening" PaneClosing="MainNavigationView_PaneClosing">
+
 			<NavigationView.MenuItems>
 				<NavigationViewItem x:Name="ItemHome" Icon="Home" Content="Home" Tag="{x:Bind TAG_HOME}"/>
 				<!--<NavigationViewItem Icon="Home" Content="Furaffinity"/>-->
@@ -20,9 +23,18 @@
 				<NavigationViewItem x:Name="ItemDownload" Icon="Download" Content="Downloads" Tag="{x:Bind TAG_DOWNLOADS}"/>
 			</NavigationView.MenuItems>
 
-			<NavigationView.FooterMenuItems>
+			<!--<NavigationView.FooterMenuItems>
 				<NavigationViewItem x:Name="UserPage" Icon="Contact" Content="Account" Tag="{x:Bind TAG_USER}"/>
-			</NavigationView.FooterMenuItems>
+			</NavigationView.FooterMenuItems>-->
+
+			<NavigationView.PaneFooter>
+				<Button x:Name="UserButton" Background="Transparent" BorderBrush="Transparent" Height="40" Width="40" HorizontalContentAlignment="Left" Padding="5,0,0,0" Margin="5,0,0,0" Click="UserButton_Click">
+					<StackPanel Orientation="Horizontal">
+						<PersonPicture x:Name="UserAvatarPicture" ProfilePicture="https://static1.e621.net/data/7c/c7/7cc746bb826db7abaf4d032f91fe0801.jpg" Height="29" Width="29"/>
+						<TextBlock Text="Account" VerticalAlignment="Center" Margin="9,0,0,0"/>
+					</StackPanel>
+				</Button>
+			</NavigationView.PaneFooter>
 
 			<NavigationView.Content>
 				<Frame x:Name="MainFrame">

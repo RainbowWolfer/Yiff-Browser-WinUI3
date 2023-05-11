@@ -1,4 +1,5 @@
-﻿using Windows.UI;
+﻿using CommunityToolkit.WinUI.Helpers;
+using Windows.UI;
 using Yiff_Browser_WinUI3.Models.E621;
 
 namespace Yiff_Browser_WinUI3.Helpers {

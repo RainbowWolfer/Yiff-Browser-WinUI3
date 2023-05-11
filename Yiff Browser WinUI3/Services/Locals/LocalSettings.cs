@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Threading.Tasks;
+using Yiff_Browser_WinUI3.Helpers;
 
 namespace Yiff_Browser_WinUI3.Services.Locals {
 	public class LocalSettings {
@@ -18,8 +19,22 @@ namespace Yiff_Browser_WinUI3.Services.Locals {
 		public string Username { get; set; } = "";
 		public string UserAPI { get; set; } = "";
 
+
 		public string LocalFolderToken { get; set; }
 
+		public bool CheckLocalUser() => Username.IsNotBlank() && UserAPI.IsNotBlank();
+
+		public void SetLocalUser(string username, string api) {
+			Username = username;
+			UserAPI = api;
+			Write();
+		}
+
+		public void ClearLocalUser() {
+			Username = string.Empty;
+			UserAPI = string.Empty;
+			Write();
+		}
 
 		#region Local
 

@@ -7,6 +7,8 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Yiff_Browser_WinUI3.Helpers;
+using Yiff_Browser_WinUI3.Services.Locals;
 
 namespace Yiff_Browser_WinUI3.Services.Networks {
 	public static class NetCode {
@@ -64,18 +66,18 @@ namespace Yiff_Browser_WinUI3.Services.Networks {
 
 		private static void AddDefaultRequestHeaders(HttpClient client, string username, string api) {
 			client.DefaultRequestHeaders.Add("User-Agent", USERAGENT);
-			//AddAuthorizationHeader(client, username, api);
-			AddAuthorizationHeader(client, "RainbowWolfer", "WUwPNbGDrfXnQoHfvU1nR3TD");
+			AddAuthorizationHeader(client, username, api);
+			//AddAuthorizationHeader(client, "RainbowWolfer", "WUwPNbGDrfXnQoHfvU1nR3TD");
 		}
 
 		private static void AddAuthorizationHeader(HttpClient client, string username, string api) {
-			if (string.IsNullOrWhiteSpace(username) && string.IsNullOrWhiteSpace(api)) {
-				//if (LocalSettings.Current?.CheckLocalUser() ?? false) {
-				//	username = LocalSettings.Current.user_username;
-				//	api = LocalSettings.Current.user_api;
-				//} else {
-				//	return;
-				//}
+			if (username.IsBlank() && api.IsBlank()) {
+				if (Local.Settings.CheckLocalUser()) {
+					username = Local.Settings.Username;
+					api = Local.Settings.UserAPI;
+				} else {
+					return;
+				}
 			}
 			string encoded = Convert.ToBase64String(Encoding.GetEncoding("ISO-8859-1").GetBytes(username + ":" + api));
 			client.DefaultRequestHeaders.Add("Authorization", "Basic " + encoded);
