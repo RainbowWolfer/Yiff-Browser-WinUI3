@@ -62,10 +62,16 @@ namespace Yiff_Browser_WinUI3.Views.Controls.PictureViews {
 		private void ImageViewItem_ImageClick(ImageViewItem sender, ImageViewItemViewModel args) {
 			ViewModel.RelationsCommand?.Execute(null);
 		}
+
+		private void UserControl_Loaded(object sender, RoutedEventArgs e) {
+			ViewModel.XamlRoot = XamlRoot;
+		}
 	}
 
 
 	public class PostImageSideViewModel : BindableBase {
+		public XamlRoot XamlRoot { get; set; }
+
 		private E621Post e621Post;
 
 		private string[] sourceURLs;
@@ -138,7 +144,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls.PictureViews {
 				SourceTitle = "Sources";
 			}
 
-			PoolItems = E621Post.Pools.Select(x => new PostPoolItem(x)).ToArray();
+			PoolItems = E621Post.Pools.Select(x => new PostPoolItem(x, this)).ToArray();
 
 			LoadComments();
 			LoadRelations();
@@ -239,6 +245,17 @@ namespace Yiff_Browser_WinUI3.Views.Controls.PictureViews {
 			}
 
 			E621HomePageViewModel.CreatePosts($"Relations of {E621Post.ID}", posts);
+		}
+
+		public ICommand ItemClickCommand => new DelegateCommand<ItemClickEventArgs>(ItemClick);
+
+		private void ItemClick(ItemClickEventArgs args) {
+			PostPoolItem item = (PostPoolItem)args.ClickedItem;
+			if (item.IsLoading) {
+				return;
+			}
+
+			E621HomePageViewModel.CreatePool(item.Pool);
 		}
 	}
 
@@ -365,15 +382,72 @@ namespace Yiff_Browser_WinUI3.Views.Controls.PictureViews {
 	}
 
 	public class PostPoolItem : BindableBase {
+		public PostImageSideViewModel ParentViewModel { get; set; }
+
+		private E621Pool pool;
+		private bool isLoading;
+
 		private string poolID;
+
+		private string poolName;
+		private string toolTip;
+
 		public string PoolID {
 			get => poolID;
-			set => SetProperty(ref poolID, value);
+			set => SetProperty(ref poolID, value, OnPoolIDChanged);
 		}
 
-		public PostPoolItem(string item) {
+		public string PoolName {
+			get => poolName;
+			set => SetProperty(ref poolName, value);
+		}
+
+		public string ToolTip {
+			get => toolTip;
+			set => SetProperty(ref toolTip, value);
+		}
+
+		public E621Pool Pool {
+			get => pool;
+			set => SetProperty(ref pool, value, OnPoolChanged);
+		}
+
+		public bool IsLoading {
+			get => isLoading;
+			set => SetProperty(ref isLoading, value);
+		}
+
+		public PostPoolItem(string item, PostImageSideViewModel parentViewModel) {
 			this.PoolID = item;
+			ParentViewModel = parentViewModel;
 		}
 
+		private async void OnPoolIDChanged() {
+			IsLoading = true;
+
+			Pool = await E621API.GetPoolAsync(PoolID);
+
+			IsLoading = false;
+		}
+
+		private void OnPoolChanged() {
+			if (Pool == null) {
+				return;
+			}
+
+			PoolName = Pool.Name;
+			ToolTip = $"";
+		}
+
+		public ICommand CopyCommand => new DelegateCommand(Copy);
+		public ICommand InfoCommand => new DelegateCommand(Info);
+
+		private void Copy() {
+			$"https://e621.net/pools/{PoolID}".CopyToClipboard();
+		}
+
+		private async void Info() {
+			await PoolInfoView.ShowAsDialog(Pool, ParentViewModel.XamlRoot);
+		}
 	}
 }

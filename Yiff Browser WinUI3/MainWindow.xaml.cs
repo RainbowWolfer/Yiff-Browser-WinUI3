@@ -125,11 +125,19 @@ namespace Yiff_Browser_WinUI3 {
 				}
 
 				UserInfoView view = new(App.User, App.AvatarPost);
+				view.OnAvatarRefreshed += (s, e) => {
+					UserAvatarURL = e;
+				};
 
 				ContentDialog dialog = view.CreateContentDialog(Root.XamlRoot, new ContentDialogParameters() {
 					CloseText = "Back",
 				});
 				view.Dialog = dialog;
+				dialog.Closing += (s, e) => {
+					if (view.IsRefreshing) {
+						e.Cancel = true;
+					}
+				};
 
 				await dialog.ShowDialogAsync();
 

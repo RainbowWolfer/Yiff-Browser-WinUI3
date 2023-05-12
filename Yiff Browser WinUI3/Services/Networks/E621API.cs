@@ -136,7 +136,20 @@ namespace Yiff_Browser_WinUI3.Services.Networks {
 		#endregion
 
 
-		#region
+		#region Pool
+
+		public static async Task<E621Pool> GetPoolAsync(string id, CancellationToken? token = null) {
+			HttpResult<string> result = await NetCode.ReadURLAsync($"https://{GetHost()}/pools/{id}.json", token);
+			if (result.Result == HttpResultType.Success) {
+				return JsonConvert.DeserializeObject<E621Pool>(result.Content);
+			} else {
+				return null;
+			}
+		}
+
+		#endregion
+
+		#region Users
 
 		public static async Task<E621User> GetUserAsync(string username, CancellationToken? token = null) {
 			string url = $"https://{GetHost()}/users.json?search[name_matches]={username}";
@@ -172,8 +185,7 @@ namespace Yiff_Browser_WinUI3.Services.Networks {
 		public bool InputPosts { get; set; }
 		public E621Post[] Posts { get; set; }
 
-
-
+		public E621Pool Pool { get; set; }
 
 	}
 

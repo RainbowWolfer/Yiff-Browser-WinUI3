@@ -5,6 +5,8 @@
     xmlns:local="using:Yiff_Browser_WinUI3.Views.Controls.Users"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:i="using:Microsoft.Xaml.Interactivity"
+	xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     mc:Ignorable="d">
 
 	<UserControl.Resources>
@@ -28,7 +30,7 @@
 					<ExponentialEase Exponent="10" EasingMode="EaseOut"/>
 				</DoubleAnimation.EasingFunction>
 			</DoubleAnimation>
-			
+
 			<DoubleAnimation x:Name="Hello2TransformAnimation" Storyboard.TargetName="Hello2Transform" Storyboard.TargetProperty="Y" EnableDependentAnimation="True">
 				<DoubleAnimation.EasingFunction>
 					<ExponentialEase Exponent="10" EasingMode="EaseOut"/>
@@ -66,10 +68,19 @@
 			</Grid>
 
 			<Grid Width="205" Height="205">
-				<ProgressRing x:Name="AvatarLoadingRing" IsActive="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20"/>
+				<ProgressRing IsActive="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20" Visibility="{Binding IsAvatarLoading,Converter={StaticResource BoolToVisibility}}"/>
 				<Border CornerRadius="10">
 					<Border.Background>
-						<ImageBrush ImageSource="{Binding AvatarURL}" Stretch="UniformToFill"/>
+						<ImageBrush ImageSource="{Binding AvatarURL}" Stretch="UniformToFill">
+							<i:Interaction.Behaviors>
+								<core:EventTriggerBehavior EventName="ImageOpened">
+									<core:InvokeCommandAction Command="{Binding ImageOpenedCommand}"/>
+								</core:EventTriggerBehavior>
+								<core:EventTriggerBehavior EventName="ImageFailed">
+									<core:InvokeCommandAction Command="{Binding ImageFailedCommand}"/>
+								</core:EventTriggerBehavior>
+							</i:Interaction.Behaviors>
+						</ImageBrush>
 					</Border.Background>
 				</Border>
 			</Grid>
@@ -85,7 +96,7 @@
 				</StackPanel>
 				<TextBlock Text="{Binding UserID}" Margin="15,0,0,0" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="18"/>
 			</StackPanel>
-			
+
 			<StackPanel Orientation="Horizontal" Margin="5">
 				<StackPanel Orientation="Horizontal" Padding="10,5,10,5" CornerRadius="5" Background="{StaticResource CardBackgroundFillColorDefaultBrush}">
 					<FontIcon Glyph="&#xE77B;" Margin="0,0,10,0" VerticalAlignment="Center"/>
@@ -93,7 +104,7 @@
 				</StackPanel>
 				<TextBlock Text="{Binding Username}" Margin="15,0,0,0" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="18"/>
 			</StackPanel>
-			
+
 			<StackPanel Orientation="Horizontal" Margin="5">
 				<StackPanel Orientation="Horizontal" Padding="10,5,10,5" CornerRadius="5" Background="{StaticResource CardBackgroundFillColorDefaultBrush}">
 					<FontIcon Glyph="&#xE715;" Margin="0,0,10,0" VerticalAlignment="Center"/>
@@ -111,14 +122,14 @@
 			</StackPanel>
 
 			<StackPanel Orientation="Horizontal">
-				<Button FontSize="20" HorizontalAlignment="Center" Margin="5" Width="150">
+				<Button FontSize="20" HorizontalAlignment="Center" Margin="5" Width="150" Command="{Binding FavoritesCommand}" IsEnabled="{Binding IsRefreshing,Converter={StaticResource BoolToBoolRe}}">
 					<StackPanel Orientation="Horizontal">
 						<TextBlock Text="Favorites"/>
 						<FontIcon Glyph="&#xE113;" Margin="10,0,0,0"/>
 					</StackPanel>
 				</Button>
 
-				<Button FontSize="20" HorizontalAlignment="Center" Margin="5" Width="150">
+				<Button FontSize="20" HorizontalAlignment="Center" Margin="5" Width="150" Command="{Binding VotedUpCommand}" IsEnabled="{Binding IsRefreshing,Converter={StaticResource BoolToBoolRe}}">
 					<StackPanel Orientation="Horizontal">
 						<TextBlock Text="Voted Up"/>
 						<FontIcon Glyph="&#xE74A;" Margin="10,0,0,0"/>
@@ -129,14 +140,18 @@
 			<!--<Rectangle Fill="Gray" Width="100" Height="3" Margin="5" RadiusX="2" RadiusY="10"/>-->
 
 			<StackPanel Orientation="Horizontal">
-				<Button FontSize="20" HorizontalAlignment="Center" Margin="5" Width="150">
-					<StackPanel Orientation="Horizontal">
-						<TextBlock Text="Refresh"/>
-						<FontIcon Glyph="&#xE72C;" Margin="10,0,0,0"/>
-					</StackPanel>
+				<Button FontSize="20" HorizontalAlignment="Center" Margin="5" Height="40" Width="150" Command="{Binding RefreshCommand}" IsEnabled="{Binding IsRefreshing,Converter={StaticResource BoolToBoolRe}}">
+					<Grid>
+						<StackPanel Orientation="Horizontal" Visibility="{Binding IsRefreshing,Converter={StaticResource BoolToVisibilityRe}}">
+							<TextBlock Text="Refresh"/>
+							<FontIcon Glyph="&#xE72C;" Margin="10,0,0,0"/>
+						</StackPanel>
+
+						<ProgressBar Width="100" IsIndeterminate="True" Visibility="{Binding IsRefreshing,Converter={StaticResource BoolToVisibility}}"/>
+					</Grid>
 				</Button>
 
-				<Button FontSize="20" HorizontalAlignment="Center" Margin="5" Width="150">
+				<Button FontSize="20" HorizontalAlignment="Center" Margin="5" Width="150" Command="{Binding LogoutCommand}" IsEnabled="{Binding IsRefreshing,Converter={StaticResource BoolToBoolRe}}">
 					<StackPanel Orientation="Horizontal">
 						<TextBlock Text="Logout"/>
 						<FontIcon Glyph="&#xF3B1;" Margin="10,0,0,0"/>

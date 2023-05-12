@@ -206,12 +206,12 @@ namespace Yiff_Browser_WinUI3.Models.E621 {
 	}
 
 	public class Flags {
-		public bool pending;
-		public bool flagged;
-		public bool note_locked;
-		public bool status_locked;
-		public bool rating_locked;
-		public bool deleted;
+		public bool? pending;
+		public bool? flagged;
+		public bool? note_locked;
+		public bool? status_locked;
+		public bool? rating_locked;
+		public bool? deleted;
 	}
 
 	public class Relationships {

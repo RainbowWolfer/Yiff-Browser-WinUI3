@@ -78,7 +78,8 @@ namespace Yiff_Browser_WinUI3.Views.Pages.E621 {
 		public E621HomePageViewModel() {
 			Instance = this;
 
-			string[] startupTags = Local.Settings.StartupTags;
+			//string[] startupTags = Local.Settings.StartupTags;
+			string[] startupTags = { "inpool:true" };
 			Items.Add(new HomeTabViewItem(startupTags));
 			SelectedIndex = 0;
 		}
@@ -92,6 +93,15 @@ namespace Yiff_Browser_WinUI3.Views.Pages.E621 {
 				return;
 			}
 			Instance.Items.Add(new HomeTabViewItem(tag));
+			Instance.SelectedIndex = Instance.Items.Count - 1;
+		}
+
+		public static void CreatePool(E621Pool pool) {
+			if (Instance == null) {
+				return;
+			}
+
+			Instance.Items.Add(new HomeTabViewItem(pool));
 			Instance.SelectedIndex = Instance.Items.Count - 1;
 		}
 
@@ -193,6 +203,15 @@ namespace Yiff_Browser_WinUI3.Views.Pages.E621 {
 			Parameters = new E621PostParameters() {
 				Posts = posts.ToArray(),
 				InputPosts = true,
+			};
+		}
+
+		public HomeTabViewItem(E621Pool pool) {
+			Title = pool.Name.NotBlankCheck() ?? "Empty Pool Name";
+			Parameters = new E621PostParameters() {
+				Page = 1,
+				Tags = new string[] { $"pool:{pool.ID}" },
+				Pool = pool,
 			};
 		}
 

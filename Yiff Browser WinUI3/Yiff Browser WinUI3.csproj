@@ -18,6 +18,7 @@
     <None Remove="Views\Controls\LoadingViews\LoadingRingWithTextBelow.xaml" />
     <None Remove="Views\Controls\MediaDisplayView.xaml" />
     <None Remove="Views\Controls\PictureDisplayView.xaml" />
+    <None Remove="Views\Controls\PictureViews\PoolInfoView.xaml" />
     <None Remove="Views\Controls\PictureViews\PostImageSideView.xaml" />
     <None Remove="Views\Controls\PictureViews\ScoreButton.xaml" />
     <None Remove="Views\Controls\PictureViews\SourceHyperLinkButton.xaml" />
@@ -211,6 +212,12 @@
 
   <ItemGroup>
     <Folder Include="Resources\Icons\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\Controls\PictureViews\PoolInfoView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>

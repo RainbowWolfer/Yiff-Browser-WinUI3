@@ -1,8 +1,10 @@
+using Prism.Commands;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Windows.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml;
@@ -16,9 +18,15 @@ using Yiff_Browser_WinUI3.Models.E621;
 using Prism.Mvvm;
 using Yiff_Browser_WinUI3.Services;
 using CommunityToolkit.WinUI.Helpers;
+using Yiff_Browser_WinUI3.Views.Pages.E621;
+using Yiff_Browser_WinUI3.Services.Networks;
+using CommunityToolkit.WinUI.UI.Controls;
+using System.Diagnostics;
+using Yiff_Browser_WinUI3.Services.Locals;
 
 namespace Yiff_Browser_WinUI3.Views.Controls.Users {
 	public sealed partial class UserInfoView : UserControl {
+		public event TypedEventHandler<UserInfoView, string> OnAvatarRefreshed;
 
 		public ContentDialog Dialog { get; set; }
 
@@ -26,6 +34,8 @@ namespace Yiff_Browser_WinUI3.Views.Controls.Users {
 			this.InitializeComponent();
 			ViewModel.User = user;
 			ViewModel.AvatarPost = avatar;
+			ViewModel.RequestCloseDialog += () => Dialog?.Hide();
+			ViewModel.OnAvatarRefreshed += (s) => OnAvatarRefreshed?.Invoke(this, s);
 
 			string yellow = App.IsDarkTheme() ? "#FFD700" : "#F7B000";
 
@@ -53,9 +63,14 @@ namespace Yiff_Browser_WinUI3.Views.Controls.Users {
 			HelloTextStoryboard.Begin();
 		}
 
+		public bool IsRefreshing => ViewModel.IsRefreshing;
+
 	}
 
 	public class UserInfoViewModel : BindableBase {
+		public event Action<string> OnAvatarRefreshed;
+		public event Action RequestCloseDialog;
+
 		private E621Post avatarPost;
 		private E621User user;
 
@@ -68,6 +83,9 @@ namespace Yiff_Browser_WinUI3.Views.Controls.Users {
 		private string avatarURL = "/Resources/E621/e612-Bigger.png";
 		private string email;
 		private string userID;
+
+		private bool isRefreshing;
+		private bool isAvatarLoading;
 
 		public E621User User {
 			get => user;
@@ -109,7 +127,17 @@ namespace Yiff_Browser_WinUI3.Views.Controls.Users {
 		}
 		public string AvatarURL {
 			get => avatarURL;
-			set => SetProperty(ref avatarURL, value);
+			set => SetProperty(ref avatarURL, value, OnAvatarURLChanged);
+		}
+
+		public bool IsRefreshing {
+			get => isRefreshing;
+			set => SetProperty(ref isRefreshing, value);
+		}
+
+		public bool IsAvatarLoading {
+			get => isAvatarLoading;
+			set => SetProperty(ref isAvatarLoading, value);
 		}
 
 		private void OnUserChanged() {
@@ -136,5 +164,74 @@ namespace Yiff_Browser_WinUI3.Views.Controls.Users {
 			}
 		}
 
+		private void OnAvatarURLChanged() {
+			IsAvatarLoading = true;
+		}
+
+		public ICommand FavoritesCommand => new DelegateCommand(Favorites);
+		public ICommand VotedUpCommand => new DelegateCommand(VotedUp);
+		public ICommand RefreshCommand => new DelegateCommand(Refresh);
+		public ICommand LogoutCommand => new DelegateCommand(Logout);
+
+		private void Favorites() {
+			if (User == null) {
+				return;
+			}
+			RequestCloseDialog?.Invoke();
+			E621HomePageViewModel.CreateNewTag($"fav:{User.name}");
+		}
+
+
+		private void VotedUp() {
+			if (User == null) {
+				return;
+			}
+			RequestCloseDialog?.Invoke();
+			E621HomePageViewModel.CreateNewTag($"votedup:{User.name}");
+		}
+
+
+		private async void Refresh() {
+			if (User == null) {
+				return;
+			}
+
+			IsRefreshing = true;
+
+			E621User user = await E621API.GetUserAsync(User.name);
+			if (user == null) {
+				IsRefreshing = false;
+				return;
+			}
+			User = user;
+
+			E621Post avatarPost = await E621API.GetPostAsync(User.avatar_id);
+			if (avatarPost == null || avatarPost.HasNoValidURLs()) {
+				IsRefreshing = false;
+				return;
+			}
+			AvatarPost = avatarPost;
+
+			OnAvatarRefreshed?.Invoke(AvatarPost.Sample.URL);
+
+			IsRefreshing = false;
+		}
+
+		private void Logout() {
+			RequestCloseDialog?.Invoke();
+			Local.Settings.ClearLocalUser();
+			OnAvatarRefreshed?.Invoke(null);
+		}
+
+		public ICommand ImageOpenedCommand => new DelegateCommand(ImageOpened);
+		public ICommand ImageFailedCommand => new DelegateCommand(ImageFailed);
+
+		private void ImageOpened() {
+			IsAvatarLoading = false;
+		}
+
+		private void ImageFailed() {
+			IsAvatarLoading = false;
+		}
 	}
 }
