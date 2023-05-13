@@ -97,7 +97,9 @@ namespace Yiff_Browser_WinUI3.Helpers {
 			if (text.IsBlank()) {
 				return;
 			}
-			DataPackage package = new();
+			DataPackage package = new() {
+				RequestedOperation = DataPackageOperation.Copy,
+			};
 			package.SetText(text);
 			Clipboard.SetContent(package);
 		}

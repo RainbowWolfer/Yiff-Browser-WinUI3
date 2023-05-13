@@ -31,46 +31,48 @@
 			<ListView x:Name="ListingsListView" SelectionMode="Single" Margin="5" ItemsSource="{Binding ListingItems}" SelectedIndex="{Binding SelectedIndex,Mode=TwoWay}" Height="250" Padding="0,0,5,0" Grid.Row="1">
 				<ListView.ItemTemplate>
 					<DataTemplate x:DataType="local:ListingViewItem">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="auto"/>
-								<ColumnDefinition Width="*"/>
-								<ColumnDefinition Width="auto"/>
-							</Grid.ColumnDefinitions>
+						<ListViewItem IsEnabled="{Binding IsEnabled}" Visibility="{Binding IsEnabled,Converter={StaticResource BoolToVisibility}}">
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="auto"/>
+									<ColumnDefinition Width="*"/>
+									<ColumnDefinition Width="auto"/>
+								</Grid.ColumnDefinitions>
 
-							<Grid.ContextFlyout>
-								<MenuFlyout>
-									<MenuFlyoutItem Icon="Rename" Text="Rename" Command="{Binding RenameCommand}" IsEnabled="{Binding Item.IsCloud,Converter={StaticResource BoolToBoolRe}}"/>
-									<MenuFlyoutItem Icon="Delete" Text="Delete" Command="{Binding DeleteCommand}" IsEnabled="{Binding Item.IsCloud,Converter={StaticResource BoolToBoolRe}}"/>
-								</MenuFlyout>
-							</Grid.ContextFlyout>
+								<Grid.ContextFlyout>
+									<MenuFlyout>
+										<MenuFlyoutItem Icon="Rename" Text="Rename" Command="{Binding RenameCommand}" IsEnabled="{Binding Item.IsCloud,Converter={StaticResource BoolToBoolRe}}"/>
+										<MenuFlyoutItem Icon="Delete" Text="Delete" Command="{Binding DeleteCommand}" IsEnabled="{Binding Item.IsCloud,Converter={StaticResource BoolToBoolRe}}"/>
+									</MenuFlyout>
+								</Grid.ContextFlyout>
 
-							<FontIcon Glyph="&#xEA41;" FontSize="20" VerticalAlignment="Center" Visibility="{Binding Item.IsCloud,Converter={StaticResource BoolToVisibilityRe}}"/>
-							<FontIcon Glyph="&#xEBC3;" FontSize="20" VerticalAlignment="Center" Visibility="{Binding Item.IsCloud,Converter={StaticResource BoolToVisibility}}"/>
+								<FontIcon Glyph="&#xEA41;" FontSize="20" VerticalAlignment="Center" Visibility="{Binding Item.IsCloud,Converter={StaticResource BoolToVisibilityRe}}"/>
+								<FontIcon Glyph="&#xEBC3;" FontSize="20" VerticalAlignment="Center" Visibility="{Binding Item.IsCloud,Converter={StaticResource BoolToVisibility}}"/>
 
-							<StackPanel Grid.Column="1" Margin="10,0,20,0" VerticalAlignment="Center" Orientation="Horizontal">
-								<TextBlock FontSize="16" VerticalAlignment="Center">
+								<StackPanel Grid.Column="1" Margin="10,0,20,0" VerticalAlignment="Center" Orientation="Horizontal">
+									<TextBlock FontSize="16" VerticalAlignment="Center">
 									<Run Text="{Binding Item.Name}" FontSize="18"/>
 									<Run Text=" "/>
 									<Run Text="("/>
 									<Run Text="{Binding Item.Tags.Count}"/>
 									<Run Text=")"/>
-								</TextBlock>
-							</StackPanel>
+									</TextBlock>
+								</StackPanel>
 
-							<CheckBox Grid.Column="2" MinWidth="0" MinHeight="0" Width="25" Height="20" IsChecked="{Binding IsSelected,Mode=TwoWay}" IsHitTestVisible="{Binding IsSelected,Converter={StaticResource BoolToBoolRe}}" ToolTipService.ToolTip="Set active">
-								<i:Interaction.Behaviors>
-									<core:EventTriggerBehavior EventName="Checked">
-										<core:InvokeCommandAction Command="{Binding CheckedCommand}"/>
-									</core:EventTriggerBehavior>
-								</i:Interaction.Behaviors>
-							</CheckBox>
+								<CheckBox Grid.Column="2" MinWidth="0" MinHeight="0" Width="25" Height="20" IsChecked="{Binding IsSelected,Mode=TwoWay}" IsHitTestVisible="{Binding IsSelected,Converter={StaticResource BoolToBoolRe}}" ToolTipService.ToolTip="Set active">
+									<i:Interaction.Behaviors>
+										<core:EventTriggerBehavior EventName="Checked">
+											<core:InvokeCommandAction Command="{Binding CheckedCommand}"/>
+										</core:EventTriggerBehavior>
+									</i:Interaction.Behaviors>
+								</CheckBox>
 
-							<Grid Grid.ColumnSpan="3" VerticalAlignment="Bottom" Visibility="{Binding Item.IsCloud,Converter={StaticResource BoolToVisibility}}">
-								<ProgressBar IsIndeterminate="True" Visibility="{Binding IsLoading,Converter={StaticResource BoolToVisibility}}"/>
+								<Grid Grid.ColumnSpan="3" VerticalAlignment="Bottom" Visibility="{Binding Item.IsCloud,Converter={StaticResource BoolToVisibility}}">
+									<ProgressBar IsIndeterminate="True" Visibility="{Binding IsLoading,Converter={StaticResource BoolToVisibility}}"/>
+								</Grid>
+
 							</Grid>
-
-						</Grid>
+						</ListViewItem>
 					</DataTemplate>
 				</ListView.ItemTemplate>
 			</ListView>
@@ -177,27 +179,27 @@
 					</DropDownButton.Content>
 					<DropDownButton.Flyout>
 						<MenuFlyout Placement="Bottom">
-							<MenuFlyoutItem x:Name="ExportClipboardItem" Text="Export to Clipboard">
+							<MenuFlyoutItem x:Name="ExportClipboardItem" Text="Export to Clipboard" Command="{Binding ExportClipboardCommand}">
 								<MenuFlyoutItem.Icon>
 									<FontIcon Glyph="&#xE72D;"/>
 								</MenuFlyoutItem.Icon>
 							</MenuFlyoutItem>
-							<MenuFlyoutItem x:Name="ImportClipboardItem" Text="Import from Clipboard (Override)" IsEnabled="{Binding EnablePasting}">
+							<MenuFlyoutItem x:Name="ImportClipboardItem" Text="Import from Clipboard (Override)" IsEnabled="{Binding EnablePasting}" Command="{Binding ImportClipboardCommand}">
 								<MenuFlyoutItem.Icon>
 									<FontIcon Glyph="&#xF0E3;"/>
 								</MenuFlyoutItem.Icon>
 							</MenuFlyoutItem>
-							<MenuFlyoutItem x:Name="ClearAllTagsItem" Text="Clear All">
+							<MenuFlyoutItem x:Name="ClearAllTagsItem" Text="Clear All" Command="{Binding ClearAllCommand}">
 								<MenuFlyoutItem.Icon>
 									<FontIcon Glyph="&#xE75C;"/>
 								</MenuFlyoutItem.Icon>
 							</MenuFlyoutItem>
-							<MenuFlyoutItem x:Name="DownloadCloudItem" Text="Load From Cloud" Visibility="{Binding IsCurrentListingCloud,Converter={StaticResource BoolToVisibility}}">
+							<MenuFlyoutItem x:Name="DownloadCloudItem" Text="Load From Cloud" Visibility="{Binding IsCurrentListingCloud,Converter={StaticResource BoolToVisibility}}" Command="{Binding DownloadCloudCommand}">
 								<MenuFlyoutItem.Icon>
 									<FontIcon Glyph="&#xE896;"/>
 								</MenuFlyoutItem.Icon>
 							</MenuFlyoutItem>
-							<MenuFlyoutItem x:Name="UploadCloudItem" Text="Upload To Cloud" Visibility="{Binding IsCurrentListingCloud,Converter={StaticResource BoolToVisibility}}">
+							<MenuFlyoutItem x:Name="UploadCloudItem" Text="Upload To Cloud" Visibility="{Binding IsCurrentListingCloud,Converter={StaticResource BoolToVisibility}}" Command="{Binding UploadCloudCommand}">
 								<MenuFlyoutItem.Icon>
 									<FontIcon Glyph="&#xE11C;"/>
 								</MenuFlyoutItem.Icon>
@@ -252,6 +254,19 @@
 			IsLightDismissEnabled="True" PreferredPlacement="Center" 
 			CloseButtonContent="OK" 
 			IsOpen="{Binding IsCenterTipOpen,Mode=TwoWay}">
+			<TeachingTip.IconSource>
+				<FontIconSource Glyph="&#xE7BA;"/>
+			</TeachingTip.IconSource>
+		</TeachingTip>
+
+		<TeachingTip x:Name="CenteredConfirmTeachingTip"
+			ActionButtonCommand="{Binding ConfirmTipCommand}"
+			Title="{Binding ConfirmTipTitle}"
+			Subtitle="{Binding ConfirmTipSubtitle}"
+			ActionButtonContent="{Binding ConfirmTipYes}"
+			CloseButtonContent="{Binding ConfirmTipNo}"
+			IsOpen="{Binding IsConfirmTipOpen,Mode=TwoWay}"
+			IsLightDismissEnabled="True" PreferredPlacement="Center">
 			<TeachingTip.IconSource>
 				<FontIconSource Glyph="&#xE7BA;"/>
 			</TeachingTip.IconSource>

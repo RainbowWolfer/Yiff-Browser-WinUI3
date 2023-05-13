@@ -95,6 +95,13 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		private bool enablePasting;
 		private bool isCurrentListingCloud;
 
+		private string confirmTipNo = "No";
+		private string confirmTipYes = "Yes";
+		private string confirmTipSubtitle;
+		private string confirmTipTitle;
+		private bool isConfirmTipOpen = false;
+		private ICommand confirmTipCommand;
+
 		public string[] PasteTagsContent { get; private set; }
 
 		public ObservableCollection<ListingViewItem> ListingItems { get; } = new();
@@ -126,14 +133,23 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			set => SetProperty(ref selectedIndex, value, OnSelectedIndexChanged);
 		}
 
-		private void OnSelectedIndexChanged() {
-			ItemTags = new ObservableCollection<TagViewItem>();
-
+		public ListingViewItem GetSelectedListing() {
 			if (SelectedIndex == -1 || ListingItems.Count == 0) {
-				return;
+				return null;
 			}
 
 			ListingViewItem item = ListingItems[SelectedIndex];
+			return item;
+		}
+
+		private void OnSelectedIndexChanged() {
+			ItemTags = new ObservableCollection<TagViewItem>();
+
+			ListingViewItem item = GetSelectedListing();
+			if (item == null) {
+				return;
+			}
+
 			IsCurrentListingCloud = item.Item.IsCloud;
 
 			foreach (string tag in item.Item.Tags) {
@@ -178,12 +194,27 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 				ListingItems.Add(CreateNewListItem(item));
 			}
 
-			ListingViewItem first = ListingItems.FirstOrDefault();
-			if (first != null) {
-				first.IsSelected = true;
+			ListingViewItem found = ListingItems.FirstOrDefault(x => x.Item.IsActive);
+			if (found != null) {
+				found.IsSelected = true;
+				SelectedIndex = ListingItems.IndexOf(found);
+			} else {
+				ListingItems.FirstOrDefault().Item.IsActive = true;
 			}
 
-			SelectedIndex = 0;
+			if (Local.Settings.CheckLocalUser()) {
+				if (SelectedIndex == -1) {
+					SelectedIndex = 0;
+				}
+			} else {
+				if (ListingItems[SelectedIndex].Item.IsCloud) {
+					int index = ListingItems.IndexOf(ListingItems.FirstOrDefault(x => !x.Item.IsCloud));
+					if (index == -1) {
+						index = 0;
+					}
+					SelectedIndex = index;
+				}
+			}
 		}
 
 		public bool EnablePasting {
@@ -255,6 +286,34 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			set => SetProperty(ref centerTipSubtitle, value);
 		}
 
+
+		public bool IsConfirmTipOpen {
+			get => isConfirmTipOpen;
+			set => SetProperty(ref isConfirmTipOpen, value);
+		}
+		public string ConfirmTipTitle {
+			get => confirmTipTitle;
+			set => SetProperty(ref confirmTipTitle, value);
+		}
+		public string ConfirmTipSubtitle {
+			get => confirmTipSubtitle;
+			set => SetProperty(ref confirmTipSubtitle, value);
+		}
+		public string ConfirmTipYes {
+			get => confirmTipYes;
+			set => SetProperty(ref confirmTipYes, value);
+		}
+		public string ConfirmTipNo {
+			get => confirmTipNo;
+			set => SetProperty(ref confirmTipNo, value);
+		}
+		public ICommand ConfirmTipCommand {
+			get => confirmTipCommand;
+			set => SetProperty(ref confirmTipCommand, value);
+		}
+
+
+
 		public string RenameListingText {
 			get => renameListingText;
 			set => SetProperty(ref renameListingText, value);
@@ -290,7 +349,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		private ListingViewItem CreateNewListItem(ListingItem item) {
 			ListingViewItem viewItem = new(item);
 			viewItem.OnDelete += p => {
-				if (ListingItems.Count == 1) {
+				if (ListingItems.Count(x => !x.Item.IsCloud) <= 1) {
 					return;
 				}
 				RequestDeleteListing?.Invoke(p);
@@ -382,6 +441,122 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			toBeManipulatedListItem = null;
 		}
 
+		public ICommand ExportClipboardCommand => new DelegateCommand(ExportClipboard);
+		public ICommand ImportClipboardCommand => new DelegateCommand(ImportClipboard);
+		public ICommand ClearAllCommand => new DelegateCommand(ClearAll);
+		public ICommand DownloadCloudCommand => new DelegateCommand(DownloadCloud);
+		public ICommand UploadCloudCommand => new DelegateCommand(UploadCloud);
+
+		private void ExportClipboard() {
+			ListingViewItem item = GetSelectedListing();
+			if (item == null) {
+				return;
+			}
+
+			List<string> tags = item.Item.Tags;
+			string text = string.Join('\n', tags.Select(x => x.Trim()));
+			if (text.IsNotBlank()) {
+				text.CopyToClipboard();
+			}
+
+		}
+
+		private void ImportClipboard() {
+			ListingViewItem item = GetSelectedListing();
+			if (item == null) {
+				return;
+			}
+
+			if (PasteTagsContent.IsEmpty()) {
+				IsCenterTipOpen = true;
+				CenterTipSubtitle = "Paste Format Error";
+				return;
+			} else {
+				IsCenterTipOpen = false;
+			}
+
+			foreach (string tag in PasteTagsContent) {
+				if (ItemTags.Any(x => x.Tag == tag) || tag.IsBlank()) {
+					continue;
+				}
+				ItemTags.Add(CreateTagViewItem(tag));
+				item.Item.Tags.Add(tag);
+			}
+
+
+			ExistTagNames = ItemTags.Select(x => x.Tag).ToArray();
+		}
+
+		private void ClearAll() {
+			ListingViewItem item = GetSelectedListing();
+			if (item == null) {
+				return;
+			}
+
+			IsConfirmTipOpen = true;
+			ConfirmTipTitle = "Clear All Tags";
+			ConfirmTipSubtitle = $"Are you sure to clear {item.Item.Tags.Count} tags in listing ({item.Item.Name})";
+			ConfirmTipCommand = new DelegateCommand(() => {
+				ItemTags.Clear();
+				item.Item.Tags.Clear();
+				ConfirmTipCommand = null;
+				IsConfirmTipOpen = false;
+			});
+
+		}
+
+		private async void DownloadCloud() {
+			ListingViewItem item = GetSelectedListing();
+			if (item == null) {
+				return;
+			}
+			if (!Local.Settings.CheckLocalUser()) {
+				return;
+			}
+			E621User user = await E621API.GetUserAsync(Local.Settings.Username);
+			string[] tags = user.blacklisted_tags.Split('\n');
+
+			foreach (string tag in tags) {
+				if (ItemTags.Any(x => x.Tag == tag) || tag.IsBlank()) {
+					continue;
+				}
+				ItemTags.Add(CreateTagViewItem(tag));
+				item.Item.Tags.Add(tag);
+			}
+
+			ExistTagNames = ItemTags.Select(x => x.Tag).ToArray();
+		}
+
+		private void UploadCloud() {
+			ListingViewItem item = GetSelectedListing();
+			if (item == null) {
+				return;
+			}
+			if (!Local.Settings.CheckLocalUser()) {
+				return;
+			}
+
+			IsConfirmTipOpen = true;
+			ConfirmTipTitle = "Upload";
+			ConfirmTipSubtitle = $"Are you sure to upload current tags to e621 cloud? This action will override the existing tags in the e621 cloud.";
+			ConfirmTipCommand = new DelegateCommand(async () => {
+				ConfirmTipCommand = null;
+				IsConfirmTipOpen = false;
+
+				item.IsLoading = true;
+
+				bool result = await E621API.UploadBlacklistTags(Local.Settings.Username, item.Item.Tags.ToArray());
+
+				item.IsLoading = false;
+
+				IsCenterTipOpen = true;
+				CenterTipTitle = "Upload";
+				CenterTipSubtitle = result ? "Upload Successful" : "Upload Failed";
+
+			});
+
+		}
+
 	}
 
 	public class TagViewItem : BindableBase {
@@ -438,6 +613,8 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		private bool isSelected;
 		private bool isLoading;
 
+		private bool isEnabled = true;
+
 		public ListingItem Item { get; set; }
 
 		public void UpdateItem() {
@@ -452,6 +629,11 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		public bool IsLoading {
 			get => isLoading;
 			set => SetProperty(ref isLoading, value);
+		}
+
+		public bool IsEnabled {
+			get => isEnabled;
+			set => SetProperty(ref isEnabled, value);
 		}
 
 		public ICommand CheckedCommand => new DelegateCommand<RoutedEventArgs>(Checked);
@@ -472,6 +654,9 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 		public ListingViewItem(ListingItem item) {
 			Item = item;
+			if (item.IsCloud) {
+				IsEnabled = Local.Settings.CheckLocalUser();
+			}
 		}
 
 	}

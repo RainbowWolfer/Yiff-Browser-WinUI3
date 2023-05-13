@@ -117,6 +117,14 @@ namespace Yiff_Browser_WinUI3.Services.Networks {
 			}
 		}
 
+		public static async Task<bool> UploadBlacklistTags(string username, string[] tags) {
+			HttpResult<string> result = await NetCode.PutRequestAsync(
+				$"https://{GetHost()}/users/{username}.json",
+				new KeyValuePair<string, string>("user[blacklisted_tags]", string.Join("\n", tags))
+			);
+			return result.Result == HttpResultType.Success;
+		}
+
 		#endregion
 
 		#region Comments

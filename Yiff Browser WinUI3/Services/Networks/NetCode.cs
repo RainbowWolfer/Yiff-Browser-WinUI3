@@ -64,6 +64,50 @@ namespace Yiff_Browser_WinUI3.Services.Networks {
 			return hr;
 		}
 
+		public static async Task<HttpResult<string>> PutRequestAsync(string url, KeyValuePair<string, string> pair, CancellationToken? token = null, string username = "", string api = "") {
+			DateTime startDateTime = DateTime.Now;
+			Stopwatch stopwatch = Stopwatch.StartNew();
+
+			using HttpClient client = new();
+			AddDefaultRequestHeaders(client, username, api);
+
+			HttpResponseMessage message = null;
+			HttpResultType result;
+			HttpStatusCode code;
+
+			string content = null;
+			string helper = "";
+
+			try {
+				List<KeyValuePair<string, string>> pairs = new() { pair };
+				FormUrlEncodedContent data = new(pairs);
+				if (token != null) {
+					message = await client.PutAsync(url, data, token.Value);
+				} else {
+					message = await client.PutAsync(url, data);
+				}
+				message.EnsureSuccessStatusCode();
+				code = message.StatusCode;
+				content = await message.Content.ReadAsStringAsync();
+				result = HttpResultType.Success;
+			} catch (OperationCanceledException) {
+				code = message?.StatusCode ?? HttpStatusCode.NotFound;
+				content = null;
+				result = HttpResultType.Canceled;
+			} catch (HttpRequestException e) {
+				code = message?.StatusCode ?? HttpStatusCode.NotFound;
+				content = e.Message;
+				helper = e.Message;
+				result = HttpResultType.Error;
+			} finally {
+				message?.Dispose();
+			}
+			stopwatch.Stop();
+			HttpResult<string> hr = new(result, code, content, stopwatch.ElapsedMilliseconds, startDateTime, helper);
+			//HttpRequestHistories.AddNewItem(startDateTime, url, hr, "Put");
+			return hr;
+		}
+
 		private static void AddDefaultRequestHeaders(HttpClient client, string username, string api) {
 			client.DefaultRequestHeaders.Add("User-Agent", USERAGENT);
 			AddAuthorizationHeader(client, username, api);
