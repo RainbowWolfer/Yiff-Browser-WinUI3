@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
@@ -51,8 +52,6 @@ namespace Yiff_Browser_WinUI3.Views.Controls.PictureViews {
 			}
 		}
 
-
-
 		public E621Post CurrentPost {
 			get => (E621Post)GetValue(CurrentPostProperty);
 			set => SetValue(CurrentPostProperty, value);
@@ -74,11 +73,26 @@ namespace Yiff_Browser_WinUI3.Views.Controls.PictureViews {
 				ImagesListManagerItem item = view.Items[i];
 				item.IsSelected = item.Post == (E621Post)e.NewValue;
 				if (item.IsSelected) {
+					view.CurrentCountText.Text = (i + 1).ToString();
 					view.PutToCenter(item);
 				}
 			}
-
+			view.WholeCountText.Text = view.Items.Count.ToString();
 		}
+
+		public bool IsLocked {
+			get => (bool)GetValue(IsLockedProperty);
+			set => SetValue(IsLockedProperty, value);
+		}
+
+		public static readonly DependencyProperty IsLockedProperty =DependencyProperty.Register(
+			nameof(IsLocked),
+			typeof(bool),
+			typeof(ImagesListManager),
+			new PropertyMetadata(false)
+		);
+
+
 
 		public ObservableCollection<ImagesListManagerItem> Items { get; } = new ObservableCollection<ImagesListManagerItem>();
 
@@ -88,20 +102,22 @@ namespace Yiff_Browser_WinUI3.Views.Controls.PictureViews {
 		}
 
 		private void PhotosListGrid_PointerEntered(object sender, PointerRoutedEventArgs e) {
-
+			GridExpandAnimation.To = 34;
+			GridExpandStoryboard.Begin();
 		}
 
 		private void PhotosListGrid_PointerExited(object sender, PointerRoutedEventArgs e) {
-
+			GridExpandAnimation.To = 0;
+			GridExpandStoryboard.Begin();
 		}
 
-		private async void PutToCenter(ImagesListManagerItem item) {
+		private void PutToCenter(ImagesListManagerItem item) {
 			int index = Items.IndexOf(item);
-			//var c = ListControl.ContainerFromIndex(index);
-			//double width = c.ActualWidth;
-			int dount = ListControl.Items.Count;
+			int count = Items.Count;
 			int margin = 3;
+			int width = 80;
 
+			double offsetX = index * (width + margin);
 
 			//var found = PhotosListView.Items.Where(i => i is ListViewItem lvi && lvi.Content is PhotosListItem pli && pli == item).FirstOrDefault();
 			////var found = PhotosListView.Items.Where(i => i is ListViewItem lvi && lvi == item);
@@ -111,9 +127,14 @@ namespace Yiff_Browser_WinUI3.Views.Controls.PictureViews {
 			//	PhotosListView.ScrollToCenterOfView(found);
 			//});
 
-			ListScroll.ChangeView(0, 0, 1);
+			ListScroll.ChangeView(offsetX, 0, 1);
 		}
 
+		private void ImageBrush_ImageOpened(object sender, RoutedEventArgs e) {
+			ImageBrush ib = (ImageBrush)sender;
+			BitmapImage bi = ib.ImageSource as BitmapImage;
+			bi.Stop();
+		}
 	}
 
 	public class ImagesListManagerItem : BindableBase {

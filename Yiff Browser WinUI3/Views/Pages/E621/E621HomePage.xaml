@@ -24,11 +24,12 @@
 
 	<Grid>
 		<!-- SelectedItem="{Binding SelectedItem,Mode=TwoWay}"-->
-		<TabView TabItemsSource="{Binding Items}" SelectedIndex="{Binding SelectedIndex,Mode=TwoWay}"
+		<TabView x:Name="MainTabView" TabItemsSource="{Binding Items}" SelectedIndex="{Binding SelectedIndex,Mode=TwoWay}"
 			IsAddTabButtonVisible="False" 
 			TabWidthMode="SizeToContent"
 			CloseButtonOverlayMode="OnPointerOver" 
-			TabCloseRequested="TabView_TabCloseRequested">
+			TabCloseRequested="TabView_TabCloseRequested"
+			SelectionChanged="TabView_SelectionChanged">
 
 			<TabView.TabStripHeader>
 				<StackPanel Orientation="Horizontal" Margin="5">
@@ -68,7 +69,7 @@
 						<TabViewItem.Content>
 							<Grid>
 								<Grid Height="100000"/><!--To fill up the space when needed. in case for example, some splitviews are unable to open-->
-								<controls:PostsViewer Parameters="{Binding Parameters}" OnPreviewsUpdatedCommand="{Binding OnPreviewsUpdateCommand}"/>
+								<controls:PostsViewer x:Name="PostsViewer" Parameters="{Binding Parameters}" OnPreviewsUpdatedCommand="{Binding OnPreviewsUpdateCommand}"/>
 							</Grid>
 						</TabViewItem.Content>
 					</TabViewItem>

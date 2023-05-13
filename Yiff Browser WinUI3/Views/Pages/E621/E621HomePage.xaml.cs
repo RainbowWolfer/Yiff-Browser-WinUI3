@@ -30,6 +30,24 @@ namespace Yiff_Browser_WinUI3.Views.Pages.E621 {
 			ViewModel.XamlRoot = XamlRoot;
 		}
 
+		private void TabView_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+			if (e.RemovedItems.FirstOrDefault() is HomeTabViewItem item1) {
+				TabViewItem tabViewItem = (TabViewItem)MainTabView.ContainerFromItem(item1);
+				if (tabViewItem == null) {
+					return;
+				}
+				PostsViewer postsViewer = (PostsViewer)tabViewItem.FindName("PostsViewer");
+				postsViewer.PauseVideo();
+			}
+			if (e.AddedItems.FirstOrDefault() is HomeTabViewItem item2) {
+				TabViewItem tabViewItem = (TabViewItem)MainTabView.ContainerFromItem(item2);
+				if (tabViewItem == null) {
+					return;
+				}
+				PostsViewer postsViewer = (PostsViewer)tabViewItem.FindName("PostsViewer");
+				postsViewer.PlayVideo();
+			}
+		}
 	}
 
 	public class E621HomePageViewModel : BindableBase {

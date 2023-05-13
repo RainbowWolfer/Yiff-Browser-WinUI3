@@ -1,13 +1,18 @@
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Imaging;
+using Newtonsoft.Json.Linq;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.Foundation;
 using Windows.Storage.Streams;
 using Windows.UI;
 using Yiff_Browser_WinUI3.Helpers;
@@ -34,8 +39,6 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			new PropertyMetadata(null)
 		);
 
-
-
 		public ICommand ImagesListManagerItemClickCommand {
 			get => (ICommand)GetValue(ImagesListManagerItemClickCommandProperty);
 			set => SetValue(ImagesListManagerItemClickCommandProperty, value);
@@ -47,8 +50,6 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			typeof(PostDetailView),
 			new PropertyMetadata(null)
 		);
-
-
 
 		public E621Post[] PostsList {
 			get => (E621Post[])GetValue(PostsListProperty);
@@ -95,6 +96,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		public PostDetailView() {
 			this.InitializeComponent();
 			ViewModel.OnImagesListManagerItemClick += ViewModel_OnImagesListManagerItemClick;
+			IsShowingImagesListManager = false;
 		}
 
 		private void ViewModel_OnImagesListManagerItemClick(E621Post post) {
@@ -112,8 +114,72 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		}
 
 		private void BackButton_Click(object sender, RoutedEventArgs e) {
-			MediaDisplayView.Pause();
+			IsShowingImagesListManager = false;
+			PauseVideo();
 			RequestBack?.Invoke();
+		}
+
+		public void PauseVideo() {
+			MediaDisplayView.Pause();
+		}
+
+		public void PlayVideo() {
+			MediaDisplayView.Play();
+		}
+
+		public bool IsShowingImagesListManager {
+			get => (bool)GetValue(IsShowingImagesListManagerProperty);
+			set {
+				if (ViewModel.IsImagesListManagerLocked) {
+					return;
+				}
+				SetValue(IsShowingImagesListManagerProperty, value);
+			}
+		}
+
+		public static readonly DependencyProperty IsShowingImagesListManagerProperty = DependencyProperty.Register(
+			nameof(IsShowingImagesListManager),
+			typeof(bool),
+			typeof(PostDetailView),
+			new PropertyMetadata(false, OnIsShowingImagesListManagerPropertyChanged)
+		);
+
+		private static void OnIsShowingImagesListManagerPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+			if (d is not PostDetailView view) {
+				return;
+			}
+
+			bool value = (bool)e.NewValue;
+
+			view.ImagesListManagerScroll.IsHitTestVisible = value;
+
+			if (value) {
+				view.ImagesListManagerTransformAnimation.To = 5;
+			} else {
+				view.ImagesListManagerTransformAnimation.To = -150;
+			}
+			view.ImagesListManagerTransformStoryboard.Begin();
+		}
+
+		private void MainGrid_Tapped(object sender, TappedRoutedEventArgs e) {
+
+		}
+
+		private Point startPosition;
+
+		private void MainGrid_PointerPressed(object sender, PointerRoutedEventArgs e) {
+			startPosition = e.GetCurrentPoint(MainGrid).Position;
+			//if (e.Pointer.PointerDeviceType != PointerDeviceType.Touch) {
+			//	IsShowingImagesListManager = false;
+			//}
+		}
+
+		private void MainGrid_PointerReleased(object sender, PointerRoutedEventArgs e) {
+			Point endPos = e.GetCurrentPoint(MainGrid).Position;
+			if (startPosition.Distance(endPos) >= 20d) {
+				return;
+			}
+			IsShowingImagesListManager = !IsShowingImagesListManager;
 		}
 	}
 
@@ -140,6 +206,8 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		private bool ableToCopyImage;
 		private bool isSidePaneOverlay = true;
 		private bool inputByPosts;
+		private bool isImagesListManagerLocked;
+		private E621Post[] allPosts;
 
 		public bool IsSidePaneOverlay {
 			get => isSidePaneOverlay;
@@ -149,6 +217,11 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		public E621Post E621Post {
 			get => e621Post;
 			set => SetProperty(ref e621Post, value, OnPostChanged);
+		}
+
+		public E621Post[] AllPosts {
+			get => allPosts;
+			set => SetProperty(ref allPosts, value);
 		}
 
 		public string ImageURL {
@@ -221,6 +294,11 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		public bool InputByPosts {
 			get => inputByPosts;
 			set => SetProperty(ref inputByPosts, value);
+		}
+
+		public bool IsImagesListManagerLocked {
+			get => isImagesListManagerLocked;
+			set => SetProperty(ref isImagesListManagerLocked, value);
 		}
 
 		private void OnPostChanged() {
@@ -351,6 +429,39 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 		private void ImagesListManagerItemClick(E621Post post) {
 			OnImagesListManagerItemClick?.Invoke(post);
+		}
+
+		public ICommand NextCommand => new DelegateCommand(Next);
+		public ICommand PreviousCommand => new DelegateCommand(Previous);
+
+		private void Next() {
+			int index = Array.IndexOf(AllPosts, E621Post);
+			if (index == -1) {
+				return;
+			}
+
+			if (index + 1 >= AllPosts.Length) {
+				index = 0;
+			} else {
+				index++;
+			}
+
+			OnImagesListManagerItemClick?.Invoke(AllPosts[index]);
+		}
+
+		private void Previous() {
+			int index = Array.IndexOf(AllPosts, E621Post);
+			if (index == -1) {
+				return;
+			}
+
+			if (index - 1 < 0) {
+				index = AllPosts.Length - 1;
+			} else {
+				index--;
+			}
+
+			OnImagesListManagerItemClick?.Invoke(AllPosts[index]);
 		}
 	}
 }

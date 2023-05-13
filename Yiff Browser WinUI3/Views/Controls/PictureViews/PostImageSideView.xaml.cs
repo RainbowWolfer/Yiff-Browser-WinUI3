@@ -170,6 +170,9 @@ namespace Yiff_Browser_WinUI3.Views.Controls.PictureViews {
 
 			if (parentID.IsNotBlank()) {
 				E621Post parent = await E621API.GetPostAsync(parentID, cts2.Token);
+				if (cts2.IsCancellationRequested) {
+					return;
+				}
 				ParentPost = parent;
 			}
 
@@ -202,7 +205,6 @@ namespace Yiff_Browser_WinUI3.Views.Controls.PictureViews {
 
 			CommentItems.Clear();
 
-			List<Task> tasksPool = new();
 			E621Comment[] comments = await E621API.GetCommentsAsync(E621Post.ID, cts1.Token);
 			foreach (E621Comment comment in comments ?? Array.Empty<E621Comment>()) {
 				CommentItem item = new() {
@@ -210,22 +212,20 @@ namespace Yiff_Browser_WinUI3.Views.Controls.PictureViews {
 					cts = cts1,
 				};
 				CommentItems.Add(item);
-				Task task = item.LoadUserStuff();
-				tasksPool.Insert(0, task);
 			}
 
-			LoadPool(tasksPool, cts1);
+			LoadCommentUsersPool(CommentItems.ToList(), cts1);
 
 			RaisePropertyChanged(nameof(CommentItems));
 			IsLoadingComments = false;
 		}
 
-		private static async void LoadPool(List<Task> tasksPool, CancellationTokenSource cts) {
-			foreach (Task item in tasksPool) {
+		private static async void LoadCommentUsersPool(List<CommentItem> tasksPool, CancellationTokenSource cts) {
+			foreach (CommentItem item in tasksPool) {
 				if (cts.IsCancellationRequested) {
 					return;
 				}
-				await item;
+				await item.LoadUserStuff();
 			}
 		}
 

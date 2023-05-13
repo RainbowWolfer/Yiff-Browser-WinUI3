@@ -273,15 +273,18 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		public void Initialize(string url) {
 			URL = url;
 
+			if (Bitmap != null) {
+				Bitmap.UriSource = null;
+			}
+			Bitmap = null;
+
 			ShowProgress = true;
 			IsProgressIndeterminate = true;
 			ShowProgressError = false;
 
 			DownloadedFileSize = 0;
 
-			if (url.IsBlank()) {
-				Bitmap = null;
-			} else {
+			if (!url.IsBlank()) {
 				Bitmap = new(new Uri(URL));
 				Bitmap.DownloadProgress += (s, e) => {
 					Progress = e.Progress;

@@ -213,6 +213,17 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		private void UserControl_Loaded(object sender, RoutedEventArgs e) {
 			ViewModel.XamlRoot = XamlRoot;
 		}
+
+		public void PauseVideo() {
+			PostDetailView.PauseVideo();
+		}
+
+		public void PlayVideo() {
+			if (PostDetailView.Visibility == Visibility.Visible) {
+				PostDetailView.PlayVideo();
+			}
+		}
+
 	}
 
 	public class PostsViewerViewModel : BindableBase {

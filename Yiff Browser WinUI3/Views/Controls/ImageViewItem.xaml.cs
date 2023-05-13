@@ -29,11 +29,11 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		public event Action OnPostDeleted;
 
 		public E621Post Post {
-			get => (E621Post)GetValue(MyPropertyProperty);
-			set => SetValue(MyPropertyProperty, value);
+			get => (E621Post)GetValue(PostProperty);
+			set => SetValue(PostProperty, value);
 		}
 
-		public static readonly DependencyProperty MyPropertyProperty = DependencyProperty.Register(
+		public static readonly DependencyProperty PostProperty = DependencyProperty.Register(
 			nameof(Post),
 			typeof(E621Post),
 			typeof(ImageViewItem),

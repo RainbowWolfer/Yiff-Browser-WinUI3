@@ -95,9 +95,8 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		}
 
 		public void Initiaize(string url) {
-			if (url.IsBlank()) {
-				MediaSource = null;
-			} else {
+			MediaSource = null;
+			if (!url.IsBlank()) {
 				MediaSource = MediaSource.CreateFromUri(new Uri(url));
 
 				MediaSource.OpenOperationCompleted += MediaSource_OpenOperationCompleted;

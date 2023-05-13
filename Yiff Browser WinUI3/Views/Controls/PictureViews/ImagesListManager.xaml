@@ -19,7 +19,7 @@
 		</Storyboard>
 	</UserControl.Resources>
 
-	<Grid x:Name="PhotosListGrid" HorizontalAlignment="Center" MaxWidth="800" CornerRadius="10" PointerEntered="PhotosListGrid_PointerEntered" PointerExited="PhotosListGrid_PointerExited" RenderTransformOrigin="0.5,1">
+	<Grid x:Name="PhotosListGrid" HorizontalAlignment="Center" CornerRadius="10" PointerEntered="PhotosListGrid_PointerEntered" PointerExited="PhotosListGrid_PointerExited" RenderTransformOrigin="0.5,1">
 
 		<Grid.Background>
 			<SolidColorBrush Color="#2c2c2c" Opacity="0.9"/>
@@ -30,7 +30,7 @@
 			<RowDefinition Height="auto"/>
 		</Grid.RowDefinitions>
 
-		<ScrollViewer x:Name="ListScroll" Background="{StaticResource CardBackgroundFillColorDefaultBrush}" VerticalScrollMode="Disabled" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Visible" Padding="4,0,4,8">
+		<ScrollViewer x:Name="ListScroll" Grid.Row="0" VerticalScrollMode="Disabled" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Visible" Padding="4,0,4,8">
 
 			<ItemsControl x:Name="ListControl" ItemsSource="{x:Bind Items}" Margin="3">
 				<ItemsControl.ItemsPanel>
@@ -56,10 +56,10 @@
 
 								<ProgressRing IsActive="True" Visibility="{Binding ShowLoading,Converter={StaticResource BoolToVisibility}}"/>
 
-								<Border VerticalAlignment="Center" HorizontalAlignment="Center" Height="70" Width="70" CornerRadius="10">
+								<Border VerticalAlignment="Center" HorizontalAlignment="Center" Height="80" Width="80" CornerRadius="10">
 
 									<Border.Background>
-										<ImageBrush ImageSource="{Binding ImageURL}" Stretch="UniformToFill">
+										<ImageBrush ImageSource="{Binding ImageURL}" Stretch="UniformToFill" ImageOpened="ImageBrush_ImageOpened">
 
 											<i:Interaction.Behaviors>
 												<core:EventTriggerBehavior EventName="ImageOpened">
@@ -77,7 +77,7 @@
 
 								</Border>
 
-								<FontIcon Glyph="{Binding TypeIcon}" VerticalAlignment="Top" HorizontalAlignment="Right" FontSize="12" Margin="5" Foreground="White" FontWeight="Bold" Visibility="{Binding TypeIcon,Converter={StaticResource ArrayNotEmptyToVisibility}}">
+								<FontIcon Glyph="{Binding TypeIcon}" VerticalAlignment="Top" HorizontalAlignment="Right" FontSize="15" Margin="5" Foreground="White" FontWeight="Bold" Visibility="{Binding TypeIcon,Converter={StaticResource ArrayNotEmptyToVisibility}}">
 									<FontIcon.Shadow>
 										<ThemeShadow/>
 									</FontIcon.Shadow>
@@ -92,13 +92,17 @@
 
 		<Grid x:Name="TopGrid" Height="0" Grid.Row="1">
 			<StackPanel Orientation="Horizontal" Margin="10,0,0,3">
-				<FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE18F;"/>
-				<TextBlock x:Name="CountText" Text="2/75" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="16"/>
+				<FontIcon Glyph="&#xE158;"/>
+				<TextBlock x:Name="CountText" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="16">
+					<Run x:Name="CurrentCountText" Text="0"/>
+					<Run Text="/"/>
+					<Run x:Name="WholeCountText" Text="0"/>
+				</TextBlock>
 			</StackPanel>
-			<ToggleButton x:Name="LockButton" HorizontalAlignment="Right" Padding="6,3,6,3" Margin="0,0,5,3" VerticalAlignment="Center">
+			<ToggleButton IsChecked="{x:Bind IsLocked,Mode=TwoWay}" HorizontalAlignment="Right" Padding="6,3,6,3" Margin="0,0,5,3" VerticalAlignment="Center">
 				<StackPanel Orientation="Horizontal">
-					<FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE72E;" />
-					<TextBlock x:Name="LockListText" Margin="10,0,0,0" Text="Lock Photos List"/>
+					<FontIcon Glyph="&#xE72E;"/>
+					<TextBlock Margin="10,0,0,0" Text="Lock Photos List"/>
 				</StackPanel>
 			</ToggleButton>
 		</Grid>

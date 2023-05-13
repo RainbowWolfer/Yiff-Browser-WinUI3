@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.Foundation;
 using Windows.System;
 using Yiff_Browser_WinUI3.Models.E621;
 
@@ -142,6 +143,12 @@ namespace Yiff_Browser_WinUI3.Helpers {
 				return;
 			}
 			await Launcher.LaunchUriAsync(new Uri(url));
+		}
+
+		public static double Distance(this Point a, Point b) {
+			var x = Math.Pow(a.X - b.X, 2);
+			var y = Math.Pow(a.Y - b.Y, 2);
+			return Math.Sqrt(x + y);
 		}
 	}
 }

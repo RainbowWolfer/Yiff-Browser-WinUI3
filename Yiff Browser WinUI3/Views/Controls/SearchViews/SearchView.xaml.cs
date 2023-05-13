@@ -235,7 +235,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls.SearchViews {
 				}
 			}
 
-			if ((start >= text.Length || text[start] == ' ') && (start > 0 && text[start - 1] == ' ')) {
+			if (start > text.Length || (start >= text.Length || text[start] == ' ') && (start > 0 && text[start - 1] == ' ')) {
 				return "";
 			} else {
 				string[] tags = text.Trim().Split(' ').Where(t => t.IsNotBlank()).ToArray();
