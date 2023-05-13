@@ -74,6 +74,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 				view.ViewModel.OnPreviewsUpdated -= view.ViewModel_OnPreviewsUpdated;
 				view.ViewModel.OnScrollReset -= view.ViewModel_OnScrollReset;
 				view.ViewModel.OnImagesListManagerItemClick -= view.ViewModel_OnImagesListManagerItemClick;
+				view.ViewModel.IsInSelectionModeChanged -= view.ViewModel_IsInSelectionModeChanged;
 			}
 
 			view.ViewModel = new PostsViewerViewModel();
@@ -81,6 +82,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			view.ViewModel.OnPreviewsUpdated += view.ViewModel_OnPreviewsUpdated;
 			view.ViewModel.OnScrollReset += view.ViewModel_OnScrollReset;
 			view.ViewModel.OnImagesListManagerItemClick += view.ViewModel_OnImagesListManagerItemClick;
+			view.ViewModel.IsInSelectionModeChanged += view.ViewModel_IsInSelectionModeChanged;
 
 			view.Root.DataContext = view.ViewModel;
 
@@ -88,6 +90,12 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 			view.PostDetailView.Visibility = Visibility.Collapsed;
 			view.openedImageItem = null;
+		}
+
+		private void ViewModel_IsInSelectionModeChanged(bool isInSelectionMode) {
+			foreach (ImageViewItem item in MainGrid.Children.Cast<ImageViewItem>()) {
+				item.IsSelected = false;
+			}
 		}
 
 		private void ViewModel_OnScrollReset() {
@@ -149,25 +157,33 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 		private ImageViewItem openedImageItem;
 		private void View_ImageClick(ImageViewItem view, ImageViewItemViewModel viewModel) {
-			if (openedImageItem != null) {
-				return;
-			}
+			if (ViewModel.IsInSelectionMode) {
 
-			openedImageItem = view;
-			PostDetailView.Visibility = Visibility.Visible;
+				view.IsSelected = !view.IsSelected;
 
-			PostDetailView.E621Post = view.Post;
-			PostDetailView.InitialImageURL = viewModel.ImageLoadStage switch {
-				LoadStage.None or LoadStage.Preview => view.Post.Preview.URL,
-				LoadStage.Sample => view.Post.Sample.URL,
-				_ => throw new NotSupportedException(),
-			};
+			} else {
 
-			if (Local.Settings.EnanbleTransitionAnimation) {
-				ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("image_in", view.GetCurrentImage());
-				ConnectedAnimation imageAnimation = ConnectedAnimationService.GetForCurrentView().GetAnimation("image_in");
-				imageAnimation.Configuration = new DirectConnectedAnimationConfiguration();
-				imageAnimation?.TryStart(PostDetailView.GetCurrentImage());
+				if (openedImageItem != null) {
+					return;
+				}
+
+				openedImageItem = view;
+				PostDetailView.Visibility = Visibility.Visible;
+
+				PostDetailView.E621Post = view.Post;
+				PostDetailView.InitialImageURL = viewModel.ImageLoadStage switch {
+					LoadStage.None or LoadStage.Preview => view.Post.Preview.URL,
+					LoadStage.Sample => view.Post.Sample.URL,
+					_ => throw new NotSupportedException(),
+				};
+
+				if (Local.Settings.EnanbleTransitionAnimation) {
+					ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("image_in", view.GetCurrentImage());
+					ConnectedAnimation imageAnimation = ConnectedAnimationService.GetForCurrentView().GetAnimation("image_in");
+					imageAnimation.Configuration = new DirectConnectedAnimationConfiguration();
+					imageAnimation?.TryStart(PostDetailView.GetCurrentImage());
+				}
+
 			}
 
 		}
@@ -233,6 +249,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		public event OnPreviewsUpdateEventHandler OnPreviewsUpdated;
 		public event Action OnScrollReset;
 		public event Action<E621Post> OnImagesListManagerItemClick;
+		public event Action<bool> IsInSelectionModeChanged;
 
 		private int pageValue;
 		private bool isLoading;
@@ -279,7 +296,11 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 		public bool IsInSelectionMode {
 			get => isInSelectionMode;
-			set => SetProperty(ref isInSelectionMode, value);
+			set => SetProperty(ref isInSelectionMode, value, OnIsInSelectionModeChanged);
+		}
+
+		private void OnIsInSelectionModeChanged() {
+			IsInSelectionModeChanged?.Invoke(IsInSelectionMode);
 		}
 
 		public ObservableCollection<E621Post> Posts { get; } = new ObservableCollection<E621Post>();

@@ -11,9 +11,111 @@
 	mc:Ignorable="d">
 
 	<UserControl.Resources>
-		<Style x:Key="MyButtonStyle" TargetType="Button">
-
+		<Style x:Key="ButtonStyle1" TargetType="Button">
+			<Setter Property="Background" Value="{ThemeResource ButtonBackground}"/>
+			<Setter Property="BackgroundSizing" Value="OuterBorderEdge"/>
+			<Setter Property="Foreground" Value="{ThemeResource ButtonForeground}"/>
+			<Setter Property="BorderBrush" Value="{ThemeResource ButtonBorderBrush}"/>
+			<Setter Property="BorderThickness" Value="{ThemeResource ButtonBorderThemeThickness}"/>
+			<Setter Property="Padding" Value="{StaticResource ButtonPadding}"/>
+			<Setter Property="HorizontalAlignment" Value="Left"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}"/>
+			<Setter Property="FontWeight" Value="Normal"/>
+			<Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}"/>
+			<Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}"/>
+			<Setter Property="FocusVisualMargin" Value="-3"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="Button">
+						<ContentPresenter x:Name="ContentPresenter" AutomationProperties.AccessibilityView="Raw" Background="{TemplateBinding Background}" BackgroundSizing="{TemplateBinding BackgroundSizing}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" ContentTemplate="{TemplateBinding ContentTemplate}" CornerRadius="{TemplateBinding CornerRadius}" Content="{TemplateBinding Content}" ContentTransitions="{TemplateBinding ContentTransitions}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" Padding="{TemplateBinding Padding}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}">
+							<VisualStateManager.VisualStateGroups>
+								<VisualStateGroup x:Name="CommonStates">
+									<VisualState x:Name="Normal">
+										<Storyboard>
+											<PointerUpThemeAnimation Storyboard.TargetName="ContentPresenter"/>
+										</Storyboard>
+									</VisualState>
+									<VisualState x:Name="PointerOver">
+										<Storyboard>
+											<!--<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+												<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonBackgroundPointerOver}"/>
+											</ObjectAnimationUsingKeyFrames>
+											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+												<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonBorderBrushPointerOver}"/>
+											</ObjectAnimationUsingKeyFrames>
+											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+												<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonForegroundPointerOver}"/>
+											</ObjectAnimationUsingKeyFrames>
+											<PointerUpThemeAnimation Storyboard.TargetName="ContentPresenter"/>-->
+										</Storyboard>
+									</VisualState>
+									<VisualState x:Name="Pressed">
+										<Storyboard>
+											<!--<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+												<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonBackgroundPressed}"/>
+											</ObjectAnimationUsingKeyFrames>
+											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+												<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonBorderBrushPressed}"/>
+											</ObjectAnimationUsingKeyFrames>
+											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+												<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonForegroundPressed}"/>
+											</ObjectAnimationUsingKeyFrames>-->
+											<PointerDownThemeAnimation Storyboard.TargetName="ContentPresenter"/>
+										</Storyboard>
+									</VisualState>
+									<VisualState x:Name="Disabled">
+										<Storyboard>
+											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+												<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonBackgroundDisabled}"/>
+											</ObjectAnimationUsingKeyFrames>
+											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+												<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonBorderBrushDisabled}"/>
+											</ObjectAnimationUsingKeyFrames>
+											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+												<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonForegroundDisabled}"/>
+											</ObjectAnimationUsingKeyFrames>
+										</Storyboard>
+									</VisualState>
+								</VisualStateGroup>
+							</VisualStateManager.VisualStateGroups>
+						</ContentPresenter>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
 		</Style>
+		<Style x:Key="MyButtonStyle" TargetType="Button">
+			  <Setter Property="Template">  
+                <Setter.Value>  
+                    <ControlTemplate TargetType="Button">  
+                        <ContentPresenter x:Name="ContentPresenter" AutomationProperties.AccessibilityView="Raw" Background="{TemplateBinding Background}" BackgroundSizing="{TemplateBinding BackgroundSizing}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" ContentTemplate="{TemplateBinding ContentTemplate}" CornerRadius="{TemplateBinding CornerRadius}" Content="{TemplateBinding Content}" ContentTransitions="{TemplateBinding ContentTransitions}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" Padding="{TemplateBinding Padding}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}">  
+                            <VisualStateManager.VisualStateGroups>  
+                                <VisualStateGroup x:Name="CommonStates">  
+                                    <VisualState x:Name="Normal">  
+                                        <Storyboard>  
+                                            <PointerUpThemeAnimation Storyboard.TargetName="ContentPresenter"/>  
+                                        </Storyboard>  
+                                    </VisualState>  
+                                    <VisualState x:Name="PointerOver">  
+                                      <!--code has been removed-->   
+                                    </VisualState>  
+                                    <VisualState x:Name="Pressed">  
+                                       <!--code has been removed-->   
+                                    </VisualState>  
+                                    <VisualState x:Name="Disabled">  
+                                   <!--code has been removed-->   
+                                    </VisualState>  
+                                </VisualStateGroup>  
+                            </VisualStateManager.VisualStateGroups>  
+                        </ContentPresenter>  
+                    </ControlTemplate>  
+                </Setter.Value>  
+            </Setter>  
+		</Style>
+
+		<converters:BoolToCornerRadiusConverter x:Key="IsSelectedCornerRadius" TrueValue="10" FalseValue="10,10,0,0"/>
+		<converters:BoolToBrushConverter x:Key="IsSelectedBrush" TrueValue="Orange" FalseValue="{StaticResource CardBackgroundFillColorDefaultBrush}"/>
+		<converters:BoolToThicknessConverter x:Key="IsSelectedThickness" TrueValue="2" FalseValue="0"/>
 
 	</UserControl.Resources>
 
@@ -23,7 +125,7 @@
 			<local:ImageViewItemViewModel x:Name="ViewModel"/>
 		</Grid.DataContext>
 
-		<Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Padding="0" CornerRadius="10" Style="{StaticResource MyButtonStyle}" Click="Button_Click">
+		<Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Padding="0" CornerRadius="10" Style="{StaticResource ButtonStyle1}" Click="Button_Click" Background="{x:Bind IsSelected,Mode=OneWay,Converter={StaticResource IsSelectedBrush}}" BorderThickness="{x:Bind IsSelected,Mode=OneWay,Converter={StaticResource IsSelectedThickness}}">
 
 			<Grid>
 
@@ -33,7 +135,31 @@
 				</Grid.RowDefinitions>
 
 				<Grid>
-					<Image x:Name="PreviewImage" Source="{Binding PreviewImageURL}" Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding HidePreviewImage,Converter={StaticResource BoolToVisibilityRe}}">
+					<Border x:Name="PreviewImage" CornerRadius="{x:Bind IsSelected,Mode=OneWay,Converter={StaticResource IsSelectedCornerRadius}}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Visibility="{Binding HidePreviewImage,Converter={StaticResource BoolToVisibilityRe}}">
+						<Border.Background>
+							<ImageBrush ImageSource="{Binding PreviewImageURL}" Stretch="UniformToFill">
+								<i:Interaction.Behaviors>
+									<core:EventTriggerBehavior EventName="ImageOpened">
+										<core:InvokeCommandAction Command="{Binding OnPreviewLoadedCommand}"/>
+									</core:EventTriggerBehavior>
+								</i:Interaction.Behaviors>
+							</ImageBrush>
+						</Border.Background>
+					</Border>
+
+					<Border x:Name="SampleImage" CornerRadius="{x:Bind IsSelected,Mode=OneWay,Converter={StaticResource IsSelectedCornerRadius}}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+						<Border.Background>
+							<ImageBrush ImageSource="{Binding SampleImageURL}" Stretch="UniformToFill">
+								<i:Interaction.Behaviors>
+									<core:EventTriggerBehavior EventName="ImageOpened">
+										<core:InvokeCommandAction Command="{Binding OnSampleLoadedCommand}"/>
+									</core:EventTriggerBehavior>
+								</i:Interaction.Behaviors>
+							</ImageBrush>
+						</Border.Background>
+					</Border>
+
+					<!--<Image x:Name="PreviewImage" Source="{Binding PreviewImageURL}" Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding HidePreviewImage,Converter={StaticResource BoolToVisibilityRe}}">
 						<i:Interaction.Behaviors>
 							<core:EventTriggerBehavior EventName="ImageOpened">
 								<core:InvokeCommandAction Command="{Binding OnPreviewLoadedCommand}"/>
@@ -47,7 +173,7 @@
 								<core:InvokeCommandAction Command="{Binding OnSampleLoadedCommand}"/>
 							</core:EventTriggerBehavior>
 						</i:Interaction.Behaviors>
-					</Image>
+					</Image>-->
 				</Grid>
 
 				<Grid Visibility="{Binding ErrorLoadingHint,Converter={StaticResource ArrayNotEmptyToVisibility}}">
@@ -73,7 +199,7 @@
 					</TextBlock>
 				</Border>
 
-				<Grid VerticalAlignment="Bottom" Height="25" Background="{StaticResource CardBackgroundFillColorDefaultBrush}" Grid.Row="1" Padding="20,0,20,0" Visibility="{x:Bind ShowPostInfo,Mode=OneWay,Converter={StaticResource BoolToVisibility}}">
+				<Grid VerticalAlignment="Bottom" Height="25" Background="{x:Bind IsSelected,Mode=OneWay,Converter={StaticResource IsSelectedBrush}}" Grid.Row="1" Padding="20,0,20,0" Visibility="{x:Bind ShowPostInfo,Mode=OneWay,Converter={StaticResource BoolToVisibility}}">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*"/>
 						<ColumnDefinition Width="*"/>

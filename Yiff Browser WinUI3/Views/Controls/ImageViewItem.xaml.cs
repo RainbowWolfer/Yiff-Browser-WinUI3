@@ -66,12 +66,28 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			set => SetValue(CommandProperty, value);
 		}
 
-		public static readonly DependencyProperty CommandProperty =DependencyProperty.Register(
+		public static readonly DependencyProperty CommandProperty = DependencyProperty.Register(
 			nameof(Command),
 			typeof(ICommand),
 			typeof(ImageViewItem),
 			new PropertyMetadata(null)
 		);
+
+
+
+		public bool IsSelected {
+			get => (bool)GetValue(IsSelectedProperty);
+			set => SetValue(IsSelectedProperty, value);
+		}
+
+		public static readonly DependencyProperty IsSelectedProperty = DependencyProperty.Register(
+			nameof(IsSelected),
+			typeof(bool),
+			typeof(ImageViewItem),
+			new PropertyMetadata(false)
+		);
+
+
 
 		public ImageViewItem() {
 			this.InitializeComponent();
@@ -83,10 +99,10 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			Command?.Execute(e);
 		}
 
-		public Image GetSampleImage() => SampleImage;
-		public Image GetPreviewImage() => PreviewImage;
+		public FrameworkElement GetSampleImage() => SampleImage;
+		public FrameworkElement GetPreviewImage() => PreviewImage;
 
-		public Image GetCurrentImage() {
+		public FrameworkElement GetCurrentImage() {
 			if (!ViewModel.HidePreviewImage) {
 				return GetPreviewImage();
 			} else {
