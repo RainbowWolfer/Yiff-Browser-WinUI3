@@ -68,7 +68,7 @@
 					</TextBlock>
 				</PivotItem.Header>
 
-				<Grid Margin="0,10,0,0">
+				<Grid>
 
 					<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding IsLoadingComments,Converter={StaticResource BoolToVisibility}}">
 						<TextBlock Text="Loading Comments" FontSize="22" Margin="5"/>
@@ -81,62 +81,88 @@
 							<TextBlock Text="No Comments Yet" FontSize="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 						</Grid>
 
-						<ListView ItemsSource="{Binding CommentItems}" SelectionMode="None" IsItemClickEnabled="False" Padding="0,0,10,0" Visibility="{Binding CommentItems,Converter={StaticResource ArrayNotEmptyToVisibility}}">
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="auto"/>
+								<RowDefinition Height="*"/>
+							</Grid.RowDefinitions>
 
-							<ListView.ItemTemplate>
-								<DataTemplate x:DataType="local:CommentItem">
-									<Grid Background="{StaticResource CardBackgroundFillColorDefaultBrush}" Margin="0,0,0,10" CornerRadius="10">
-										<Grid.ColumnDefinitions>
-											<ColumnDefinition Width="140"/>
-											<ColumnDefinition Width="*"/>
-										</Grid.ColumnDefinitions>
+							<Grid HorizontalAlignment="Right" Margin="0,0,8,0">
+								<ToggleSwitch FlowDirection="RightToLeft" IsOn="{Binding CommentOrderCheck,Mode=TwoWay}">
 
-										<StackPanel Background="#1b0056ff">
-
-											<TextBlock FontSize="16" Text="{Binding Username}" TextAlignment="Left" Margin="15,5,5,0" FontWeight="SemiBold" TextWrapping="Wrap"/>
-											<TextBlock FontSize="14" Text="{Binding LevelString}" TextAlignment="Left" Margin="15,0,0,0" Visibility="{Binding LevelString,Converter={StaticResource ArrayNotEmptyToVisibility}}"/>
-
-											<Border Height="120" Width="120" CornerRadius="10" Visibility="{Binding UserAvatarURL,Converter={StaticResource ArrayNotEmptyToVisibility}}" Margin="0,5,0,0">
-												<Border.Background>
-													<ImageBrush ImageSource="{Binding UserAvatarURL}" Stretch="UniformToFill"/>
-												</Border.Background>
-												<Border.ContextFlyout>
-													<MenuFlyout>
-														<MenuFlyoutItem Text="Copy post ID" Icon="Copy" Command="{Binding CopyCommand}"/>
-														<MenuFlyoutItem Text="Open in new tab" Icon="OpenFile" IsEnabled="{Binding AvatarPost,Converter={StaticResource NotNullToBool}}" Command="{Binding OpenInNewTabCommand}"/>
-													</MenuFlyout>
-												</Border.ContextFlyout>
-											</Border>
-
-											<ProgressBar Width="80" IsIndeterminate="True" Visibility="{Binding IsLoadingAvatar,Converter={StaticResource BoolToVisibility}}" Margin="5"/>
-
-											<Grid Margin="5">
-												<Grid.ColumnDefinitions>
-													<ColumnDefinition Width="*"/>
-													<ColumnDefinition Width="*"/>
-													<ColumnDefinition Width="*"/>
-												</Grid.ColumnDefinitions>
-
-												<local:ScoreButton UpOrDown="True" Height="25" Width="25"/>
-
-												<TextBlock Text="{Binding Score}" Grid.Column="1" FontSize="16" HorizontalAlignment="Stretch" TextAlignment="Center" VerticalAlignment="Center" MinWidth="30"/>
-
-												<local:ScoreButton UpOrDown="False" Height="25" Width="25" Grid.Column="2"/>
-											</Grid>
-
+									<ToggleSwitch.OnContent>
+										<StackPanel Orientation="Horizontal">
+											<TextBlock Text="Time Descending"/>
+											<FontIcon Glyph="&#xE70D;" Margin="10,0,0,0"/>
 										</StackPanel>
+									</ToggleSwitch.OnContent>
 
-										<StackPanel Grid.Column="1" Grid.RowSpan="4" Margin="8">
-											<TextBlock Text="{Binding CreatedDateTime}" Margin="0,0,0,5"/>
-
-											<TextBlock Text="{Binding TextContent}" TextWrapping="Wrap"/>
+									<ToggleSwitch.OffContent>
+										<StackPanel Orientation="Horizontal">
+											<TextBlock Text="Time Ascending"/>
+											<FontIcon Glyph="&#xE70E;" Margin="10,0,0,0"/>
 										</StackPanel>
+									</ToggleSwitch.OffContent>
 
-									</Grid>
-								</DataTemplate>
-							</ListView.ItemTemplate>
-						</ListView>
+								</ToggleSwitch>
+							</Grid>
 
+							<ListView Grid.Row="1" ItemsSource="{Binding CommentItems}" SelectionMode="None" IsItemClickEnabled="False" Padding="0,0,10,0" Visibility="{Binding CommentItems,Converter={StaticResource ArrayNotEmptyToVisibility}}">
+
+								<ListView.ItemTemplate>
+									<DataTemplate x:DataType="local:CommentItem">
+										<Grid Background="{StaticResource CardBackgroundFillColorDefaultBrush}" Margin="0,0,0,10" CornerRadius="10">
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="140"/>
+												<ColumnDefinition Width="*"/>
+											</Grid.ColumnDefinitions>
+
+											<StackPanel Background="#1b0056ff">
+
+												<TextBlock FontSize="16" Text="{Binding Username}" TextAlignment="Left" Margin="15,5,5,0" FontWeight="SemiBold" TextWrapping="Wrap"/>
+												<TextBlock FontSize="14" Text="{Binding LevelString}" TextAlignment="Left" Margin="15,0,0,0" Visibility="{Binding LevelString,Converter={StaticResource ArrayNotEmptyToVisibility}}"/>
+
+												<Border Height="120" Width="120" CornerRadius="10" Visibility="{Binding UserAvatarURL,Converter={StaticResource ArrayNotEmptyToVisibility}}" Margin="0,5,0,0">
+													<Border.Background>
+														<ImageBrush ImageSource="{Binding UserAvatarURL}" Stretch="UniformToFill"/>
+													</Border.Background>
+													<Border.ContextFlyout>
+														<MenuFlyout>
+															<MenuFlyoutItem Text="Copy post ID" Icon="Copy" Command="{Binding CopyCommand}"/>
+															<MenuFlyoutItem Text="Open in new tab" Icon="OpenFile" IsEnabled="{Binding AvatarPost,Converter={StaticResource NotNullToBool}}" Command="{Binding OpenInNewTabCommand}"/>
+														</MenuFlyout>
+													</Border.ContextFlyout>
+												</Border>
+
+												<ProgressBar Width="80" IsIndeterminate="True" Visibility="{Binding IsLoadingAvatar,Converter={StaticResource BoolToVisibility}}" Margin="5"/>
+
+												<Grid Margin="5">
+													<Grid.ColumnDefinitions>
+														<ColumnDefinition Width="*"/>
+														<ColumnDefinition Width="*"/>
+														<ColumnDefinition Width="*"/>
+													</Grid.ColumnDefinitions>
+
+													<local:ScoreButton UpOrDown="True" Height="25" Width="25"/>
+
+													<TextBlock Text="{Binding Score}" Grid.Column="1" FontSize="16" HorizontalAlignment="Stretch" TextAlignment="Center" VerticalAlignment="Center" MinWidth="30"/>
+
+													<local:ScoreButton UpOrDown="False" Height="25" Width="25" Grid.Column="2"/>
+												</Grid>
+
+											</StackPanel>
+
+											<StackPanel Grid.Column="1" Grid.RowSpan="4" Margin="8">
+												<TextBlock Text="{Binding CreatedDateTime}" Margin="0,0,0,5"/>
+
+												<TextBlock Text="{Binding TextContent}" TextWrapping="Wrap"/>
+											</StackPanel>
+
+										</Grid>
+									</DataTemplate>
+								</ListView.ItemTemplate>
+							</ListView>
+						</Grid>
 					</Grid>
 
 				</Grid>

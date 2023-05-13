@@ -45,6 +45,20 @@ namespace Yiff_Browser_WinUI3.Services.Locals {
 					IsActive = true,
 				});
 			}
+
+			if (!Blocks.Any(x => x.IsCloud)) {
+				Blocks.Insert(0, new ListingItem("E621 Cloud") {
+					IsCloud = true,
+				});
+			}
+
+			if (!Follows.Any(x => x.IsActive)) {
+				Follows.First().IsActive = true;
+			}
+
+			if (!Blocks.Any(x => x.IsActive)) {
+				Blocks.First().IsActive = true;
+			}
 		}
 
 		public ListingItem GetActiveFollows() => Follows.Find(x => x.IsActive);

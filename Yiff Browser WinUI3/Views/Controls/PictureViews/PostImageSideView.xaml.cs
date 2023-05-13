@@ -133,6 +133,24 @@ namespace Yiff_Browser_WinUI3.Views.Controls.PictureViews {
 			set => SetProperty(ref isLoadingChildren, value);
 		}
 
+		public bool CommentOrderCheck {
+			get => commentOrderCheck;
+			set => SetProperty(ref commentOrderCheck, value, OnCommentOrderCheckChanged);
+		}
+
+		private void OnCommentOrderCheckChanged() {
+			List<CommentItem> items;
+			if (CommentOrderCheck) {//descending
+				items = CommentItems.OrderByDescending(x => x.CreatedDateTime).ToList();
+			} else {
+				items = CommentItems.OrderBy(x => x.CreatedDateTime).ToList();
+			}
+			CommentItems.Clear();
+			foreach (CommentItem item in items) {
+				CommentItems.Add(item);
+			}
+		}
+
 		private void OnPostChanged() {
 			Description = E621Post.Description.NotBlankCheck() ?? "No Description";
 			SourceURLs = E621Post.Sources.ToArray();
@@ -154,6 +172,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls.PictureViews {
 		private CancellationTokenSource cts2;
 		private bool isLoadingParent;
 		private bool isLoadingChildren;
+		private bool commentOrderCheck;
 
 		private async void LoadRelations() {
 			IsLoadingParent = true;

@@ -72,7 +72,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		public event Action<ListingViewItem> RequestRenameListing;
 
 		private bool isCenterTipOpen;
-		private bool isDelelteListTipOpen;
+		private bool isDeleteListTipOpen;
 		private bool isRenameListTipOpen;
 
 		private string centerTipTitle = "Warning";
@@ -93,6 +93,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		private ObservableCollection<TagViewItem> itemTags;
 
 		private bool enablePasting;
+		private bool isCurrentListingCloud;
 
 		public string[] PasteTagsContent { get; private set; }
 
@@ -115,6 +116,11 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			}
 		}
 
+		public bool IsCurrentListingCloud {
+			get => isCurrentListingCloud;
+			set => SetProperty(ref isCurrentListingCloud, value);
+		}
+
 		public int SelectedIndex {
 			get => selectedIndex;
 			set => SetProperty(ref selectedIndex, value, OnSelectedIndexChanged);
@@ -123,11 +129,12 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		private void OnSelectedIndexChanged() {
 			ItemTags = new ObservableCollection<TagViewItem>();
 
-			if (SelectedIndex == -1) {
+			if (SelectedIndex == -1 || ListingItems.Count == 0) {
 				return;
 			}
 
 			ListingViewItem item = ListingItems[SelectedIndex];
+			IsCurrentListingCloud = item.Item.IsCloud;
 
 			foreach (string tag in item.Item.Tags) {
 				ItemTags.Add(CreateTagViewItem(tag));
@@ -187,14 +194,6 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		public ListingsManagerViewModel() {
 			ListingItems.CollectionChanged += ListingItems_CollectionChanged;
 
-			//ListingViewItem item = CreateNewListItem(new ListingItem("Default") {
-			//	Tags = { "feet", "cum", "cum_on_soles", "toe", "feet", "cum", "cum_on_soles", "toe", "feet", "cum", "cum_on_soles", "toe", "feet", "cum", "cum_on_soles", "toe", },
-			//});
-			//item.IsSelected = true;
-			//ListingItems.Add(item);
-
-			//SelectedIndex = 0;
-
 			Clipboard.ContentChanged += (s, e) => UpdatePastImportEnable();
 			UpdatePastImportEnable();
 		}
@@ -220,9 +219,9 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 			ExistTagNames = ItemTags.Select(x => x.Tag).ToArray();
 
-			ListingViewItem listintItem = ListingItems[SelectedIndex];
-			listintItem.Item.Tags = ExistTagNames.ToList();
-			listintItem.UpdateItem();
+			ListingViewItem listingItem = ListingItems[SelectedIndex];
+			listingItem.Item.Tags = ExistTagNames.ToList();
+			listingItem.UpdateItem();
 		}
 
 		private void ListingItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
@@ -233,9 +232,9 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			ExistListNames = ListingItems.Select(x => x.Item.Name).ToArray();
 		}
 
-		public bool IsDelelteListTipOpen {
-			get => isDelelteListTipOpen;
-			set => SetProperty(ref isDelelteListTipOpen, value);
+		public bool IsDeleteListTipOpen {
+			get => isDeleteListTipOpen;
+			set => SetProperty(ref isDeleteListTipOpen, value);
 		}
 
 		public bool IsRenameListTipOpen {
@@ -276,14 +275,14 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 		public ICommand ConfirmDeleteListingCommand => new DelegateCommand(ConfirmDeleteListing);
 		public ICommand CancelDeleteListingCommand => new DelegateCommand(CancelDeleteListing);
-		public ICommand OnNewTagSumbitCommand => new DelegateCommand<string>(OnNewTagSumbit);
-		public ICommand OnNewListSumbitCommand => new DelegateCommand<string>(OnNewListSumbit);
+		public ICommand OnNewTagSubmitCommand => new DelegateCommand<string>(OnNewTagSubmit);
+		public ICommand OnNewListSubmitCommand => new DelegateCommand<string>(OnNewListSubmit);
 
-		private void OnNewListSumbit(string text) {
+		private void OnNewListSubmit(string text) {
 			ListingItems.Add(CreateNewListItem(new ListingItem(text)));
 		}
 
-		private void OnNewTagSumbit(string text) {
+		private void OnNewTagSubmit(string text) {
 			ItemTags.Insert(0, CreateTagViewItem(text));
 			TagItemsSelectedIndex = 0;
 		}
@@ -291,8 +290,11 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		private ListingViewItem CreateNewListItem(ListingItem item) {
 			ListingViewItem viewItem = new(item);
 			viewItem.OnDelete += p => {
+				if (ListingItems.Count == 1) {
+					return;
+				}
 				RequestDeleteListing?.Invoke(p);
-				IsDelelteListTipOpen = true;
+				IsDeleteListTipOpen = true;
 				toBeManipulatedListItem = p;
 			};
 			viewItem.OnRename += p => {
@@ -346,7 +348,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 			toBeManipulatedListItem = null;
 
-			IsDelelteListTipOpen = false;
+			IsDeleteListTipOpen = false;
 		}
 
 		private void CancelDeleteListing() {

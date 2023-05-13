@@ -11,7 +11,7 @@
 	mc:Ignorable="d"
 	MinWidth="500">
 
-	<Grid>
+	<Grid KeyboardAcceleratorPlacementMode="Hidden">
 		<Grid.DataContext>
 			<local:SearchViewModel x:Name="ViewModel"/>
 		</Grid.DataContext>
