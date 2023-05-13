@@ -13,13 +13,13 @@ namespace Yiff_Browser_WinUI3.Services.Locals {
 		public List<ListingItem> Follows { get; set; }
 		public List<ListingItem> Blocks { get; set; }
 
-		public List<int> FollowPools { get; set; }
+		public List<PoolItem> FollowPools { get; set; }
 
 		[JsonConstructor]
-		public Listing(List<ListingItem> follows, List<ListingItem> blocks, List<int> followPools) {
+		public Listing(List<ListingItem> follows, List<ListingItem> blocks, List<PoolItem> followPools) {
 			Follows = follows ?? new List<ListingItem>();
 			Blocks = blocks ?? new List<ListingItem>();
-			FollowPools = followPools ?? new List<int>();
+			FollowPools = followPools ?? new List<PoolItem>();
 
 			Preinflate();
 			var b1 = Follows == Blocks;
@@ -29,7 +29,7 @@ namespace Yiff_Browser_WinUI3.Services.Locals {
 		public Listing() {
 			Follows = new List<ListingItem>();
 			Blocks = new List<ListingItem>();
-			FollowPools = new List<int>();
+			FollowPools = new List<PoolItem>();
 
 			Preinflate();
 		}
@@ -105,6 +105,25 @@ namespace Yiff_Browser_WinUI3.Services.Locals {
 			}
 		}
 
+		#region Pool
+
+		public void AddToPool(E621Pool pool) {
+			if (ContainPool(pool)) {
+				return;
+			}
+			FollowPools.Add(new PoolItem(pool.ID, pool.Name));
+		}
+
+		public void RemoveFromPool(E621Pool pool) {
+			FollowPools.RemoveAll(x => x.ID == pool.ID);
+		}
+
+		public bool ContainPool(E621Pool pool) {
+			return FollowPools.Any(x => x.ID == pool.ID);
+		}
+
+		#endregion
+
 		#region Local
 
 		public static async Task Read() {
@@ -134,4 +153,6 @@ namespace Yiff_Browser_WinUI3.Services.Locals {
 			Tags = new List<string>();
 		}
 	}
+
+	public record PoolItem(int ID, string Name);
 }

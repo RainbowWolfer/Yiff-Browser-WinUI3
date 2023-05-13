@@ -23,6 +23,7 @@ using Yiff_Browser_WinUI3.Services.Networks;
 using CommunityToolkit.WinUI.UI.Controls;
 using System.Diagnostics;
 using Yiff_Browser_WinUI3.Services.Locals;
+using Yiff_Browser_WinUI3.Helpers;
 
 namespace Yiff_Browser_WinUI3.Views.Controls.Users {
 	public sealed partial class UserInfoView : UserControl {
@@ -232,6 +233,25 @@ namespace Yiff_Browser_WinUI3.Views.Controls.Users {
 
 		private void ImageFailed() {
 			IsAvatarLoading = false;
+		}
+
+		public ICommand OpenInNewTabCommand => new DelegateCommand(OpenInNewTab);
+		public ICommand CopyCommand => new DelegateCommand(Copy);
+
+		private void OpenInNewTab() {
+			if (AvatarPost == null) {
+				return;
+			}
+			RequestCloseDialog?.Invoke();
+			E621HomePageViewModel.CreatePosts($"Post {AvatarPost.ID}", new E621Post[] { AvatarPost });
+		}
+
+		private void Copy() {
+			if (AvatarPost == null) {
+				return;
+			}
+
+			$"https://e621.net/posts/{AvatarPost.ID}".CopyToClipboard();
 		}
 	}
 }

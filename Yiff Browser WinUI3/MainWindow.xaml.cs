@@ -16,6 +16,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.System;
 using Yiff_Browser_WinUI3.Helpers;
 using Yiff_Browser_WinUI3.Models.E621;
 using Yiff_Browser_WinUI3.Services.Locals;
@@ -37,6 +38,8 @@ namespace Yiff_Browser_WinUI3 {
 		public string TAG_USER { get; } = "TAG_USER";
 
 		private string userAvatarURL;
+		private string usernameText;
+
 		public string UserAvatarURL {
 			get => userAvatarURL;
 			set {
@@ -46,6 +49,15 @@ namespace Yiff_Browser_WinUI3 {
 				} else {
 					UserAvatarPicture.ProfilePicture = new BitmapImage(new Uri(value));
 				}
+			}
+		}
+
+		public string UsernameText {
+			get => usernameText;
+			set {
+				usernameText = value;
+				UserUsernameTextBlock.Text = value.NotBlankCheck() ?? "Account";
+				ToolTipService.SetToolTip(UserButton, UserUsernameTextBlock.Text);
 			}
 		}
 
@@ -76,6 +88,7 @@ namespace Yiff_Browser_WinUI3 {
 			if (Local.Settings.CheckLocalUser()) {
 
 				E621User user = await E621API.GetUserAsync(Local.Settings.Username);
+				UsernameText = user.name;
 				E621Post avatarPost = await E621API.GetPostAsync(user.avatar_id);
 
 				App.User = user;
@@ -88,6 +101,7 @@ namespace Yiff_Browser_WinUI3 {
 
 			} else {
 				UserAvatarURL = null;
+				UsernameText = null;
 			}
 		}
 
@@ -170,6 +184,7 @@ namespace Yiff_Browser_WinUI3 {
 				if (Local.Settings.CheckLocalUser()) {
 					(E621User user, E621Post avatarPost) = view.GetUserResult();
 					App.User = user;
+					UsernameText = user.name;
 					App.AvatarPost = avatarPost;
 					if (avatarPost != null && !avatarPost.HasNoValidURLs()) {
 						UserAvatarURL = avatarPost.Sample.URL;

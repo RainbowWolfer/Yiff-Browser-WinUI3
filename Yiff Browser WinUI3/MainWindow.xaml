@@ -28,10 +28,10 @@
 			</NavigationView.FooterMenuItems>-->
 
 			<NavigationView.PaneFooter>
-				<Button x:Name="UserButton" Background="Transparent" BorderBrush="Transparent" Height="40" Width="40" HorizontalContentAlignment="Left" Padding="5,0,0,0" Margin="5,0,0,0" Click="UserButton_Click">
+				<Button x:Name="UserButton" Background="Transparent" BorderBrush="Transparent" Height="40" Width="40" HorizontalContentAlignment="Left" Padding="5,0,0,0" Margin="5,0,0,0" Click="UserButton_Click" ToolTipService.ToolTip="Account">
 					<StackPanel Orientation="Horizontal">
 						<PersonPicture x:Name="UserAvatarPicture" ProfilePicture="https://static1.e621.net/data/7c/c7/7cc746bb826db7abaf4d032f91fe0801.jpg" Height="29" Width="29"/>
-						<TextBlock Text="Account" VerticalAlignment="Center" Margin="9,0,0,0"/>
+						<TextBlock x:Name="UserUsernameTextBlock" Text="Account" VerticalAlignment="Center" Margin="9,0,0,0"/>
 					</StackPanel>
 				</Button>
 			</NavigationView.PaneFooter>

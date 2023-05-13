@@ -14,6 +14,7 @@ using Yiff_Browser_WinUI3.Helpers;
 using Yiff_Browser_WinUI3.Models.E621;
 using Yiff_Browser_WinUI3.Services.Locals;
 using Yiff_Browser_WinUI3.Services.Networks;
+using Yiff_Browser_WinUI3.Views.Controls.PictureViews;
 using Yiff_Browser_WinUI3.Views.Controls.TagsInfoViews;
 
 namespace Yiff_Browser_WinUI3.Views.Controls {
@@ -49,8 +50,6 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			new PropertyMetadata(null)
 		);
 
-
-
 		public E621PostParameters Parameters {
 			get => (E621PostParameters)GetValue(MyPropertyProperty);
 			set => SetValue(MyPropertyProperty, value);
@@ -73,19 +72,26 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			if (view.ViewModel != null) {
 				view.ViewModel.PostsCollectionChanged -= view.Posts_CollectionChanged;
 				view.ViewModel.OnPreviewsUpdated -= view.ViewModel_OnPreviewsUpdated;
+				view.ViewModel.OnScrollReset -= view.ViewModel_OnScrollReset;
+				view.ViewModel.OnImagesListManagerItemClick -= view.ViewModel_OnImagesListManagerItemClick;
 			}
 
 			view.ViewModel = new PostsViewerViewModel();
 			view.ViewModel.PostsCollectionChanged += view.Posts_CollectionChanged;
 			view.ViewModel.OnPreviewsUpdated += view.ViewModel_OnPreviewsUpdated;
+			view.ViewModel.OnScrollReset += view.ViewModel_OnScrollReset;
+			view.ViewModel.OnImagesListManagerItemClick += view.ViewModel_OnImagesListManagerItemClick;
+
 			view.Root.DataContext = view.ViewModel;
 
 			view.ViewModel.Initialize(value);
 
 			view.PostDetailView.Visibility = Visibility.Collapsed;
 			view.openedImageItem = null;
+		}
 
-			//view.MainGrid.scro
+		private void ViewModel_OnScrollReset() {
+			MainScrollViewer.ChangeView(0, 0, 1);
 		}
 
 		private void ViewModel_OnPreviewsUpdated(object sender, OnPreviewsUpdateEventArgs e) {
@@ -183,6 +189,23 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			openedImageItem = null;
 		}
 
+		private void ViewModel_OnImagesListManagerItemClick(E621Post post) {
+			ImageViewItem found = null;
+			foreach (ImageViewItem item in MainGrid.Children.Cast<ImageViewItem>()) {
+				if (item.Post == post) {
+					found = item;
+					break;
+				}
+			}
+			if (found == null) {
+				return;
+			}
+
+			openedImageItem = found;
+			PostDetailView.E621Post = post;
+			PostDetailView.InitialImageURL = post.Sample.URL;
+		}
+
 		private void PageForwardButton_Click(object sender, RoutedEventArgs e) {
 			PageFlyout.Hide();
 		}
@@ -197,6 +220,8 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 		public event NotifyCollectionChangedEventHandler PostsCollectionChanged;
 		public event OnPreviewsUpdateEventHandler OnPreviewsUpdated;
+		public event Action OnScrollReset;
+		public event Action<E621Post> OnImagesListManagerItemClick;
 
 		private int pageValue;
 		private bool isLoading;
@@ -209,6 +234,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		private bool inputByPosts;
 		private PostsInfoViewParameters postsInfoViewParameters;
 		private string errorHint;
+		private bool isPool;
 
 		public int PageValue {
 			get => pageValue;
@@ -258,6 +284,13 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			set => SetProperty(ref inputByPosts, value);
 		}
 
+		public bool IsPool {
+			get => isPool;
+			set => SetProperty(ref isPool, value);
+		}
+
+		public E621Pool Pool { get; set; }
+
 		#region Posts Info
 
 		public bool IsPostsInfoPaneOpen {
@@ -273,12 +306,16 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		}
 
 		private async void TagsInfoButton() {
-			await new TagsInfoView() {
-				Tags = Tags,
-			}.CreateContentDialog(XamlRoot, new ContentDialogParameters() {
-				CloseText = "Back",
-				SkipWidthSet = true,
-			}).ShowDialogAsync();
+			if (IsPool) {
+				await PoolInfoView.ShowAsDialog(Pool, XamlRoot);
+			} else {
+				await new TagsInfoView() {
+					Tags = Tags,
+				}.CreateContentDialog(XamlRoot, new ContentDialogParameters() {
+					CloseText = "Back",
+					SkipWidthSet = true,
+				}).ShowDialogAsync();
+			}
 		}
 
 		#endregion
@@ -293,10 +330,18 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			if (value.InputPosts) {
 				SetByPosts(value.Posts);
 				InputByPosts = true;
+
+				IsPool = false;
+				Pool = null;
+
 			} else {
 				Tags = value.Tags;
 				Page = value.Page;
 				InputByPosts = false;
+
+				IsPool = value.Pool != null;
+				Pool = value.Pool;
+
 			}
 		}
 
@@ -330,6 +375,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		}
 
 		private async void Refresh() {
+			OnScrollReset?.Invoke();
 			if (InputByPosts) {
 				E621Post[] posts = Posts.ToArray().Concat(Blocks).ToArray();
 
@@ -411,6 +457,12 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 				return;
 			}
 			Page = Math.Clamp(PageValue, 1, 999);
+		}
+
+		public ICommand ImagesListManagerItemClickCommand => new DelegateCommand<E621Post>(ImagesListManagerItemClick);
+
+		private void ImagesListManagerItemClick(E621Post post) {
+			OnImagesListManagerItemClick?.Invoke(post);
 		}
 	}
 }

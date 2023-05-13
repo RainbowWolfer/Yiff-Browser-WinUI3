@@ -15,6 +15,7 @@ using Microsoft.UI.Xaml.Navigation;
 using Yiff_Browser_WinUI3.Models.E621;
 using System.Threading.Tasks;
 using Yiff_Browser_WinUI3.Helpers;
+using Yiff_Browser_WinUI3.Services.Locals;
 
 namespace Yiff_Browser_WinUI3.Views.Controls.PictureViews {
 	public sealed partial class PoolInfoView : UserControl {
@@ -38,6 +39,25 @@ namespace Yiff_Browser_WinUI3.Views.Controls.PictureViews {
 				return;
 			}
 
+			view.IsFollowing = Local.Listing.ContainPool((E621Pool)e.NewValue);
+		}
+
+		public bool IsFollowing {
+			get => (bool)GetValue(IsFollowingProperty);
+			set => SetValue(IsFollowingProperty, value);
+		}
+
+		public static readonly DependencyProperty IsFollowingProperty = DependencyProperty.Register(
+			nameof(IsFollowing),
+			typeof(bool),
+			typeof(PoolInfoView),
+			new PropertyMetadata(false, OnIsFollowingChanged)
+		);
+
+		private static void OnIsFollowingChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+			if (d is not PoolInfoView view) {
+				return;
+			}
 
 		}
 
@@ -52,6 +72,15 @@ namespace Yiff_Browser_WinUI3.Views.Controls.PictureViews {
 				CloseText = "Back",
 				Title = $"Pool Info",
 			}).ShowDialogAsync();
+		}
+
+		private void FollowToggleButton_Click(object sender, RoutedEventArgs e) {
+			if (IsFollowing) {
+				Local.Listing.AddToPool(E621Pool);
+			} else {
+				Local.Listing.RemoveFromPool(E621Pool);
+			}
+			Listing.Write();
 		}
 	}
 }

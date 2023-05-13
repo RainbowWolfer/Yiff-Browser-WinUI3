@@ -5,7 +5,7 @@
     xmlns:local="using:Yiff_Browser_WinUI3.Views.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-	xmlns:numberformatting="using:Windows.Globalization.NumberFormatting"
+	xmlns:numberformatting="using:Windows.Globalization.NumberFormatting" xmlns:converters="using:Yiff_Browser_WinUI3.Converters"
 	mc:Ignorable="d"
 	Loaded="UserControl_Loaded">
 
@@ -49,8 +49,12 @@
 						<Border Background="{StaticResource SystemColorBackgroundBrush}" CornerRadius="10" Margin="5" Padding="5">
 							<Grid>
 
+								<Grid.Resources>
+									<converters:BoolToStringConverter x:Key="IsPoolToolTip" TrueValue="Pool Info" FalseValue="Tags Info"/>
+								</Grid.Resources>
+
 								<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Visibility="{Binding InputByPosts,Converter={StaticResource BoolToVisibilityRe}}">
-									<Button Height="36" Background="Transparent" BorderBrush="Transparent" ToolTipService.ToolTip="Tags Info" Command="{Binding TagsInfoButtonCommand}">
+									<Button Height="36" Background="Transparent" BorderBrush="Transparent" ToolTipService.ToolTip="{Binding IsPool,Converter={StaticResource IsPoolToolTip}}" Command="{Binding TagsInfoButtonCommand}">
 										<StackPanel Orientation="Horizontal">
 											<FontIcon Glyph="&#xE946;"/>
 											<TextBlock Text="{Binding Tags,Converter={StaticResource JoinStringWithSpace}}" Margin="10,0,0,0"/>
@@ -138,7 +142,7 @@
 
 					<!-- Content -->
 					<Grid Grid.Row="1" Visibility="{Binding IsLoading,Converter={StaticResource BoolToVisibilityRe}}">
-						<ScrollViewer VerticalScrollMode="Auto" Visibility="{Binding ErrorHint,Converter={StaticResource ArrayEmptyToVisibility}}">
+						<ScrollViewer x:Name="MainScrollViewer" VerticalScrollMode="Auto" Visibility="{Binding ErrorHint,Converter={StaticResource ArrayEmptyToVisibility}}">
 							<VariableSizedWrapGrid x:Name="MainGrid" Orientation="Horizontal" ItemHeight="{x:Bind ItemHeight}" ItemWidth="{x:Bind ItemWidth}"/>
 						</ScrollViewer>
 					</Grid>
@@ -153,7 +157,7 @@
 
 					<!-- Detail Page -->
 					<Grid Grid.RowSpan="2" Visibility="{Binding IsLoading,Converter={StaticResource BoolToVisibilityRe}}">
-						<local:PostDetailView x:Name="PostDetailView" Visibility="Collapsed" RequestBack="PostDetailView_RequestBack" InputByPosts="{Binding InputByPosts}"/>
+						<local:PostDetailView x:Name="PostDetailView" Visibility="Collapsed" RequestBack="PostDetailView_RequestBack" InputByPosts="{Binding InputByPosts}" PostsList="{Binding Posts,Converter={StaticResource UnifyE621Posts}}" ImagesListManagerItemClickCommand="{Binding ImagesListManagerItemClickCommand}"/>
 					</Grid>
 
 				</Grid>

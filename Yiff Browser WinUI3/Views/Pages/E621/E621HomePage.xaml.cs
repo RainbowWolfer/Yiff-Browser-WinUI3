@@ -78,8 +78,8 @@ namespace Yiff_Browser_WinUI3.Views.Pages.E621 {
 		public E621HomePageViewModel() {
 			Instance = this;
 
-			//string[] startupTags = Local.Settings.StartupTags;
-			string[] startupTags = { "inpool:true" };
+			string[] startupTags = Local.Settings.StartupTags;
+			//string[] startupTags = { "inpool:true" };
 			Items.Add(new HomeTabViewItem(startupTags));
 			SelectedIndex = 0;
 		}

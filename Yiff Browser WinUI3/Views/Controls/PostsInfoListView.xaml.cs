@@ -50,6 +50,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			} else {
 				view.Clear();
 			}
+			view.MyPostsInfoListView.SelectedIndex = 0;
 		}
 
 		private void Clear() {

@@ -82,6 +82,14 @@
 							</i:Interaction.Behaviors>
 						</ImageBrush>
 					</Border.Background>
+
+					<Border.ContextFlyout>
+						<MenuFlyout>
+							<MenuFlyoutItem Icon="Copy" Text="Copy Post URL" Command="{Binding CopyCommand}"/>
+							<MenuFlyoutItem Icon="OpenFile" Text="Open in new tab" Command="{Binding OpenInNewTabCommand}"/>
+						</MenuFlyout>
+					</Border.ContextFlyout>
+
 				</Border>
 			</Grid>
 

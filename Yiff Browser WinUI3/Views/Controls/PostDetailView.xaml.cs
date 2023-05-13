@@ -1,35 +1,21 @@
-using CommunityToolkit.WinUI.UI.Controls.TextToolbarSymbols;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
-using Microsoft.UI.Xaml.Navigation;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Storage.Streams;
 using Windows.UI;
 using Yiff_Browser_WinUI3.Helpers;
 using Yiff_Browser_WinUI3.Models.E621;
-using Yiff_Browser_WinUI3.Services.Locals;
 
 namespace Yiff_Browser_WinUI3.Views.Controls {
 	public sealed partial class PostDetailView : UserControl {
 		public event Action RequestBack;
-
-
 
 		public E621Post E621Post {
 			get => (E621Post)GetValue(E621PostProperty);
@@ -49,6 +35,32 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		);
 
 
+
+		public ICommand ImagesListManagerItemClickCommand {
+			get => (ICommand)GetValue(ImagesListManagerItemClickCommandProperty);
+			set => SetValue(ImagesListManagerItemClickCommandProperty, value);
+		}
+
+		public static readonly DependencyProperty ImagesListManagerItemClickCommandProperty = DependencyProperty.Register(
+			nameof(ImagesListManagerItemClickCommand),
+			typeof(ICommand),
+			typeof(PostDetailView),
+			new PropertyMetadata(null)
+		);
+
+
+
+		public E621Post[] PostsList {
+			get => (E621Post[])GetValue(PostsListProperty);
+			set => SetValue(PostsListProperty, value);
+		}
+
+		public static readonly DependencyProperty PostsListProperty = DependencyProperty.Register(
+			nameof(PostsList),
+			typeof(E621Post[]),
+			typeof(PostDetailView),
+			new PropertyMetadata(Array.Empty<E621Post>())
+		);
 
 		public bool InputByPosts {
 			get => (bool)GetValue(InputByPostsProperty);
@@ -82,6 +94,11 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 		public PostDetailView() {
 			this.InitializeComponent();
+			ViewModel.OnImagesListManagerItemClick += ViewModel_OnImagesListManagerItemClick;
+		}
+
+		private void ViewModel_OnImagesListManagerItemClick(E621Post post) {
+			ImagesListManagerItemClickCommand?.Execute(post);
 		}
 
 		public Image GetBackgroundImage() => BackgroundImage;
@@ -101,6 +118,8 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 	}
 
 	public class PostDetailViewModel : BindableBase {
+		public event Action<E621Post> OnImagesListManagerItemClick;
+
 		private E621Post e621Post;
 		private string imageURL;
 		private bool isMedia;
@@ -326,6 +345,12 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 			imageDataPackage.SetBitmap(RandomAccessStreamReference.CreateFromUri(new Uri(E621Post.File.URL)));
 			Clipboard.SetContent(imageDataPackage);
+		}
+
+		public ICommand ImagesListManagerItemClickCommand => new DelegateCommand<E621Post>(ImagesListManagerItemClick);
+
+		private void ImagesListManagerItemClick(E621Post post) {
+			OnImagesListManagerItemClick?.Invoke(post);
 		}
 	}
 }

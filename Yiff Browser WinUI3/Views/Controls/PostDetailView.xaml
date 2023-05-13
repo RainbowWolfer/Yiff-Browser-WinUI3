@@ -275,6 +275,8 @@
 						<local:MediaDisplayView x:Name="MediaDisplayView" URL="{Binding MediaURL}"/>
 					</Grid>
 
+					<pictureviews:ImagesListManager PostsList="{x:Bind PostsList,Mode=OneWay}" CurrentPost="{Binding E621Post}" ItemClickCommand="{Binding ImagesListManagerItemClickCommand}" VerticalAlignment="Top"/>
+
 				</Grid>
 			</SplitView>
 		</Grid>
