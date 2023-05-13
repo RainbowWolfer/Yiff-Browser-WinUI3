@@ -11,7 +11,7 @@
 	mc:Ignorable="d">
 
 	<UserControl.Resources>
-		<Style x:Key="ButtonStyle1" TargetType="Button">
+		<Style x:Key="MyButtonStyle" TargetType="Button">
 			<Setter Property="Background" Value="{ThemeResource ButtonBackground}"/>
 			<Setter Property="BackgroundSizing" Value="OuterBorderEdge"/>
 			<Setter Property="Foreground" Value="{ThemeResource ButtonForeground}"/>
@@ -84,34 +84,6 @@
 				</Setter.Value>
 			</Setter>
 		</Style>
-		<Style x:Key="MyButtonStyle" TargetType="Button">
-			  <Setter Property="Template">  
-                <Setter.Value>  
-                    <ControlTemplate TargetType="Button">  
-                        <ContentPresenter x:Name="ContentPresenter" AutomationProperties.AccessibilityView="Raw" Background="{TemplateBinding Background}" BackgroundSizing="{TemplateBinding BackgroundSizing}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" ContentTemplate="{TemplateBinding ContentTemplate}" CornerRadius="{TemplateBinding CornerRadius}" Content="{TemplateBinding Content}" ContentTransitions="{TemplateBinding ContentTransitions}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" Padding="{TemplateBinding Padding}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}">  
-                            <VisualStateManager.VisualStateGroups>  
-                                <VisualStateGroup x:Name="CommonStates">  
-                                    <VisualState x:Name="Normal">  
-                                        <Storyboard>  
-                                            <PointerUpThemeAnimation Storyboard.TargetName="ContentPresenter"/>  
-                                        </Storyboard>  
-                                    </VisualState>  
-                                    <VisualState x:Name="PointerOver">  
-                                      <!--code has been removed-->   
-                                    </VisualState>  
-                                    <VisualState x:Name="Pressed">  
-                                       <!--code has been removed-->   
-                                    </VisualState>  
-                                    <VisualState x:Name="Disabled">  
-                                   <!--code has been removed-->   
-                                    </VisualState>  
-                                </VisualStateGroup>  
-                            </VisualStateManager.VisualStateGroups>  
-                        </ContentPresenter>  
-                    </ControlTemplate>  
-                </Setter.Value>  
-            </Setter>  
-		</Style>
 
 		<converters:BoolToCornerRadiusConverter x:Key="IsSelectedCornerRadius" TrueValue="10" FalseValue="10,10,0,0"/>
 		<converters:BoolToBrushConverter x:Key="IsSelectedBrush" TrueValue="Orange" FalseValue="{StaticResource CardBackgroundFillColorDefaultBrush}"/>
@@ -125,7 +97,7 @@
 			<local:ImageViewItemViewModel x:Name="ViewModel"/>
 		</Grid.DataContext>
 
-		<Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Padding="0" CornerRadius="10" Style="{StaticResource ButtonStyle1}" Click="Button_Click" Background="{x:Bind IsSelected,Mode=OneWay,Converter={StaticResource IsSelectedBrush}}" BorderThickness="{x:Bind IsSelected,Mode=OneWay,Converter={StaticResource IsSelectedThickness}}">
+		<Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Padding="0" CornerRadius="10" Style="{StaticResource MyButtonStyle}" Click="Button_Click" Background="{x:Bind IsSelected,Mode=OneWay,Converter={StaticResource IsSelectedBrush}}" BorderThickness="{x:Bind IsSelected,Mode=OneWay,Converter={StaticResource IsSelectedThickness}}">
 
 			<Grid>
 
