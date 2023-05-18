@@ -179,6 +179,35 @@ namespace Yiff_Browser_WinUI3.Services.Networks {
 			}
 		}
 
+		public static async Task<HttpResult<string>> PostAddFavoriteAsync(int postID, CancellationToken? token = null) {
+			string url = $"https://{GetHost()}/favorites.json";
+			return await NetCode.PostRequestAsync(url, new List<KeyValuePair<string, string>>() {
+				new KeyValuePair<string, string>("post_id", postID.ToString())
+			}, token);
+		}
+
+		public static async Task<HttpResult<string>> PostDeleteFavoriteAsync(int postID ,CancellationToken? token = null) {
+			string url = $"https://{GetHost()}/favorites/{postID}.json";
+			return await NetCode.DeleteRequestAsync(url, token);
+		}
+
+		public static async Task<DataResult<E621Vote>> VotePost(int postID, int score, bool no_unvote, CancellationToken? token = null) {
+			HttpResult<string> result = await NetCode.PostRequestAsync($"https://{GetHost()}/posts/{postID}/votes.json", new List<KeyValuePair<string, string>> {
+				new KeyValuePair<string, string>("score", $"{score}"),
+				new KeyValuePair<string, string>("no_unvote", $"{no_unvote}"),
+			}, token);
+			return new DataResult<E621Vote>(result.Result, JsonConvert.DeserializeObject<E621Vote>(result.Content));
+		}
+
+		// no up and down
+		public static async Task<DataResult<E621Vote>> VoteComment(int commentID, int score, bool no_unvote, CancellationToken? token = null) {
+			HttpResult<string> result = await NetCode.PostRequestAsync($"https://{GetHost()}/comments/{commentID}/votes.json", new List<KeyValuePair<string, string>> {
+				new KeyValuePair<string, string>("score", $"{score}"),
+				new KeyValuePair<string, string>("no_unvote", $"{no_unvote}"),
+			}, token);
+			return new DataResult<E621Vote>(result.Result, JsonConvert.DeserializeObject<E621Vote>(result.Content));
+		}
+
 		#endregion
 	}
 

@@ -11,7 +11,7 @@ namespace Yiff_Browser_WinUI3.Services.Locals {
 		//"brazhnik"
 		public string[] StartupTags { get; set; } = { "order:rank" };
 
-		public bool EnanbleTransitionAnimation { get; set; } = true;
+		public bool EnableTransitionAnimation { get; set; } = true;
 
 		public int ImageAdaptWidth { get; set; } = 380;
 		public int ImageAdaptHeight { get; set; } = 50;

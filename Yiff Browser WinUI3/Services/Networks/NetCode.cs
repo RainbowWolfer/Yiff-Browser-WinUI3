@@ -108,6 +108,91 @@ namespace Yiff_Browser_WinUI3.Services.Networks {
 			return hr;
 		}
 
+		public static async Task<HttpResult<string>> PostRequestAsync(string url, List<KeyValuePair<string, string>> pairs, CancellationToken? token = null, string username = "", string api = "") {
+			DateTime startDateTime = DateTime.Now;
+			Stopwatch stopwatch = Stopwatch.StartNew();
+
+			using HttpClient client = new();
+			AddDefaultRequestHeaders(client, username, api);
+
+			HttpResponseMessage message = null;
+			HttpResultType result;
+			HttpStatusCode code;
+
+			string helper = "";
+			string content = "";
+			try {
+				var data = new FormUrlEncodedContent(pairs);
+				if (token != null) {
+					message = await client.PostAsync(url, data, token.Value);
+				} else {
+					message = await client.PostAsync(url, data);
+				}
+				message.EnsureSuccessStatusCode();
+				content = await message.Content.ReadAsStringAsync();
+				result = HttpResultType.Success;
+				code = message.StatusCode;
+			} catch (OperationCanceledException) {
+				result = HttpResultType.Canceled;
+				code = message?.StatusCode ?? HttpStatusCode.BadRequest;
+			} catch (HttpRequestException e) {
+				result = HttpResultType.Error;
+				code = message?.StatusCode ?? HttpStatusCode.BadRequest;
+				helper = e.Message;
+			} finally {
+				client.Dispose();
+				message?.Dispose();
+			}
+			stopwatch.Stop();
+
+			HttpResult<string> hr = new(result, code, content, stopwatch.ElapsedMilliseconds, startDateTime, helper);
+			//HttpRequestHistories.AddNewItem(startDateTime, url, hr, "Post");
+			return hr;
+		}
+
+		public static async Task<HttpResult<string>> DeleteRequestAsync(string url, CancellationToken? token = null, string username = "", string api = "") {
+			DateTime startDateTime = DateTime.Now;
+			Stopwatch stopwatch = Stopwatch.StartNew();
+
+			using HttpClient client = new();
+			AddDefaultRequestHeaders(client, username, api);
+
+			HttpResponseMessage message = null;
+			HttpResultType result;
+			HttpStatusCode code;
+
+			string content = null;
+			string helper = "";
+
+			try {
+				if (token != null) {
+					message = await client.DeleteAsync(url, token.Value);
+				} else {
+					message = await client.DeleteAsync(url);
+				}
+				message.EnsureSuccessStatusCode();
+				code = message.StatusCode;
+				content = await message.Content.ReadAsStringAsync();
+				result = HttpResultType.Success;
+			} catch (OperationCanceledException) {
+				code = message?.StatusCode ?? HttpStatusCode.NotFound;
+				content = null;
+				result = HttpResultType.Canceled;
+			} catch (HttpRequestException e) {
+				code = message?.StatusCode ?? HttpStatusCode.NotFound;
+				content = e.Message;
+				helper = e.Message;
+				result = HttpResultType.Error;
+			} finally {
+				message?.Dispose();
+			}
+			stopwatch.Stop();
+
+			HttpResult<string> hr = new(result, code, content, stopwatch.ElapsedMilliseconds, startDateTime, helper);
+			//HttpRequestHistories.AddNewItem(startDateTime, url, hr, "Delete");
+			return hr;
+		}
+
 		private static void AddDefaultRequestHeaders(HttpClient client, string username, string api) {
 			client.DefaultRequestHeaders.Add("User-Agent", USERAGENT);
 			AddAuthorizationHeader(client, username, api);
@@ -141,6 +226,18 @@ namespace Yiff_Browser_WinUI3.Services.Networks {
 			Time = time;
 			Helper = helper;
 			StartTime = startTime;
+		}
+	}
+
+	public class DataResult<T> {
+		public HttpResultType ResultType { get; set; }
+
+		public T Data { get; set; }
+
+		public DataResult(HttpResultType resultType, T data) {
+			ResultType = resultType;
+			Data = data;
+
 		}
 	}
 

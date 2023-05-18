@@ -41,11 +41,18 @@
 
 			<TabView.TabItemTemplate>
 				<DataTemplate x:DataType="local:HomeTabViewItem">
-					<TabViewItem Header="{Binding Title}" IsSelected="{Binding IsSelected,Mode=TwoWay}">
+					<TabViewItem IsSelected="{Binding IsSelected,Mode=TwoWay}">
 
-						<TabViewItem.IconSource>
+						<TabViewItem.Header>
+							<StackPanel Orientation="Horizontal">
+								<FontIcon Glyph="{Binding IsSelected,Converter={StaticResource BoolToValue}}" FontSize="16"/>
+								<TextBlock Text="{Binding Title}" Margin="5,0,0,0"/>
+							</StackPanel>
+						</TabViewItem.Header>
+
+						<!--<TabViewItem.IconSource>
 							<FontIconSource Glyph="{Binding IsSelected,Converter={StaticResource BoolToValue}}"/>
-						</TabViewItem.IconSource>
+						</TabViewItem.IconSource>-->
 
 						<ToolTipService.ToolTip>
 							<Grid>

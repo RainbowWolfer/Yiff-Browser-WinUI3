@@ -177,7 +177,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 					_ => throw new NotSupportedException(),
 				};
 
-				if (Local.Settings.EnanbleTransitionAnimation) {
+				if (Local.Settings.EnableTransitionAnimation) {
 					ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("image_in", view.GetCurrentImage());
 					ConnectedAnimation imageAnimation = ConnectedAnimationService.GetForCurrentView().GetAnimation("image_in");
 					imageAnimation.Configuration = new DirectConnectedAnimationConfiguration();
@@ -195,7 +195,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 			PostDetailView.Visibility = Visibility.Collapsed;
 
-			if (Local.Settings.EnanbleTransitionAnimation) {
+			if (Local.Settings.EnableTransitionAnimation) {
 				ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("image_out", PostDetailView.GetCurrentImage());
 				ConnectedAnimation imageAnimation = ConnectedAnimationService.GetForCurrentView().GetAnimation("image_out");
 				imageAnimation.Configuration = new DirectConnectedAnimationConfiguration();

@@ -95,6 +95,11 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		}
 
 		private void Button_Click(object sender, RoutedEventArgs e) {
+			if (Post.Flags.deleted == true) {
+				return;
+			} else if (Post.HasNoValidURLs()) {
+				return;
+			}
 			ImageClick?.Invoke(this, ViewModel);
 			Command?.Execute(e);
 		}
@@ -161,7 +166,9 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			if (new string[] { "gif", "webm", "swf" }.Contains(Post.File.Ext.ToLower())) {
 				TypeHint = Post.File.Ext.ToUpper();
 			}
-			if (Post.HasNoValidURLs()) {
+			if (Post.Flags.deleted == true) {
+				ErrorLoadingHint = "Post Deleted";
+			} else if (Post.HasNoValidURLs()) {
 				ErrorLoadingHint = "Try login to show this post";
 			} else {
 				PreviewImageURL = Post.Preview.URL;

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Yiff_Browser_WinUI3.Models.E621 {
 	public class E621Comment {
-		public string id;
+		public int id;
 		public DateTime created_at;
 		public int post_id;
 		public int creator_id;

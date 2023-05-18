@@ -26,6 +26,7 @@
     <None Remove="Views\Controls\PostDetailView.xaml" />
     <None Remove="Views\Controls\PostsInfoListView.xaml" />
     <None Remove="Views\Controls\PostsViewer.xaml" />
+    <None Remove="Views\Controls\PostsView\PostsBriefDisplayView.xaml" />
     <None Remove="Views\Controls\PostTagsListView.xaml" />
     <None Remove="Views\Controls\SearchView.xaml" />
     <None Remove="Views\Controls\SearchViews\PostsInfoListView.xaml" />
@@ -38,7 +39,6 @@
     <None Remove="Views\Controls\Users\LoginView.xaml" />
     <None Remove="Views\Controls\Users\UserInfoView.xaml" />
     <None Remove="Views\Pages\E621\E621HomePage.xaml" />
-    <None Remove="Views\Pages\E621\E621LoginPage.xaml" />
     <None Remove="Views\Pages\E621\TestPage.xaml" />
     <None Remove="Views\Pages\SettingsPage.xaml" />
   </ItemGroup>
@@ -140,12 +140,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Page Update="Views\Pages\E621\E621LoginPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-
-  <ItemGroup>
     <Page Update="Views\Controls\MediaDisplayView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -213,6 +207,12 @@
 
   <ItemGroup>
     <Folder Include="Resources\Icons\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\Controls\PostsView\PostsBriefDisplayView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>

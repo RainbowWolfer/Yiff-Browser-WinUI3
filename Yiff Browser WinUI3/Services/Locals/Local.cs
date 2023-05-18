@@ -21,12 +21,13 @@ namespace Yiff_Browser_WinUI3.Services.Locals {
 		public static async Task Initialize() {
 			Debug.WriteLine(LocalFolder.Path);
 
-			ListingFile = await LocalFolder.CreateFileAsync("Listings.json", CreationCollisionOption.OpenIfExists);
-			SettingsFile = await LocalFolder.CreateFileAsync("Settings.json", CreationCollisionOption.OpenIfExists);
+			await Task.Run(async () => {
+				ListingFile = await LocalFolder.CreateFileAsync("Listings.json", CreationCollisionOption.OpenIfExists);
+				SettingsFile = await LocalFolder.CreateFileAsync("Settings.json", CreationCollisionOption.OpenIfExists);
 
-			await Listing.Read();
-			await LocalSettings.Read();
-
+				await Listing.Read();
+				await LocalSettings.Read();
+			});
 		}
 
 

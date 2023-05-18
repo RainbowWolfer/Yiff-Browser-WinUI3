@@ -17,6 +17,7 @@ using Windows.Storage.Streams;
 using Windows.UI;
 using Yiff_Browser_WinUI3.Helpers;
 using Yiff_Browser_WinUI3.Models.E621;
+using Yiff_Browser_WinUI3.Services.Networks;
 
 namespace Yiff_Browser_WinUI3.Views.Controls {
 	public sealed partial class PostDetailView : UserControl {
@@ -83,7 +84,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 		public string InitialImageURL {
 			get => (string)GetValue(InitialImageURLProperty);
-			set => SetValue(InitialImageURLProperty, value);
+			set => SetValue(InitialImageURLProperty, value ?? string.Empty);
 		}
 
 		public static readonly DependencyProperty InitialImageURLProperty = DependencyProperty.Register(
@@ -198,7 +199,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		private string ratingToolTip;
 		private string idTitle;
 		private Color ratingColor;
-		private bool showSounWarning;
+		private bool showSoundWarning;
 		private Color soundWarningColor;
 		private string soundWarningToolTip;
 		private bool isFavoriteLoading;
@@ -208,6 +209,12 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		private bool inputByPosts;
 		private bool isImagesListManagerLocked;
 		private E621Post[] allPosts;
+		private bool hasVotedUp;
+		private bool hasVotedDown;
+		private bool isVoteLoading;
+		private int voteUp;
+		private int voteDown;
+		private int voteTotal;
 
 		public bool IsSidePaneOverlay {
 			get => isSidePaneOverlay;
@@ -278,9 +285,9 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			set => SetProperty(ref ratingColor, value);
 		}
 
-		public bool ShowSounWarning {
-			get => showSounWarning;
-			set => SetProperty(ref showSounWarning, value);
+		public bool ShowSoundWarning {
+			get => showSoundWarning;
+			set => SetProperty(ref showSoundWarning, value);
 		}
 		public Color SoundWarningColor {
 			get => soundWarningColor;
@@ -307,6 +314,10 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			IDTitle = $"{E621Post.ID} ({E621Post.Rating.ToString()[..1]})";
 			RatingColor = E621Post.Rating.GetRatingColor();
 
+			VoteUp = E621Post.Score.Up;
+			VoteDown = E621Post.Score.Down;
+			VoteTotal = E621Post.Score.Total;
+
 			FileSize = E621Post.File.Size;
 
 			FileType type = E621Post.GetFileType();
@@ -322,15 +333,15 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 
 			List<string> tags = E621Post.Tags.GetAllTags();
 			if (tags.Contains("sound_warning")) {
-				ShowSounWarning = true;
+				ShowSoundWarning = true;
 				SoundWarningColor = E621Rating.Explict.GetRatingColor();
 				SoundWarningToolTip = "This Video Has 'sound_warning' Tag";
 			} else if (tags.Contains("sound")) {
-				ShowSounWarning = true;
+				ShowSoundWarning = true;
 				SoundWarningColor = E621Rating.Questionable.GetRatingColor();
 				SoundWarningToolTip = "This Video Has 'sound' Tag";
 			} else {
-				ShowSounWarning = false;
+				ShowSoundWarning = false;
 			}
 
 			AbleToCopyImage = false;
@@ -353,6 +364,13 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 					break;
 				default: throw new NotSupportedException();
 			}
+
+			//hasFavorited = E621Post.IsFavorited;
+			//RaisePropertyChanged(nameof(HasFavorited));
+
+			SetProperty(ref hasFavorited, E621Post.IsFavorited);
+
+			//E621Post.
 		}
 
 		public bool AbleToCopyImage {
@@ -381,13 +399,112 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			set => SetProperty(ref hasFavorited, value, OnHasFavoritedChanged);
 		}
 
+		public bool HasVotedUp {
+			get => hasVotedUp;
+			set => SetProperty(ref hasVotedUp, value, OnHasVotedUpChanged);
+		}
+
+		public bool HasVotedDown {
+			get => hasVotedDown;
+			set => SetProperty(ref hasVotedDown, value, OnHasVotedDownChanged);
+		}
+
+		public bool IsVoteLoading {
+			get => isVoteLoading;
+			set => SetProperty(ref isVoteLoading, value);
+		}
+
+		public int VoteUp {
+			get => voteUp;
+			set => SetProperty(ref voteUp, value);
+		}
+		public int VoteDown {
+			get => voteDown;
+			set => SetProperty(ref voteDown, value);
+		}
+		public int VoteTotal {
+			get => voteTotal;
+			set => SetProperty(ref voteTotal, value);
+		}
+
+		private async void OnHasVotedUpChanged() {
+			if (IsVoteLoading) {
+				return;
+			}
+
+			IsVoteLoading = true;
+
+			DataResult<E621Vote> result;
+
+			if (HasVotedUp) {//none -> up
+				result = await E621API.VotePost(E621Post.ID, 1, true);
+				HasVotedDown = false;
+			} else {//up -> none
+				result = await E621API.VotePost(E621Post.ID, 1, false);
+			}
+
+			if (result.ResultType != HttpResultType.Success) {
+				HasVotedUp = !HasVotedUp;
+			}
+
+			if (result.Data != null) {
+				VoteUp = result.Data.up;
+				VoteDown = result.Data.down;
+				VoteTotal = result.Data.score;
+			}
+
+			IsVoteLoading = false;
+		}
+
+		private async void OnHasVotedDownChanged() {
+			if (IsVoteLoading) {
+				return;
+			}
+
+			IsVoteLoading = true;
+
+			DataResult<E621Vote> result;
+
+			if (HasVotedDown) {//none -> down
+				result = await E621API.VotePost(E621Post.ID, -1, true);
+				HasVotedUp = false;
+			} else {//down -> none
+				result = await E621API.VotePost(E621Post.ID, -1, false);
+			}
+
+			if (result.ResultType != HttpResultType.Success) {
+				HasVotedDown = !HasVotedDown;
+			}
+
+			if (result.Data != null) {
+				VoteUp = result.Data.up;
+				VoteDown = result.Data.down;
+				VoteTotal = result.Data.score;
+			}
+
+			IsVoteLoading = false;
+		}
+
 		private async void OnHasFavoritedChanged() {
 			if (IsFavoriteLoading) {
 				return;
 			}
 			IsFavoriteLoading = true;
 
-			await Task.Delay(3000);
+			//await Task.Delay(3000);
+
+			HttpResult<string> result;
+			if (HasFavorited) {
+				result = await E621API.PostAddFavoriteAsync(E621Post.ID);
+			} else {
+				result = await E621API.PostDeleteFavoriteAsync(E621Post.ID);
+			}
+
+			if (result.Result != HttpResultType.Success) {//cancel action
+				HasFavorited = !HasFavorited;
+			} else {
+				E621Post.IsFavorited = HasFavorited;
+			}
 
 			IsFavoriteLoading = false;
 		}

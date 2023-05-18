@@ -22,8 +22,6 @@ namespace Yiff_Browser_WinUI3.Services.Locals {
 			FollowPools = followPools ?? new List<PoolItem>();
 
 			Preinflate();
-			var b1 = Follows == Blocks;
-			var b2 = Follows.Equals(Blocks);
 		}
 
 		public Listing() {

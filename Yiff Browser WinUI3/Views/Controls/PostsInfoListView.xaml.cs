@@ -22,6 +22,7 @@ using Windows.UI;
 using Yiff_Browser_WinUI3.Helpers;
 using Yiff_Browser_WinUI3.Models.E621;
 using Yiff_Browser_WinUI3.Services.Locals;
+using Yiff_Browser_WinUI3.Views.Controls.PostsView;
 
 namespace Yiff_Browser_WinUI3.Views.Controls {
 	public sealed partial class PostsInfoListView : UserControl {
@@ -64,9 +65,18 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			Dictionary<string, int> tags = CountTags(parameters.Blocks).Where(x => Local.Listing.ContainBlocks(x.Key)).ToDictionary(x => x.Key, x => x.Value);
 			List<PostInfoLine> list = new();
 			foreach (KeyValuePair<string, int> item in tags) {
-				list.Add(new PostInfoLine(item.Key, $"{item.Value}"));
+				PostInfoLine blockLine = new(item.Key, $"{item.Value}") {
+					ShowBlockView = true,
+				};
+				blockLine.OnBlockView += async tag => {
+					E621Post[] posts = parameters.Blocks.Where(x => x.Tags.GetAllTags().Contains(tag)).ToArray();
+					await PostsBriefDisplayView.ShowAsDialog(XamlRoot, posts, $"Block posts of tag : {tag}");
+				};
+				list.Add(blockLine);
 			}
 			List.Add(new PostsInfoList("Blacklist", list));
+
+
 			AddToList("Hot Tags (Top 20)", parameters.Posts, 20);
 		}
 
@@ -118,8 +128,11 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 	}
 
 	public class PostInfoLine : BindableBase {
+		public event Action<string> OnBlockView;
+
 		private string name;
 		private string detail;
+		private bool showBlockView;
 
 		public string Name {
 			get => name;
@@ -129,6 +142,17 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		public string Detail {
 			get => detail;
 			set => SetProperty(ref detail, value);
+		}
+
+		public bool ShowBlockView {
+			get => showBlockView;
+			set => SetProperty(ref showBlockView, value);
+		}
+
+		public ICommand BlockViewCommand => new DelegateCommand(BlockView);
+
+		private void BlockView() {
+			OnBlockView?.Invoke(name);
 		}
 
 		public ICommand CopyCommand => new DelegateCommand(Copy);

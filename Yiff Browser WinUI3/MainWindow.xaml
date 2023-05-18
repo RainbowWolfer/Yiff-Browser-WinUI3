@@ -23,10 +23,6 @@
 				<NavigationViewItem x:Name="ItemDownload" Icon="Download" Content="Downloads" Tag="{x:Bind TAG_DOWNLOADS}"/>
 			</NavigationView.MenuItems>
 
-			<!--<NavigationView.FooterMenuItems>
-				<NavigationViewItem x:Name="UserPage" Icon="Contact" Content="Account" Tag="{x:Bind TAG_USER}"/>
-			</NavigationView.FooterMenuItems>-->
-
 			<NavigationView.PaneFooter>
 				<Button x:Name="UserButton" Background="Transparent" BorderBrush="Transparent" Height="40" Width="40" HorizontalContentAlignment="Left" Padding="5,0,0,0" Margin="5,0,0,0" Click="UserButton_Click" ToolTipService.ToolTip="Account">
 					<StackPanel Orientation="Horizontal">

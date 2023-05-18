@@ -156,36 +156,68 @@
 					</Button.Flyout>
 				</Button>
 
-				<FontIcon Glyph="&#xE7BA;" Height="33" Width="40" FontSize="24" Margin="5,0,0,0" Foreground="{Binding SoundWarningColor,Converter={StaticResource ColorToBrush}}" ToolTipService.Placement="Bottom" ToolTipService.ToolTip="{Binding SoundWarningToolTip}" Visibility="{Binding ShowSounWarning,Converter={StaticResource BoolToVisibility}}"/>
+				<FontIcon Glyph="&#xE7BA;" Height="33" Width="40" FontSize="24" Margin="5,0,0,0" Foreground="{Binding SoundWarningColor,Converter={StaticResource ColorToBrush}}" ToolTipService.Placement="Bottom" ToolTipService.ToolTip="{Binding SoundWarningToolTip}" Visibility="{Binding ShowSoundWarning,Converter={StaticResource BoolToVisibility}}"/>
 
 				<Rectangle Style="{StaticResource RectangleSeparator}"/>
 
 				<FontIcon Glyph="&#xE10C;" FontSize="24" Visibility="Collapsed" ToolTipService.ToolTip="Loading"/>
 
-				<ToggleButton Height="33" Width="38" Padding="0" CornerRadius="4" BorderThickness="0"  ToolTipService.ToolTip="Vote Up">
-					<FontIcon Glyph="&#xE96D;" Foreground="LightGreen"/>
+				<ToggleButton IsChecked="{Binding HasVotedUp,Mode=TwoWay}" IsEnabled="{Binding IsVoteLoading,Converter={StaticResource BoolToBoolRe}}" Height="33" Width="38" Padding="0" CornerRadius="4" BorderThickness="0" ToolTipService.ToolTip="Vote Up">
+					<Grid>
+						<FontIcon Glyph="&#xE96D;" Foreground="LightGreen" Visibility="{Binding IsVoteLoading,Converter={StaticResource BoolToVisibilityRe}}"/>
+						<FontIcon Glyph="&#xE10C;" Visibility="{Binding IsVoteLoading,Converter={StaticResource BoolToVisibility}}"/>
+					</Grid>
 				</ToggleButton>
 
 				<Button Margin="10,0,10,0" Height="33" Padding="11,0,11,0">
-					<TextBlock Text="{Binding E621Post.Score.Total}" FontSize="18" MinWidth="35" TextAlignment="Center"/>
+					<TextBlock Text="{Binding VoteTotal}" FontSize="18" MinWidth="35" TextAlignment="Center"/>
 					<Button.Flyout>
 						<Flyout Placement="Bottom">
-							<StackPanel>
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="auto"/>
+									<ColumnDefinition Width="*"/>
+								</Grid.ColumnDefinitions>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="auto"/>
+									<RowDefinition Height="auto"/>
+								</Grid.RowDefinitions>
+
+								<Border Grid.Row="0" Style="{StaticResource IDFlyoutInfoBorderStyle}">
+									<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+										<TextBlock Text="Voted Up"/>
+										<FontIcon Glyph="&#xE70E;" Margin="10,0,0,0"/>
+									</StackPanel>
+								</Border>
+								<TextBlock Text="{Binding VoteUp,Converter={StaticResource Abs}}" Grid.Row="0" Style="{StaticResource IDFlyoutInfoTextStyle}"/>
+
+								<Border Grid.Row="1" Style="{StaticResource IDFlyoutInfoBorderStyle}">
+									<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+										<TextBlock Text="Voted Down"/>
+										<FontIcon Glyph="&#xE70D;" Margin="10,0,0,0"/>
+									</StackPanel>
+								</Border>
+								<TextBlock Text="{Binding VoteDown,Converter={StaticResource Abs}}" Grid.Row="1" Style="{StaticResource IDFlyoutInfoTextStyle}"/>
+							</Grid>
+							<!--<StackPanel>
 								<StackPanel Orientation="Horizontal" Background="#3f808080" CornerRadius="4" Padding="4">
 									<FontIcon Glyph="&#xE70E;" FontSize="20" VerticalAlignment="Center" Margin="0,0,10,0"/>
-									<TextBlock Text="{Binding E621Post.Score.Up,Converter={StaticResource Abs}}" FontSize="16" VerticalAlignment="Center"/>
+									<TextBlock Text="{Binding VoteUp,Converter={StaticResource Abs}}" FontSize="16" VerticalAlignment="Center"/>
 								</StackPanel>
 								<StackPanel Orientation="Horizontal" Background="#3f808080" CornerRadius="4" Padding="4" Margin="0,5,0,0">
 									<FontIcon Glyph="&#xE70D;" FontSize="20" VerticalAlignment="Center" Margin="0,0,10,0"/>
-									<TextBlock Text="{Binding E621Post.Score.Down,Converter={StaticResource Abs}}" FontSize="16" VerticalAlignment="Center"/>
+									<TextBlock Text="{Binding VoteDown,Converter={StaticResource Abs}}" FontSize="16" VerticalAlignment="Center"/>
 								</StackPanel>
-							</StackPanel>
+							</StackPanel>-->
 						</Flyout>
 					</Button.Flyout>
 				</Button>
 
-				<ToggleButton Height="33" Width="38" Padding="0" CornerRadius="4" BorderThickness="0" ToolTipService.ToolTip="Vote Down">
-					<FontIcon Glyph="&#xE96E;" Foreground="OrangeRed"/>
+				<ToggleButton IsChecked="{Binding HasVotedDown,Mode=TwoWay}" IsEnabled="{Binding IsVoteLoading,Converter={StaticResource BoolToBoolRe}}" Height="33" Width="38" Padding="0" CornerRadius="4" BorderThickness="0" ToolTipService.ToolTip="Vote Down">
+					<Grid>
+						<FontIcon Glyph="&#xE96E;" Foreground="OrangeRed" Visibility="{Binding IsVoteLoading,Converter={StaticResource BoolToVisibilityRe}}"/>
+						<FontIcon Glyph="&#xE10C;" Visibility="{Binding IsVoteLoading,Converter={StaticResource BoolToVisibility}}"/>
+					</Grid>
 				</ToggleButton>
 
 				<Rectangle Style="{StaticResource RectangleSeparator}"/>

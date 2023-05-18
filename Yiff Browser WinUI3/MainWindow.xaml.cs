@@ -35,7 +35,6 @@ namespace Yiff_Browser_WinUI3 {
 		public string TAG_FAVORITES { get; } = "TAG_FAVORITES";
 		public string TAG_FOLLOWS { get; } = "TAG_FOLLOWS";
 		public string TAG_DOWNLOADS { get; } = "TAG_DOWNLOADS";
-		public string TAG_USER { get; } = "TAG_USER";
 
 		private string userAvatarURL;
 		private string usernameText;
@@ -116,8 +115,6 @@ namespace Yiff_Browser_WinUI3 {
 			} else {
 				if (tag == TAG_HOME) {
 					targetType = typeof(E621HomePage);
-				} else if (tag == TAG_USER) {
-					targetType = typeof(E621LoginPage);
 				} else {
 					targetType = typeof(TestPage);
 					//throw new NotSupportedException($"{tag}");
