@@ -12,7 +12,7 @@ using Yiff_Browser_WinUI3.Services.Locals;
 
 namespace Yiff_Browser_WinUI3.Services.Networks {
 	public static class NetCode {
-		public const string USERAGENT = "YiffBrowserWinUI3_RainbowWolfer";
+		public const string USERAGENT = "YiffBrowserWinUI3/0.1.0.0 by (RainbowWolfer)";
 
 		public static async Task<HttpResult<string>> ReadURLAsync(string url, CancellationToken? token = null, string username = "", string api = "") {
 			Debug.WriteLine("Reading: " + url);

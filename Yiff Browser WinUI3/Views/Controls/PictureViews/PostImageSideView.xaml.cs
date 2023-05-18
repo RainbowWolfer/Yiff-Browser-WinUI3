@@ -245,6 +245,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls.PictureViews {
 					return;
 				}
 				await item.LoadUserStuff();
+				await Task.Delay(500);
 			}
 		}
 

@@ -185,16 +185,14 @@
 
 								<Border Grid.Row="0" Style="{StaticResource IDFlyoutInfoBorderStyle}">
 									<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-										<TextBlock Text="Voted Up"/>
-										<FontIcon Glyph="&#xE70E;" Margin="10,0,0,0"/>
+										<FontIcon Glyph="&#xE70E;"/>
 									</StackPanel>
 								</Border>
 								<TextBlock Text="{Binding VoteUp,Converter={StaticResource Abs}}" Grid.Row="0" Style="{StaticResource IDFlyoutInfoTextStyle}"/>
 
 								<Border Grid.Row="1" Style="{StaticResource IDFlyoutInfoBorderStyle}">
 									<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-										<TextBlock Text="Voted Down"/>
-										<FontIcon Glyph="&#xE70D;" Margin="10,0,0,0"/>
+										<FontIcon Glyph="&#xE70D;"/>
 									</StackPanel>
 								</Border>
 								<TextBlock Text="{Binding VoteDown,Converter={StaticResource Abs}}" Grid.Row="1" Style="{StaticResource IDFlyoutInfoTextStyle}"/>

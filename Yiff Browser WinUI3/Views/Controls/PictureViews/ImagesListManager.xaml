@@ -99,10 +99,10 @@
 					<Run x:Name="WholeCountText" Text="0"/>
 				</TextBlock>
 			</StackPanel>
-			<ToggleButton IsChecked="{x:Bind IsLocked,Mode=TwoWay}" HorizontalAlignment="Right" Padding="6,3,6,3" Margin="0,0,5,3" VerticalAlignment="Center">
+			<ToggleButton IsChecked="{x:Bind IsLocked,Mode=TwoWay}" HorizontalAlignment="Right" Padding="6,3,6,3" Margin="0,0,5,3" VerticalAlignment="Center" ToolTipService.ToolTip="Lock Display">
 				<StackPanel Orientation="Horizontal">
 					<FontIcon Glyph="&#xE72E;"/>
-					<TextBlock Margin="10,0,0,0" Text="Lock Photos List"/>
+					<!--<TextBlock Margin="10,0,0,0" Text="Lock Photos List"/>-->
 				</StackPanel>
 			</ToggleButton>
 		</Grid>
