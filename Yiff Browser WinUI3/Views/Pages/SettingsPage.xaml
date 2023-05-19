@@ -8,7 +8,16 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
+	<Page.DataContext>
+		<local:SettingsPageViewModel/>
+	</Page.DataContext>
 
+    <Grid>
+		<StackPanel>
+			<Button Content="Open Local Settings Folder" Command="{Binding OpenAppLocalFolderCommand}"/>
+			<Button Content="Select Download Folder" Command="{Binding SelectDownloadFolderCommand}"/>
+			<Button Content="Clear Download Folder" Command="{Binding ClearDownloadFolderCommand}"/>
+			<TextBlock Text="{Binding DownloadFolderPath}"/>
+		</StackPanel>
     </Grid>
 </Page>

@@ -17,9 +17,26 @@ using Windows.Media.Core;
 using System.Diagnostics;
 using Yiff_Browser_WinUI3.Helpers;
 using Windows.Media.Playback;
+using System.Windows.Input;
 
 namespace Yiff_Browser_WinUI3.Views.Controls {
 	public sealed partial class MediaDisplayView : UserControl {
+
+
+
+		public ICommand MediaLoadedCommand {
+			get => (ICommand)GetValue(MediaLoadedCommandProperty);
+			set => SetValue(MediaLoadedCommandProperty, value);
+		}
+
+		public static readonly DependencyProperty MediaLoadedCommandProperty =DependencyProperty.Register(
+			nameof(MediaLoadedCommand),
+			typeof(ICommand),
+			typeof(MediaDisplayView),
+			new PropertyMetadata(null)
+		);
+
+
 
 		public string URL {
 			get => (string)GetValue(URLProperty);
@@ -42,6 +59,20 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		public MediaDisplayView() {
 			this.InitializeComponent();
 			MediaPlayer.MediaPlayer.IsLoopingEnabled = true;
+			MediaPlayer.MediaPlayer.MediaOpened += MediaPlayer_MediaOpened;
+			MediaPlayer.MediaPlayer.MediaFailed += MediaPlayer_MediaFailed;
+		}
+
+		private void MediaPlayer_MediaFailed(MediaPlayer sender, MediaPlayerFailedEventArgs args) {
+			
+		}
+
+		private void MediaPlayer_MediaOpened(MediaPlayer sender, object args) {
+			
+		}
+
+		public void GetAudio(){
+			
 		}
 
 		public void Play() {

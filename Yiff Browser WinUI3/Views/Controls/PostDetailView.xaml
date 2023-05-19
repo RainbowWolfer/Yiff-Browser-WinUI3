@@ -68,9 +68,11 @@
 		<Grid Grid.Column="1" Background="{StaticResource SystemColorBackgroundBrush}" CornerRadius="10" Margin="10" Padding="5,3,5,3">
 			<StackPanel Orientation="Horizontal">
 
-				<FontIcon Glyph="{Binding FileTypeIcon}" Height="33" Width="40" FontSize="24" Margin="0,0,5,0" ToolTipService.Placement="Bottom" ToolTipService.ToolTip="{Binding FileTypeToolTip}"/>
+				<FontIcon Glyph="{Binding FileTypeIcon}" Height="33" Width="40" FontSize="24" ToolTipService.Placement="Bottom" ToolTipService.ToolTip="{Binding FileTypeToolTip}"/>
 
-				<Button Height="33" Padding="11,0,11,0" ToolTipService.Placement="Bottom" ToolTipService.ToolTip="{Binding RatingToolTip}">
+				<TextBlock Text="{Binding Duration,Converter={StaticResource Duration}}" FontSize="18" VerticalAlignment="Center" Margin="0,0,5,0" ToolTipService.ToolTip="{Binding Duration}" Visibility="{Binding Duration,Converter={StaticResource ArrayNotEmptyToVisibility}}"/>
+
+				<Button Margin="5,0,0,0" Height="33" Padding="11,0,11,0" ToolTipService.Placement="Bottom" ToolTipService.ToolTip="{Binding RatingToolTip}">
 					<TextBlock Text="{Binding IDTitle}" VerticalAlignment="Center" FontFamily="Cascadia Mono" FontSize="24" Foreground="{Binding RatingColor,Converter={StaticResource ColorToBrush}}"/>
 					<Button.Flyout>
 						<Flyout Placement="Bottom">

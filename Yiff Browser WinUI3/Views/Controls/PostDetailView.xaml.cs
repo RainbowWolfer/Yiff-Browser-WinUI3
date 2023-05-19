@@ -215,6 +215,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		private int voteUp;
 		private int voteDown;
 		private int voteTotal;
+		private string duration;
 
 		public bool IsSidePaneOverlay {
 			get => isSidePaneOverlay;
@@ -264,6 +265,11 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 		public string FileTypeIcon {
 			get => fileTypeIcon;
 			set => SetProperty(ref fileTypeIcon, value);
+		}
+
+		public string Duration {
+			get => duration;
+			set => SetProperty(ref duration, value);
 		}
 
 		public string FileTypeToolTip {
@@ -319,6 +325,7 @@ namespace Yiff_Browser_WinUI3.Views.Controls {
 			VoteTotal = E621Post.Score.Total;
 
 			FileSize = E621Post.File.Size;
+			Duration = E621Post.Duration;
 
 			FileType type = E621Post.GetFileType();
 			FileTypeIcon = type switch {

@@ -12,7 +12,8 @@
 			<local:MediaDisplayViewModel x:Name="ViewModel"/>
 		</Grid.DataContext>
 
-		<MediaPlayerElement x:Name="MediaPlayer" Source="{Binding MediaSource}" 
+		<!-- PosterSource=""-->
+		<MediaPlayerElement x:Name="MediaPlayer" Source="{Binding MediaSource}"
 			AutoPlay="True" 
 			AreTransportControlsEnabled="True">
 

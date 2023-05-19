@@ -1,10 +1,13 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.Storage.AccessCache;
+using Yiff_Browser_WinUI3.Helpers;
 
 namespace Yiff_Browser_WinUI3.Services.Locals {
 	public static class Local {
@@ -17,6 +20,7 @@ namespace Yiff_Browser_WinUI3.Services.Locals {
 
 		public static StorageFile ListingFile { get; private set; }
 		public static StorageFile SettingsFile { get; private set; }
+		public static StorageFolder DownloadFolder { get; set; }
 
 		public static async Task Initialize() {
 			Debug.WriteLine(LocalFolder.Path);
@@ -27,6 +31,13 @@ namespace Yiff_Browser_WinUI3.Services.Locals {
 
 				await Listing.Read();
 				await LocalSettings.Read();
+
+				try {
+					string token = Settings.DownloadFolderToken;
+					if (token.IsNotBlank()) {
+						DownloadFolder = await StorageApplicationPermissions.FutureAccessList.GetFolderAsync(token);
+					}
+				} catch { }
 			});
 		}
 

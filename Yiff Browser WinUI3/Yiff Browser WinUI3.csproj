@@ -38,6 +38,7 @@
     <None Remove="Views\Controls\UserHelperViews\LoginHelpSection.xaml" />
     <None Remove="Views\Controls\Users\LoginView.xaml" />
     <None Remove="Views\Controls\Users\UserInfoView.xaml" />
+    <None Remove="Views\Pages\E621\DownloadPage.xaml" />
     <None Remove="Views\Pages\E621\E621HomePage.xaml" />
     <None Remove="Views\Pages\E621\TestPage.xaml" />
     <None Remove="Views\Pages\SettingsPage.xaml" />
@@ -207,6 +208,12 @@
 
   <ItemGroup>
     <Folder Include="Resources\Icons\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\Pages\E621\DownloadPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>

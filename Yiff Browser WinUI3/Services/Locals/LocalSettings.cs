@@ -1,5 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.UI.Xaml.Controls;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
+using Windows.Storage;
+using Windows.Storage.AccessCache;
 using Yiff_Browser_WinUI3.Helpers;
 
 namespace Yiff_Browser_WinUI3.Services.Locals {
@@ -20,7 +24,9 @@ namespace Yiff_Browser_WinUI3.Services.Locals {
 		public string UserAPI { get; set; } = "";
 
 
-		public string LocalFolderToken { get; set; }
+		public string DownloadFolderToken { get; set; }
+
+		#region User
 
 		public bool CheckLocalUser() => Username.IsNotBlank() && UserAPI.IsNotBlank();
 
@@ -35,6 +41,30 @@ namespace Yiff_Browser_WinUI3.Services.Locals {
 			UserAPI = string.Empty;
 			Write();
 		}
+
+		#endregion
+
+		#region FolderToken
+
+		public bool HasDownloadFolderToken() => DownloadFolderToken.IsNotBlank() && Local.DownloadFolder != null;
+
+		public void SetDownloadFolder(StorageFolder folder) {
+			if (folder == null) {
+				return;
+			}
+			Local.DownloadFolder = folder;
+			string token = StorageApplicationPermissions.FutureAccessList.Add(folder);
+			DownloadFolderToken = token;
+			Write();
+		}
+
+		public void ClearDownloadFolder() {
+			Local.DownloadFolder = null;
+			DownloadFolderToken = null;
+			Write();
+		}
+
+		#endregion
 
 		#region Local
 
